@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6855701D-7DDA-4D71-BF1A-9F9F21F028B3}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ConsoleRPG</RootNamespace>
-    <AssemblyName>ConsoleRPG</AssemblyName>
+    <RootNamespace>rogueLike</RootNamespace>
+    <AssemblyName>rogueLike</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Properties\525px_octicons_terminal_svg_JzA_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,7 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enemy.cs" />
+    <Compile Include="GameManager.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="NPC.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -52,6 +57,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Properties\525px_octicons_terminal_svg_JzA_icon.ico" />
+    <Content Include="Properties\bash_qxi_icon.ico" />
+    <Content Include="Properties\cmd_exe_command_line_interface_computer_icons_prompt_thumbnail_jGm_icon.ico" />
+    <Content Include="Properties\command_prompt_icon__windows__Fox_icon.ico" />
+    <Content Include="Properties\images_Clc_icon.ico" />
+    <Content Include="Properties\images_Jf0_icon.ico" />
+    <Content Include="Properties\images_nw2_icon.ico" />
     <Content Include="Properties\00_beginn_game.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -118,6 +130,8 @@
     <Content Include="Properties\soundtrack_shrine.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Properties\terminal_512_H9T_icon.ico" />
+    <Content Include="Properties\terminal_command_line_console_cmd_2_512_dBQ_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,7 +8,7 @@ using System.Media;
 using System.Timers;
 
 
-namespace ConsoleRPG
+namespace rogueLike
 {
     public class Player
     {
@@ -83,10 +83,11 @@ namespace ConsoleRPG
         bool skillAttack = false;
 
         bool use = false;
-        Map map;
+        public Map map;
         bool enemyContact = false;
         public Random random = new Random();
         List<Enemy> enemyList = new List<Enemy>();
+        List<rogueLike.NPC> npcList = new List<rogueLike.NPC>();
         private Enemy currentEnemy;
         private bool enemyContactEast;
         private bool enemyContactWest;
@@ -94,9 +95,10 @@ namespace ConsoleRPG
         private bool enemyContactNorth;
         private int enemyIndex;
         private bool riddleSolved = false;
-        private static System.Timers.Timer timer;
         private static System.Timers.Timer aTimer;
 
+        public int xCoordinates = 4;
+        public int yCoordinates = 3;
 
         internal Enemy CurrentEnemy { get => currentEnemy; set => currentEnemy = value; }
 
@@ -106,7 +108,7 @@ namespace ConsoleRPG
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             mapArray = MapArray;
-
+            map = new Map();
             // change to maparray 1
         }
 
@@ -225,49 +227,7 @@ namespace ConsoleRPG
             else if (level == 3 )
             {
 
-                bool serpentMove = false; ;
-                    actionString = "a giant serpent appeared!             ";
-                    riddleSolved = true;
-                if (serpentMove==false)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.SetCursorPosition(18, 10);
-                    Console.Write("▀");
-                    Console.SetCursorPosition(19, 11);
-                    Console.Write("▀");
-                    Console.SetCursorPosition(20, 10);
-                    Console.Write("▀");
-                    Console.SetCursorPosition(21, 10);
-                    Console.Write("▀");
-                    Console.SetCursorPosition(22, 9);
-                    Console.Write("▀");
-                    Console.SetCursorPosition(23, 10);
-                    Console.Write("▀");
-                    Console.SetCursorPosition(24, 11);
-                    Console.Write("▀");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.SetCursorPosition(18, 10);
-                    Console.Write("⁃");
-                    Console.SetCursorPosition(19, 11);
-                    Console.Write("⁃");
-                    Console.SetCursorPosition(20, 10);
-                    Console.Write("⁃");
-                    Console.SetCursorPosition(21, 10);
-                    Console.Write("⁃");
-                    Console.SetCursorPosition(22, 9);
-                    Console.Write("⁃");
-                    Console.SetCursorPosition(23, 10);
-                    Console.Write("⁃");
-                    Console.SetCursorPosition(24, 11);
-                    Console.Write("⁃");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-
+          
             }
 
 
@@ -446,6 +406,43 @@ namespace ConsoleRPG
                 //spawn a red "X" or a red circle above enemy for blood... same for you..
 
 
+                // ►▼◄▲
+
+          /*      if (mapArray[yPos, xPos] == "◄")
+                {
+                    actionString = "you travel east";
+                    xCoordinates++;
+                }
+                else if (mapArray[yPos, xPos] == "▼")
+                {
+                    actionString = "you travel south";
+                    yCoordinates++;
+                }
+                else if (mapArray[yPos, xPos] == "►")
+                {
+                    actionString = "you travel west";
+                    xCoordinates--;
+                }
+                else if (mapArray[yPos, xPos] == "▲")
+                {
+                    actionString = "you travel north";
+                    yCoordinates--;
+                }*/
+
+                /* if (mapArray[yPos, xPos] == "►" || mapArray[yPos, xPos] == "▼" || mapArray[yPos, xPos] == "◄" || mapArray[yPos, xPos] == "▲")
+                 {
+                     Console.SetCursorPosition(xPos, yPos);
+                     Console.Write(" ");
+                     actionString = "you go to the next map";
+
+                     //level++;
+                     // instead of level++ add coordinates to 
+                     riddleSolved = false;
+                     Map lvl = new Map();
+
+                 }*/
+
+
 
                 if (mapArray[yPos, xPos] == "#")
                 {
@@ -453,7 +450,7 @@ namespace ConsoleRPG
                     Console.Write(" ");
                     actionString = "You found a ladder to level " + level;
                     
-                    level++;
+                //    level++;
                     riddleSolved = false;
                     Map lvl = new Map();
 
@@ -497,7 +494,7 @@ namespace ConsoleRPG
                 }
 
 
-
+                
 
             }
 
@@ -772,8 +769,9 @@ namespace ConsoleRPG
 
                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_sword.wav";
                     musicPlayer.Play();
-
-                    dmg = STR * CON / 10;
+                    int criticalDamage;
+                    criticalDamage = random.Next(0, 3);
+                    dmg = STR * CON / 10+criticalDamage;
                     actionString = "you swing your sword! [" + dmg + "] damage";
                     if (direction == "East")
                     {
@@ -854,7 +852,9 @@ namespace ConsoleRPG
                 {
                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_dagger.wav";
                     musicPlayer.Play();
-                    dmg = DEX * STR / 10;
+                    int criticalDamage;
+                    criticalDamage = random.Next(0, 3);
+                    dmg = DEX * STR / 10+criticalDamage;
                     actionString = "you stab with your daggers! [" + dmg + "] damage";
 
                     if (direction == "East")
@@ -932,7 +932,9 @@ namespace ConsoleRPG
                 {
                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_plow.wav";
                     musicPlayer.Play();
-                    dmg = INT * CON / 10;
+                    int criticalDamage;
+                    criticalDamage = random.Next(0, 3);
+                    dmg = INT * CON / 10+ criticalDamage;
                     actionString = "you swing your warplow! [" + dmg + "] damage";
 
                     if (direction == "East")
@@ -1016,7 +1018,9 @@ namespace ConsoleRPG
                 {
                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_staff.wav";
                     musicPlayer.Play();
-                    dmg = INT * DEX / 10;
+                    int criticalDamage;
+                    criticalDamage = random.Next(0, 3);
+                    dmg = INT * DEX / 10+ criticalDamage;
                     actionString = "you trash with your staff! [" + dmg + "] damage";
 
                     if (direction == "East")
@@ -1127,7 +1131,7 @@ namespace ConsoleRPG
                     int criticalDamage;
                     criticalDamage = random.Next(0,STR);
 
-                     dmg = STR * CON / 10 + criticalDamage;
+                     dmg = 2*STR * CON / 10 + criticalDamage;
                     actionString = "heavy sword attack!! [" + dmg + "] damage";
 
                     if (weaponGrade == 0)
@@ -1333,7 +1337,7 @@ namespace ConsoleRPG
                     int criticalDamage;
                     criticalDamage = random.Next(0, DEX);
 
-                    dmg = 2*DEX * STR / 10 + criticalDamage;
+                    dmg = 3*DEX * STR / 10 + criticalDamage;
                     actionString = "you deliver a critical hit! [" + dmg + "] damage";
                     //Console.BackgroundColor = ConsoleColor.DarkRed;
 
@@ -1523,7 +1527,7 @@ namespace ConsoleRPG
 
                     int criticalDamage;
                     criticalDamage = random.Next(0, CON);
-                    dmg = CON * INT/10;
+                    dmg = 2*CON * INT/10 + criticalDamage;
                     mana -= 2;
 
                     actionString = "you crush your foes! [" + dmg + "] damage";
@@ -1744,7 +1748,7 @@ namespace ConsoleRPG
                     musicPlayer.Play();
                     int criticalDamage;
                     criticalDamage = random.Next(0, INT);
-                    dmg = INT * DEX / 10;
+                    dmg = 2*INT * DEX / 10 + criticalDamage;
                     actionString = "you use your wand! [" + dmg + "] damage";
                     mana -= 2;
 
@@ -2584,7 +2588,7 @@ namespace ConsoleRPG
         }
 
 
-
+        // in every dungeon there is loot to find ;D
 
         public void giveTreasureItem(int x, int y)
         {
@@ -2753,6 +2757,7 @@ namespace ConsoleRPG
 
         public void UpdateStats()
         {
+
             // xPos can be maparray.getlength!!
 
             int xPos = 70;
@@ -2921,7 +2926,66 @@ namespace ConsoleRPG
             Console.ForegroundColor = ConsoleColor.Black;
             Console.BackgroundColor = ConsoleColor.DarkCyan;
             Console.SetCursorPosition(xPos, yPos);
-            //    << minimap >>
+
+            //    << minimap >>  ****************************************************************************************************************
+      
+
+            for (int y = 1; y <9;y++)
+            {
+                for (int x = 1; x < 9; x++)
+                {
+                    if (x < 9)
+                    {
+                        
+                        if (x == xCoordinates && y == yCoordinates)
+                        {
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Green;
+                            Console.Write(xCoordinates+""+yCoordinates);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.DarkCyan;
+                            Console.Write("  ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            
+                        }
+                        if (x == 8)
+                        {
+                            yPos++;
+                            Console.SetCursorPosition(xPos, yPos);
+                            y++;
+                        }
+                    }
+
+                   /* else
+                    {
+                        yPos++;
+                        Console.SetCursorPosition(xPos, yPos);
+                        y++;
+                    }*/
+                }
+
+                if (yCoordinates == 4)
+                {
+                    actionString = "why does this not display map right?";
+
+                }
+                if (yCoordinates == 2)
+                {
+                    actionString = "why does this not display map right?";
+
+                }
+
+            }
+
+            yPos++;
+            /*
             Console.Write("┌────────────────┐");
             yPos++;
             Console.SetCursorPosition(xPos, yPos);
@@ -2941,7 +3005,9 @@ namespace ConsoleRPG
             yPos++;
             Console.SetCursorPosition(xPos, yPos);
             Console.Write("└────────────────┘");
-            yPos++;
+            yPos++;*/
+
+            //**********************************************************************************************************************************
             Console.SetCursorPosition(xPos, yPos);
 
             Console.ForegroundColor = ConsoleColor.White;
@@ -2956,7 +3022,7 @@ namespace ConsoleRPG
             yPos++;
             Console.Write("                               "); // Alte Richtung löschen, mit Leerschlag überschreiben
             Console.SetCursorPosition(xPos, yPos);
-            Console.Write(" level " + level + ", compass: " + direction);  // neue Richtungsangabe
+            Console.Write(" level " + xCoordinates + "/" + yCoordinates + ", compass: " + direction);  // neue Richtungsangabe
             Console.Write("                               ");
 
             //for each life u got, for loop and write "█"
@@ -3021,7 +3087,63 @@ namespace ConsoleRPG
             return false;
         }
 
-        public bool CheckForPortal()
+        //*************** portals  ▼ ► ◄ ▲ *******************************************************************************
+
+        public bool travelEast()        //enchanted forests
+        {
+            if (mapArray[yPos, xPos] == "◄")
+            {
+                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
+                musicPlayer.Play();
+                actionString = "you travel east " + (xCoordinates +1)+ "/" + yCoordinates;
+            //    xCoordinates++;
+                return true;
+            }
+            return false;
+        }
+
+        public bool travelSouth()       // a scorching sun in the desert!
+        {
+            if (mapArray[yPos, xPos] == "▼")
+            {
+                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
+                musicPlayer.Play();
+                actionString = "you travel south " + xCoordinates + "/" + (yCoordinates - 1);
+           //     yCoordinates++;
+                return true;
+            }
+            return false;
+        }
+
+        public bool travelWest()        // land of the stormy winds!
+        {
+            if (mapArray[yPos, xPos] == "►")
+            {
+                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
+                musicPlayer.Play();
+                actionString = "you travel west "+ (xCoordinates-1) + "/"+yCoordinates;
+            //    xCoordinates--;
+                return true;
+            }
+            return false;
+        }
+
+        public bool travelNorth()       //massive mountains and mystical caves!
+        {
+            if (mapArray[yPos, xPos] == "▲")
+            {
+                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
+                musicPlayer.Play();
+                actionString = "you travel north " + xCoordinates + "/" + (yCoordinates + 1);
+                //   yCoordinates--;
+                return true;
+            }
+            return false;
+        }
+
+        //*************** ladders in dungeons *******************************************************************************
+
+        public bool CheckForLadder()
         {
             if (mapArray[yPos, xPos] == "#")
             {
@@ -3031,26 +3153,12 @@ namespace ConsoleRPG
             }
             return false;
         }
+        //*************** enemies on the map *******************************************************************************
 
-        public bool CheckForWayBack()
-        {
-            if (mapArray[yPos, xPos] == "▼")
-            {
-                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
-                musicPlayer.Play();
-                return true;
-            }
-            return false;
-        }
 
         public void populateLevels(int numberOfEnemies)
         {
-            //Map map = new Map();
-
-            //Player player = new Player(map.mapArray);
-            //Enemy enemy = new Enemy(map.mapArray);
-
-            //Enemy list on emey.cs
+           
             for (int i = 0; i < numberOfEnemies; i++)
             {
                 string myFloor;
@@ -3061,11 +3169,12 @@ namespace ConsoleRPG
 
                 int xpos;
                 int ypos;
-                xpos = random.Next(4, 40);
+                xpos = random.Next(4, 50);
                 ypos = random.Next(7, 20);
 
-                Enemy myEnemy = new Enemy(enemyRaceInt, xpos, ypos, 25);
+                Enemy myEnemy = new Enemy(enemyRaceInt, xpos, ypos);
 
+                //enum
                 if (enemyRaceInt == 0) { enemyRace = "s"; enemyList.Add(myEnemy); myEnemy.raceInt = 0;  }   //this is a snake
                 else if (enemyRaceInt == 1) { enemyRace = "w"; enemyList.Add(myEnemy); myEnemy.raceInt = 1;  }   //this is a wolf
                 else if (enemyRaceInt == 2) { enemyRace = "g"; enemyList.Add(myEnemy); myEnemy.raceInt = 2;  }   //this is a goblin
@@ -3081,20 +3190,7 @@ namespace ConsoleRPG
                 myEnemy.yPos = ypos;
 
 
-          /*      if (myEnemy.health < 1)
-                {
-                    actionString = "the enemy died                  ";
-                    //  int lootRoll = random.Next(0, 3);
-
-                    int coinLoot = random.Next(1, 25);
-                    coins += coinLoot;
-                    mapArray[myEnemy.yPos, myEnemy.xPos] = myEnemy.floorString;
-                    CurrentEnemy = null;
-                }*/
-
-
-                if (mapArray[ypos, xpos] != "█")
-                {
+                
                     //enemy.raceInt = enemyNumbers;
                     myFloor = mapArray[ypos, xpos];
                     myEnemy.floorString = myFloor;
@@ -3102,23 +3198,11 @@ namespace ConsoleRPG
 
                     //setupEnemy(xpos, ypos, mapArray[xpos, ypos]);
                     enemyRaceInt = random.Next(0, 3);
-                }
+           
 
-                else
-                {
-                    xpos = random.Next(4, 40);
-                    ypos = random.Next(7, 20);
-                    myEnemy.xPos = xpos;
-                    myEnemy.yPos = ypos;
-                    myFloor = mapArray[ypos, xpos];
-                    myEnemy.floorString = myFloor;
-                    UpdateEnemy(xpos, ypos, myFloor, enemyRace);
-
-                    //setupEnemy(xpos, ypos, mapArray[xpos, ypos]);
-                    enemyRaceInt = random.Next(0, 3);
-                }
                 i++;
             }
+           
         }
 
         public void UpdateEnemy(int x, int y, string floor, string enemy)
@@ -3162,19 +3246,15 @@ namespace ConsoleRPG
         //**********************************************************************************************************************************************
 
        
-        //*****************************************************************************************************************************************
-
 
 
 
         public void moveEnemy(int x, int y, string floor, string enemy)
         {
 
-
             int movementInt = random.Next(0, 3);
             Thread.Sleep(100);
-
-
+/*
             //move east
             if (movementInt == 0 && mapArray[y, x + 1] != "█" && mapArray[yPos, xPos + 1] != "▒")
             {
@@ -3215,10 +3295,10 @@ namespace ConsoleRPG
             {
                 return;
             }
+            */
+
+
             
-
-
-            /*
             //move east
             if (movementInt == 0 && mapArray[y, x + 1] != "█" && mapArray[yPos, xPos + 1] != "▒")
             {
@@ -3309,7 +3389,7 @@ namespace ConsoleRPG
                 mapArray[y, x] = enemy;
                 Console.ForegroundColor = ConsoleColor.White;
                 Thread.Sleep(200);
-            }*/
+            }
 
 
             //move to next tile!
@@ -3333,7 +3413,7 @@ namespace ConsoleRPG
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_mace.wav";
-            musicPlayer.Play();
+                musicPlayer.Play();
             // Thread.Sleep(200);
 
             //int enemyDamage = random.Next (1, currentEnemy.dmg);
@@ -3371,6 +3451,9 @@ namespace ConsoleRPG
 
                 //battle method
                 if (enemyContact == true)
+
+                    Console.SetCursorPosition(xPos, yPos);
+                    Console.Write(currentEnemy.attackString);  // angriffbildchen? 
 
                     currentEnemy.ready = false;
                     Thread.Sleep(400);
