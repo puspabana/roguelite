@@ -2939,9 +2939,9 @@ namespace rogueLike
                         
                         if (x == xCoordinates && y == yCoordinates)
                         {
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black;
                             Console.BackgroundColor = ConsoleColor.Green;
-                            Console.Write(xCoordinates+""+yCoordinates);
+                            Console.Write(xCoordinates+""+yCoordinates+" ");
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.Black;
                             
@@ -2950,7 +2950,7 @@ namespace rogueLike
                         {
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.DarkCyan;
-                            Console.Write("  ");
+                            Console.Write(x+""+y+",");
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.Black;
                             
@@ -2959,16 +2959,9 @@ namespace rogueLike
                         {
                             yPos++;
                             Console.SetCursorPosition(xPos, yPos);
-                            y++;
+                            //y++;
                         }
                     }
-
-                   /* else
-                    {
-                        yPos++;
-                        Console.SetCursorPosition(xPos, yPos);
-                        y++;
-                    }*/
                 }
 
                 if (yCoordinates == 4)
@@ -3087,6 +3080,85 @@ namespace rogueLike
             return false;
         }
 
+
+        //*************** doors 1-6 *******************************************************************************
+
+
+        //turn into an enum...
+       /* public enum GameState
+        {
+            door1,
+            door2,
+            door3,
+            door4,
+            door5,
+            door6,
+            outside
+        }*/
+
+        public bool enterDoor()        //open doors
+        {
+            if (mapArray[yPos, xPos] == "1")
+            {
+                actionString = "you open door 1";
+                return true;
+            }
+            return false;
+        }
+
+        public bool enterDoor2()        //open doors
+        {
+            if (mapArray[yPos, xPos] == "2")
+            {
+                actionString = "you open door 2";
+                return true;
+            }
+            return false;
+        }
+
+        public bool enterDoor3()        //open doors
+        {
+            if (mapArray[yPos, xPos] == "3")
+            {
+                actionString = "you open door 3";
+                return true;
+            }
+            return false;
+        }
+
+        public bool enterDoor4()        //open doors
+        {
+            if (mapArray[yPos, xPos] == "4")
+            {
+                actionString = "you open door 4";
+                
+                return true;
+            }
+            return false;
+        }
+
+        public bool enterDoor5()        //open doors
+        {
+            if (mapArray[yPos, xPos] == "5")
+            {
+                actionString = "you open door 5";
+             
+                return true;
+            }
+            return false;
+        }
+
+        public bool enterDoor6()        //open doors
+        {
+            if (mapArray[yPos, xPos] == "6")
+            {
+                actionString = "you open door 6";
+                
+                return true;
+            }
+            return false;
+        }
+
         //*************** portals  ▼ ► ◄ ▲ *******************************************************************************
 
         public bool travelEast()        //enchanted forests
@@ -3140,6 +3212,10 @@ namespace rogueLike
             }
             return false;
         }
+
+
+       
+
 
         //*************** ladders in dungeons *******************************************************************************
 

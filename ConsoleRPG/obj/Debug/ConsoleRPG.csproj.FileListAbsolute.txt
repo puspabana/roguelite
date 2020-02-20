@@ -198,3 +198,31 @@ D:\_my_Games\Console\gitRogue\ConsoleRPG\obj\Debug\ConsoleRPG.csprojAssemblyRefe
 D:\_my_Games\Console\gitRogue\ConsoleRPG\obj\Debug\ConsoleRPG.csproj.CoreCompileInputs.cache
 D:\_my_Games\Console\gitRogue\ConsoleRPG\obj\Debug\rogueLike.exe
 D:\_my_Games\Console\gitRogue\ConsoleRPG\obj\Debug\rogueLike.pdb
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\00_beginn_game.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\01_character_creation.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\02_gameover.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\att_dagger.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\att_mace.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\att_staff.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\att_sword.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\item_magnet.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\menu_click.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\menu_error.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\item_firekit.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\item_hookshot.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\att_plow.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\skill_missile_exp.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\skill_missile_homing.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\item_shield.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\item_bow.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\item_discus.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\soundtrack_dungeon.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\soundtrack_forest.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\soundtrack_intro.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\Properties\soundtrack_shrine.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\rogueLike.exe.config
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\rogueLike.exe
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\rogueLike.pdb
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\obj\Debug\ConsoleRPG.csprojAssemblyReference.cache
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\obj\Debug\rogueLike.exe
+C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\obj\Debug\rogueLike.pdb

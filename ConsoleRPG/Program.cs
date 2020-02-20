@@ -762,7 +762,38 @@ namespace rogueLike
 
 
                         //*************** portals  ▼ ► ◄ ▲ *******************************************************************************
-                        
+                        if (player.enterDoor())
+                        {
+                            player.actionString = "this is a civilian house!          ";
+                        }
+                        else if (player.enterDoor2())
+                        {
+                            player.actionString = "welcome to the consumable shop!            ";
+                            //draw shop inventory
+                        }
+                        else if (player.enterDoor3())
+                        {
+                            player.actionString = "welcome at the blacksmith`s shop!          ";
+                            //craft menu and shop inventory (shields, armor, swords, hammers, maces)
+                        }
+                        else if (player.enterDoor4())
+                        {
+                            player.actionString = "welcome at the witches brewery!          ";
+                            //craft menu and shop inventory (potions, staffs, wands, ritualdaggers)
+                        }
+                        else if (player.enterDoor5())
+                        {
+                            player.actionString = "you enter your own house            ";
+
+                            //talk to civilians in this house...
+                        }
+                        else if (player.enterDoor6())
+                        {
+                            player.actionString = "this is a shrine!          ";
+                            //enter a dungeon.. Your global world coordinates DONT change
+                            //when you enter a dungeon, seperate system for maps..
+                        }
+
 
                         if (player.travelEast())
                         {
