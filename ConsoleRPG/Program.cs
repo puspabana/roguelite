@@ -117,29 +117,8 @@ namespace rogueLike
 
                 
 
-                Console.WriteLine("┌────────────────────────┐");
-                Console.WriteLine("│singleplayer [1]        │");
-                Console.WriteLine("└────────────────────────┘");
-                Console.WriteLine("                   ");
-                Console.WriteLine("┌────────────────────────┐");
-                Console.WriteLine("│multiplayer [2]         │");
-                Console.WriteLine("└────────────────────────┘");
-                Console.WriteLine("                   ");
-                Console.WriteLine("┌────────────────────────┐");
-                Console.WriteLine("│manual [3]              │");
-                Console.WriteLine("└────────────────────────┘");
-                Console.WriteLine("                   ");
-                Console.WriteLine("┌────────────────────────┐");
-                Console.WriteLine("│exit [Esc]              │");
-                Console.WriteLine("└────────────────────────┘");
-                Console.WriteLine("                   ");
-                Console.WriteLine(" press [M] to toggle music on or off!");
 
-                
-
-                //press D1 for singleplayer
-                if (Console.ReadKey(true).Key == ConsoleKey.D1)
-                {
+               
                     //singlePlayer = true;
                     
                     //create player character
@@ -794,6 +773,7 @@ namespace rogueLike
                             //when you enter a dungeon, seperate system for maps..
                         }
 
+                        //***** global world coordiantes **************************************************************************************************************
 
                         if (player.travelEast())
                         {
@@ -802,12 +782,12 @@ namespace rogueLike
                             player.xCoordinates++;
                             map.ChangeGlobalMap(map.xCoordinates, map.yCoordinates);
                             player.mapArray = map.mapArray;
-                            player.xPos = 4;
-                            player.yPos = 9;
+                            player.xPos = 3;
+                       //     player.yPos = 9;
                             player.burnCounter = 0;
                             map.DrawMap();
                             player.DrawPlayer();
-                         //   player.populateLevels(8);
+                           // player.populateLevels(8);
                         }
 
 
@@ -819,12 +799,11 @@ namespace rogueLike
                             player.xCoordinates--;
                             map.ChangeGlobalMap(map.xCoordinates, map.yCoordinates);
                             player.mapArray = map.mapArray;
-                            player.xPos = 50;
-                            player.yPos = 9;
+                            player.xPos = 51;
+                         //   player.yPos = 17;
                             player.burnCounter = 0;
                             map.DrawMap();
                             player.DrawPlayer();
-                          //  player.populateLevels(8);
                         }
 
                         if (player.travelSouth())
@@ -834,12 +813,11 @@ namespace rogueLike
                             player.yCoordinates--;
                             map.ChangeGlobalMap(map.xCoordinates, map.yCoordinates);
                             player.mapArray = map.mapArray;
-                            player.xPos = 29;
+                            player.xPos = player.xPos;
                             player.yPos = 17;
                             player.burnCounter = 0;
                             map.DrawMap();
                             player.DrawPlayer();
-                            //  player.populateLevels(8);
                         }
 
                         if (player.travelNorth())
@@ -849,12 +827,11 @@ namespace rogueLike
                             player.yCoordinates++;
                             map.ChangeGlobalMap(map.xCoordinates, map.yCoordinates);
                             player.mapArray = map.mapArray;
-                            player.xPos = 29;
-                            player.yPos = 4;
+                            player.xPos = player.xPos;
+                            player.yPos = 3;
                             player.burnCounter = 0;
                             map.DrawMap();
                             player.DrawPlayer();
-                            //  player.populateLevels(8);
                         }
 
                         //*************** portals  ▼ ► ◄ ▲ *******************************************************************************
@@ -872,26 +849,7 @@ namespace rogueLike
 
                         
 
-            }
-            //press D1 for singleplayer
-            if (Console.ReadKey(true).Key == ConsoleKey.D2)
-            {
-                multiPlayer = true;
-            }
-            //press D3 for singleplayer
-            if (Console.ReadKey(true).Key == ConsoleKey.D3)
-            {
-                manual = true;
-            }
-
-
-
-
-            
-                
-
-                else { singlePlayer = true; }
-            //press Esc for exit software
+           
 
         }
         //display the playermap

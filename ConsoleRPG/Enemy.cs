@@ -56,13 +56,13 @@ namespace rogueLike
             //is this a goblin?
             else if (race == 2) { STR = 3; CON = 2; DEX = 2; INT = 2; maxHealth = 20; attackString = "→"; raceString = "goblin"; dmg =  (DEX / 4 + STR / 4); }
             //is this a troll?
-            else if (race == 3) { STR = 5; CON = 3; DEX = 2; INT = 3; maxHealth = 30; attackString = "┭"; raceString = "troll"; dmg = 2 * (CON / 4 + STR / 4); }
+            else if (race == 3) { STR = 5; CON = 3; DEX = 2; INT = 3; maxHealth = 20; attackString = "┭"; raceString = "troll"; dmg = 2 * (CON / 4 + STR / 4); }
             //is this a knight?
-            else if (race == 4) { STR = 9; CON = 5; DEX = 2; INT = 1; maxHealth = 35; attackString = "†"; raceString = "knight"; dmg = 2 * (STR / 4 + CON / 4); }
+            else if (race == 4) { STR = 9; CON = 5; DEX = 2; INT = 1; maxHealth = 25; attackString = "†"; raceString = "knight"; dmg = 2 * (STR / 4 + CON / 4); }
             //is this a rogue?
-            else if (race == 5) { STR = 4; CON = 2; DEX = 10; INT = 2; maxHealth = 35; attackString = "→"; raceString = "rogue"; dmg = 2 * (DEX / 4 + STR / 4); }
+            else if (race == 5) { STR = 4; CON = 2; DEX = 10; INT = 2; maxHealth = 25; attackString = "→"; raceString = "rogue"; dmg = 2 * (DEX / 4 + STR / 4); }
             //is this an enchanter?
-            else if (race == 6) { STR = 2; CON = 2; DEX = 4; INT = 10; maxHealth = 35; attackString = "Ґ"; raceString = "enchanter"; dmg = 2*( INT /4 + DEX / 4); }
+            else if (race == 6) { STR = 2; CON = 2; DEX = 4; INT = 10; maxHealth = 25; attackString = "Ґ"; raceString = "enchanter"; dmg = 2*( INT /4 + DEX / 4); }
 
             health = maxHealth;
 

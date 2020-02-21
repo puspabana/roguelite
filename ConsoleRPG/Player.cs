@@ -246,12 +246,13 @@ namespace rogueLike
                     // player attack
                     case ConsoleKey.Spacebar:
                         attack = true;
-                        break;
 
+                        break;
+                    // player use item
                     case ConsoleKey.E:
                         use = true;
                         break;
-
+                    // player use spell / skill
                     case ConsoleKey.Enter:
                         skillAttack = true;
                         break;
@@ -269,7 +270,7 @@ namespace rogueLike
                     case ConsoleKey.D:
                         direction = "East";
                         fieldsWalked++;
-                        if (mapArray[yPos, xPos + 1] != "█" && mapArray[yPos, xPos + 1] != "▒" && mapArray[yPos, xPos + 1] != "e")
+                        if (mapArray[yPos, xPos + 1] != "█" && mapArray[yPos, xPos + 1] != "▒" && mapArray[yPos, xPos + 1] != "●" && mapArray[yPos, xPos + 1] != "#")
                         {
                             Console.SetCursorPosition(xPos, yPos); //Erst an Position Löschen
                             Console.Write(mapArray[yPos, xPos]);
@@ -292,7 +293,7 @@ namespace rogueLike
                     case ConsoleKey.A:
                         direction = "West";
                         fieldsWalked++;
-                        if (mapArray[yPos, xPos - 1] != "█" && mapArray[yPos, xPos - 1] != "▒" && mapArray[yPos, xPos - 1] != "e") //Kollision links
+                        if (mapArray[yPos, xPos - 1] != "█" && mapArray[yPos, xPos - 1] != "▒" && mapArray[yPos, xPos - 1] != "●" && mapArray[yPos, xPos - 1] != "#") //Kollision links
                         {
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write(mapArray[yPos, xPos]);
@@ -312,8 +313,7 @@ namespace rogueLike
                     case ConsoleKey.S:
                         direction = "South";
                         fieldsWalked++;
-                        if (mapArray[yPos + 1, xPos] != "█" && mapArray[yPos + 1, xPos] != "▒"
-                        && mapArray[yPos + 1, xPos] != "e") //Kollision unten
+                        if (mapArray[yPos + 1, xPos] != "█" && mapArray[yPos + 1, xPos] != "▒" && mapArray[yPos + 1, xPos] != "●" && mapArray[yPos + 1, xPos] != "#") //Kollision unten
                         {
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write(mapArray[yPos, xPos]);
@@ -334,8 +334,7 @@ namespace rogueLike
                     case ConsoleKey.W:
                         direction = "North";
                         fieldsWalked++;
-                        if (mapArray[yPos - 1, xPos] != "█" && mapArray[yPos - 1, xPos] != "▒"
-                        && mapArray[yPos - 1, xPos] != "e") //Kollision oben
+                        if (mapArray[yPos - 1, xPos] != "█" && mapArray[yPos - 1, xPos] != "▒" && mapArray[yPos - 1, xPos] != "●" && mapArray[yPos - 1, xPos] != "#") //Kollision oben
                         {
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write(mapArray[yPos, xPos]);
@@ -444,7 +443,7 @@ namespace rogueLike
 
 
 
-                if (mapArray[yPos, xPos] == "#")
+              /*  if (mapArray[yPos, xPos] == "#")
                 {
                     Console.SetCursorPosition(xPos, yPos);
                     Console.Write(" ");
@@ -454,7 +453,7 @@ namespace rogueLike
                     riddleSolved = false;
                     Map lvl = new Map();
 
-                }
+                }*/
                 if (mapArray[yPos, xPos] == "♥")
                 {
                     Console.SetCursorPosition(xPos, yPos);
@@ -758,8 +757,8 @@ namespace rogueLike
                
                 }
 
-                
-
+                // alternative weapon icons Ψ trident    ϙ mace  ϟ charge  ϯ katana   Ϯ dagger  Ԇ twisted staff  ſ cane
+                // snake Ҩ	
 
                 // paint map new: mapArray[yPos, xPos]
 
@@ -3150,76 +3149,137 @@ namespace rogueLike
             return false;
         }
 
-        //*************** portals  ▼ ► ◄ ▲ *******************************************************************************
+
+        //*************** move global map ********************************************************************************
 
         public bool travelEast()        //enchanted forests
         {
-            if (mapArray[yPos, xPos] == "◄")
+            if (xPos == 52)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
-                actionString = "you travel east " + (xCoordinates +1)+ "/" + yCoordinates;
-            //    xCoordinates++;
+                actionString = "you travel east " + (xCoordinates + 1) + "/" + yCoordinates;
+                //    xCoordinates++;
                 return true;
             }
             return false;
         }
 
-        public bool travelSouth()       // a scorching sun in the desert!
+        public bool travelWest()        //city of the sonnenritter, schönwelt
         {
-            if (mapArray[yPos, xPos] == "▼")
+            if (xPos == 2)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
-                actionString = "you travel south " + xCoordinates + "/" + (yCoordinates - 1);
-           //     yCoordinates++;
+                actionString = "you travel west " + (xCoordinates + 1) + "/" + yCoordinates;
+                //    xCoordinates++;
                 return true;
             }
             return false;
         }
 
-        public bool travelWest()        // land of the stormy winds!
+        public bool travelSouth()        //ocean of milk 
         {
-            if (mapArray[yPos, xPos] == "►")
+            if (yPos == 2)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
-                actionString = "you travel west "+ (xCoordinates-1) + "/"+yCoordinates;
-            //    xCoordinates--;
+                actionString = "you travel south " + (xCoordinates + 1) + "/" + yCoordinates;
+                //    xCoordinates++;
                 return true;
             }
             return false;
         }
 
-        public bool travelNorth()       //massive mountains and mystical caves!
+        public bool travelNorth()        //silver mountains
         {
-            if (mapArray[yPos, xPos] == "▲")
+            if (yPos == 18)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
-                actionString = "you travel north " + xCoordinates + "/" + (yCoordinates + 1);
-                //   yCoordinates--;
+                actionString = "you travel north " + (xCoordinates + 1) + "/" + yCoordinates;
+                //    xCoordinates++;
                 return true;
             }
             return false;
         }
 
 
-       
+
+        //*************** portals  ▼ ► ◄ ▲ *******************************************************************************
+
+        /*     public bool travelEast()        //enchanted forests
+             {
+                 if (mapArray[yPos, xPos] == "◄")
+                 {
+                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
+                     musicPlayer.Play();
+                     actionString = "you travel east " + (xCoordinates +1)+ "/" + yCoordinates;
+                 //    xCoordinates++;
+                     return true;
+                 }
+                 return false;
+             }
+
+             public bool travelSouth()       // a scorching sun in the desert!
+             {
+                 if (mapArray[yPos, xPos] == "▼")
+                 {
+                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
+                     musicPlayer.Play();
+                     actionString = "you travel south " + xCoordinates + "/" + (yCoordinates - 1);
+                //     yCoordinates++;
+                     return true;
+                 }
+                 return false;
+             }
+
+             public bool travelWest()        // land of the stormy winds!
+             {
+                 if (mapArray[yPos, xPos] == "►")
+                 {
+                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
+                     musicPlayer.Play();
+                     actionString = "you travel west "+ (xCoordinates-1) + "/"+yCoordinates;
+                 //    xCoordinates--;
+                     return true;
+                 }
+                 return false;
+             }
+
+             public bool travelNorth()       //massive mountains and mystical caves!
+             {
+                 if (mapArray[yPos, xPos] == "▲")
+                 {
+                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
+                     musicPlayer.Play();
+                     actionString = "you travel north " + xCoordinates + "/" + (yCoordinates + 1);
+                     //   yCoordinates--;
+                     return true;
+                 }
+                 return false;
+             }
+
+                 */
+
 
 
         //*************** ladders in dungeons *******************************************************************************
 
-        public bool CheckForLadder()
-        {
-            if (mapArray[yPos, xPos] == "#")
-            {
-                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
-                musicPlayer.Play();
-                return true;
-            }
-            return false;
-        }
+
+        /*  public bool CheckForLadder()
+          {
+              if (mapArray[yPos, xPos] == "#")
+              {
+                  musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
+                  musicPlayer.Play();
+                  return true;
+              }
+              return false;
+          }
+
+                      */
+
         //*************** enemies on the map *******************************************************************************
 
 
