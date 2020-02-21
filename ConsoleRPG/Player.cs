@@ -2760,7 +2760,7 @@ namespace rogueLike
 
             // xPos can be maparray.getlength!!
 
-            int xPos = 70;
+            int xPos = 60;
             int yPos = 1;
 
             
@@ -2939,7 +2939,7 @@ namespace rogueLike
                         
                         if (x == xCoordinates && y == yCoordinates)
                         {
-                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.Green;
                             Console.Write(xCoordinates+""+yCoordinates+" ");
                             Console.ForegroundColor = ConsoleColor.White;
@@ -2948,7 +2948,7 @@ namespace rogueLike
                         }
                         else
                         {
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black;
                             Console.BackgroundColor = ConsoleColor.DarkCyan;
                             Console.Write(x+""+y+",");
                             Console.ForegroundColor = ConsoleColor.White;
@@ -2964,16 +2964,7 @@ namespace rogueLike
                     }
                 }
 
-                if (yCoordinates == 4)
-                {
-                    actionString = "why does this not display map right?";
-
-                }
-                if (yCoordinates == 2)
-                {
-                    actionString = "why does this not display map right?";
-
-                }
+                
 
             }
 
@@ -3234,7 +3225,6 @@ namespace rogueLike
 
         public void populateLevels(int numberOfEnemies)
         {
-           
             for (int i = 0; i < numberOfEnemies; i++)
             {
                 string myFloor;
@@ -3245,8 +3235,8 @@ namespace rogueLike
 
                 int xpos;
                 int ypos;
-                xpos = random.Next(4, 50);
-                ypos = random.Next(7, 20);
+                xpos = random.Next(4, 55);
+                ypos = random.Next(7, 18);
 
                 Enemy myEnemy = new Enemy(enemyRaceInt, xpos, ypos);
 

@@ -2190,6 +2190,7 @@ namespace rogueLike
         public void generateNewLevel(int x, int y)
         {
             //draw an empty map
+            string[,] asciiMap = new string[,];
             //perlin noise on string array inside!
             //place houses and objects
             //write in textfile
@@ -2471,8 +2472,9 @@ namespace rogueLike
             }
             else
             {
-                 // this is not the starting map, we should draw one
-                 // via perlin noise and then write it on txt file!
+                // this is not the starting map, we should draw one
+                // via perlin noise and then write it on txt file!
+                generateNewLevel(xCoordinates, yCoordinates)
             }
         }
 
