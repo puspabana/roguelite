@@ -229,3 +229,5 @@ C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\obj\Debug\rogueLike
 D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\credits.wav
 D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\item_explosion.wav
 D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\secret.wav
+D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\block.wav
+D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\item_shovel.wav

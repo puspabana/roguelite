@@ -111,7 +111,7 @@ namespace rogueLike
         public int yCoordinates = 3;
 
         public int exp = 0;
-        public int requiredExp = 100;
+        public int requiredExp = 50;
         public int lvl = 1;
         private bool lvlUp = false;
 
@@ -216,11 +216,11 @@ namespace rogueLike
                 //add a sword to your character!
                
 
-                 SubType = random.Next(0, 3);
+                SubType = random.Next(0, 4);
                 if (SubType == 0) { ItemName = "stiletto"; itemIcon = "←"; }
-                else if (SubType == 1) { ItemName = "sai fork"; itemIcon = "Ψ"; }
-                else if (SubType == 2) { ItemName = "dagger"; itemIcon = "ƭ"; }
-                else if (SubType == 3) { ItemName = "knuckles"; itemIcon = "Ͽ"; }
+                else if (SubType == 1) { ItemName = "sai fork"; itemIcon = "ψ"; }
+                else if (SubType == 2) { ItemName = "pushdagger"; itemIcon = "Џ"; }
+                else if (SubType > 2) { ItemName = "dagger"; itemIcon = "ƭ"; }
 
                 
 
@@ -231,13 +231,14 @@ namespace rogueLike
                 //add a sword to your character!
                
 
-                 SubType = random.Next(0, 3);
+                 SubType = random.Next(0, 6);
                 if (SubType == 0) { ItemName = "longswords"; itemIcon = "†"; }
                 else if (SubType == 1) { ItemName = "kodachi"; itemIcon = "Ϯ"; }
                 else if (SubType == 2) { ItemName = "katana"; itemIcon = "ϯ"; }
                 else if (SubType == 3) { ItemName = "sabre"; itemIcon = "ƪ"; }
+                else if (SubType == 4) { ItemName = "battleaxe"; itemIcon = "ȹ"; }
+                else if (SubType > 4) { ItemName = "tomahawk"; itemIcon = "Ƭ"; }
 
-            
             }
             //generate a unique starter mace!
             else if (equipmentInteger == 2)
@@ -245,13 +246,15 @@ namespace rogueLike
                 //add a sword to your character!
                 
 
-                 SubType = random.Next(0, 3);
+                 SubType = random.Next(0, 6);
                 if (SubType == 0) { ItemName = "warhammer"; itemIcon = "┮"; }
                 else if (SubType == 1) { ItemName = "mace"; itemIcon = "ϙ"; }
                 else if (SubType == 2) { ItemName = "morningstar"; itemIcon = "✶"; }
                 else if (SubType == 3) { ItemName = "warplough"; itemIcon = "ӷ"; }
+                else if (SubType == 4) { ItemName =  "halberd"; itemIcon = "ŧ"; }
+                else if (SubType > 4) { ItemName = "cleaver"; itemIcon = "Ƿ"; }
+                
 
-              
 
             }
             //generate a unique starter staff!
@@ -260,10 +263,10 @@ namespace rogueLike
                 //add a sword to your character!
                 
 
-                 SubType = random.Next(0, 3); if (SubType == 0) { ItemName = "rod"; itemIcon = "/"; }
+                 SubType = random.Next(0, 4); if (SubType == 0) { ItemName = "rod"; itemIcon = "/"; }
                 else if (SubType == 1) { ItemName = "warstaff"; itemIcon = "Ґ"; }
-                else if (SubType == 2) { ItemName = "shamanstaff"; itemIcon = "ϡ"; }
-                else if (SubType == 3) { ItemName = "trident"; itemIcon = "∈"; }
+                else if (SubType == 2) { ItemName = "trident"; itemIcon = "Ψ";  }
+                else if (SubType > 2) { ItemName = "shamanstaff"; itemIcon = "ϡ"; }
 
 
             }
@@ -291,19 +294,21 @@ namespace rogueLike
         
         private void levelUp()
         {
-            if (exp >= requiredExp)
-            {
+           
             exp = 0;
             lvl ++;
             if (lvlUp == false)
             {
-            if (equipmentInteger == 0) { STR++; DEX++; DEX++; maxMana++; maxHealth++; }//rogue gets dex and str
-            else if (equipmentInteger == 1) { STR++; STR++; CON++; maxMana++; maxHealth++; }//attacker gets str and con
-            else if (equipmentInteger == 2) { STR++; CON++; CON++; maxMana++; maxHealth++; }//priest gets con and str
-            else if (equipmentInteger == 3) { INT++; INT++; DEX++; maxMana++; maxHealth++; }//enchanter gets dex and int
-            mana = maxMana; health = maxHealth;
-            requiredExp += (lvl * (25));
-            lvlUp = true;
+                    if (equipmentInteger == 0) { STR++; DEX++; DEX++; maxMana++; maxHealth++; requiredExp +=15; }//rogue gets dex and str
+                    else if (equipmentInteger == 1) { STR++; STR++; CON++; maxMana++; maxHealth++; requiredExp += 15; }//attacker gets str and con
+                    else if (equipmentInteger == 2) { STR++; CON++; CON++; maxMana++; maxHealth++; requiredExp += 15; }//priest gets con and str
+                    else if (equipmentInteger == 3) { INT++; INT++; DEX++; maxMana++; maxHealth++; requiredExp += 15; }//enchanter gets dex and int
+                    mana = maxMana; health = maxHealth;
+                    //seems saver to add reqExp like this:
+                    
+
+
+                    lvlUp = true;
 
             musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
             musicPlayer.Play();
@@ -311,7 +316,7 @@ namespace rogueLike
 
             lvlUp = false;
             return;
-            }
+            
         }
         public void UpdatePlayer()
         {
@@ -1210,7 +1215,7 @@ namespace rogueLike
                 //determine what kinda item it is, then name it!
                 //weapons: 0=daggers,1=swords,2=maces,3=staves,4=axes
                 int toolType = random.Next(0, 5);
-                int SubType = random.Next(0, 3);
+                int SubType = random.Next(0, 4);
 
                 //swords
                 if (toolType == 0)
@@ -1218,16 +1223,16 @@ namespace rogueLike
                     if (SubType == 0) { itemName = "longswords"; itemIcon = "†"; }
                     else if (SubType == 1) { itemName = "kodachi"; itemIcon = "Ϯ"; }
                     else if (SubType == 2) { itemName = "katana"; itemIcon = "ϯ"; }
-                    else if (SubType == 3) { itemName = "sabre"; itemIcon = "ƪ"; }
+                    else if (SubType >2) { itemName = "sabre"; itemIcon = "ƪ"; }
 
                 }
                 //daggers
                 else if (toolType == 1)
                 {
                     if (SubType == 0) { itemName = "stiletto"; itemIcon = "←"; }
-                    else if (SubType == 1) { itemName = "sai fork"; itemIcon = "Ψ"; }
+                    else if (SubType == 1) { itemName = "sai fork"; itemIcon = "ψ"; }
                     else if (SubType == 2) { itemName = "dagger"; itemIcon = "ƭ"; }
-                    else if (SubType == 3) { itemName = "knuckles"; itemIcon = "Ͽ"; }
+                    else if (SubType > 2) { itemName = "pushdagger"; itemIcon = "Џ"; }
                 }
                 //warhammers
                 else if (toolType == 2)
@@ -1235,7 +1240,7 @@ namespace rogueLike
                     if (SubType == 0) { itemName = "warhammer"; itemIcon = "┮"; }
                     else if (SubType == 1) { itemName = "mace"; itemIcon = "ϙ"; }
                     else if (SubType == 2) { itemName = "morningstar"; itemIcon = "✶"; }
-                    else if (SubType == 3) { itemName = "warplough"; itemIcon = "ӷ"; }
+                    else if (SubType > 2) { itemName = "warplough"; itemIcon = "ӷ"; }
                 }
                 //staves
                 else if (toolType == 3)
@@ -1243,7 +1248,7 @@ namespace rogueLike
                     if (SubType == 0) { itemName = "rod"; itemIcon = "/"; }
                     else if (SubType == 1) { itemName = "warstaff"; itemIcon = "Ґ"; }
                     else if (SubType == 2) { itemName = "shamanstaff"; itemIcon = "ϡ"; }
-                    else if (SubType == 3) { itemName = "trident"; itemIcon = "∈"; }
+                    else if (SubType > 2) { itemName = "trident"; itemIcon = "Ψ"; }
                 }
                 //axes
                 else if (toolType >= 4)
@@ -1251,7 +1256,7 @@ namespace rogueLike
                     if (SubType == 0) { itemName = "cleaver"; itemIcon = "Ƿ"; }
                     else if (SubType == 1) { itemName = "battleaxe"; itemIcon = "ȹ"; }
                     else if (SubType == 2) { itemName = "halberd"; itemIcon = "ŧ"; }
-                    else if (SubType == 3) { itemName = "tomahawk"; itemIcon = "Ƭ"; }
+                    else if (SubType > 2) { itemName = "tomahawk"; itemIcon = "Ƭ"; }
                 }
                 //swords    -     subtypes:     1=longsword (†), 2=katana (Ϯ), 3=broadSword (ϯ), 4=rapier(ƪ)                           
                 //daggers   -     subtypes:     1=shiv (←), 2=sai (⫛), 3=dagger (ƭ), 4= knuckles (Ͽ)
@@ -2323,7 +2328,7 @@ namespace rogueLike
                     int criticalDamage;
                     criticalDamage = random.Next(0, STR);
 
-                    dmg = 4 * STR * CON / 10 + criticalDamage;
+                    dmg = 5 * STR * CON / 10 + criticalDamage;
                     actionString = "heavy sword attack!! [" + dmg + "] damage";
 
                     if (weaponGrade == 0)
@@ -2425,7 +2430,7 @@ namespace rogueLike
 
                     }
 
-                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/item_explosion.wav";
+                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/item_shovel.wav";
                     musicPlayer.Play();
 
                     if (enemyContactEast || enemyContactSouth || enemyContactWest || enemyContactNorth)
@@ -2445,8 +2450,8 @@ namespace rogueLike
                     Console.SetCursorPosition(attackedFloorX, attackedFloorY);
                     Console.Write(mapArray[attackedFloorY, attackedFloorX]);
 
-                    Console.SetCursorPosition(xPos, yPos);
-                    Console.Write("@");
+          //          Console.SetCursorPosition(xPos, yPos);
+        //            Console.Write("@");
 
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.BackgroundColor = ConsoleColor.Black;
@@ -2753,7 +2758,7 @@ namespace rogueLike
 
                 }
 
-                // ****** warplow      @┲   **********************************************************************************************************
+                // ****** warplow      @┲ ͳ  **********************************************************************************************************
                 if (equipmentInteger == 2)
                 {
                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_plow.wav";
@@ -2761,7 +2766,7 @@ namespace rogueLike
 
                     int criticalDamage;
                     criticalDamage = random.Next(0, CON);
-                    dmg = 4 * CON * INT / 10 + criticalDamage;
+                    dmg = 4 * CON * STR / 10 + criticalDamage;
                     mana -= 2;
 
                     actionString = "you crush your foes! [" + dmg + "] damage";
@@ -2898,8 +2903,8 @@ namespace rogueLike
                      */
                     Console.SetCursorPosition(attackedFloorX, attackedFloorY);
                     Console.Write(mapArray[attackedFloorY, attackedFloorX]);
-                    Console.SetCursorPosition(xPos, yPos);
-                    Console.Write("@");
+                  //  Console.SetCursorPosition(xPos, yPos);
+                //    Console.Write("@");
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.BackgroundColor = ConsoleColor.Black;
 
@@ -3128,8 +3133,8 @@ namespace rogueLike
                     Console.SetCursorPosition(attackedFloorX, attackedFloorY);
                     Console.Write(mapArray[attackedFloorY, attackedFloorX]);
 
-                    Console.SetCursorPosition(xPos, yPos);
-                    Console.Write("@");
+              //      Console.SetCursorPosition(xPos, yPos);
+               //     Console.Write("@");
 
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.BackgroundColor = ConsoleColor.Black;
@@ -4052,10 +4057,9 @@ namespace rogueLike
 
             //display stats only when needed!
 
-         /*   if ()
-            {
+         
 
-            Console.SetCursorPosition(xPos, yPos);
+          /*  Console.SetCursorPosition(xPos, yPos);
             Console.Write("STR      " + STR);
             yPos++;
             Console.SetCursorPosition(xPos, yPos);
@@ -4070,9 +4074,9 @@ namespace rogueLike
             Console.SetCursorPosition(xPos, yPos);
             Console.Write(" ");
             yPos++;
-            }*/
+          
 
-
+            */
 
 
 
@@ -4490,8 +4494,18 @@ namespace rogueLike
             }
 
             // display all actions via console.writeline
+            Console.Write("STR:" + STR);
+    //        yPos++;
+            Console.Write("CON:" + CON);
+    //        yPos++;
+            Console.Write("DEX:" + DEX);
+    //        yPos++;
+            Console.Write("INT:" + INT);
+    //        yPos++;
+    //        yPos++;
 
-           
+
+
 
 
 

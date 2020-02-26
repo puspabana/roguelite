@@ -2228,20 +2228,21 @@ namespace rogueLike
                     //***************************************************************************
 
                     // 0 = forest ● , 1 = beach ~, 2 = mountains ▲, 3 = city ▀, 4 = desert „
-                    
-                    else if (mapArray[y, x] == "~"){Console.ForegroundColor = ConsoleColor.DarkYellow; }
 
-                    else if (mapArray[y, x] == "▲"){Console.ForegroundColor = ConsoleColor.DarkGreen; }
+                    else if (mapArray[y, x] == "~") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
 
-                    else if (mapArray[y, x] == "«"){Console.ForegroundColor = ConsoleColor.Green; }
+                    else if (mapArray[y, x] == "▲") { Console.ForegroundColor = ConsoleColor.DarkGreen; }
 
-                    else if (mapArray[y, x] == "▒"){Console.ForegroundColor = ConsoleColor.DarkCyan; }
+                    else if (mapArray[y, x] == "«") { Console.ForegroundColor = ConsoleColor.Green; }
 
-                    else if (mapArray[y, x] == "●"){Console.ForegroundColor = ConsoleColor.Green; }
+                    else if (mapArray[y, x] == "▒") { Console.ForegroundColor = ConsoleColor.DarkCyan; }
 
-                    else if (mapArray[y, x] == "▀"){Console.ForegroundColor = ConsoleColor.DarkGray; }
+                    else if (mapArray[y, x] == "●") { Console.ForegroundColor = ConsoleColor.Green; }
 
+                    else if (mapArray[y, x] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray; }
 
+                 //   else if (mapArray[y, x] == "e" || mapArray[y, x] == "s" || mapArray[y, x] == "w" || mapArray[y, x] == "g" || mapArray[y, x] == "t" || mapArray[y, x] == "k" || mapArray[y, x] == "r" || mapArray[y, x] == "e")
+                   // { Console.ForegroundColor = ConsoleColor.Red; }
 
 
 
@@ -2250,14 +2251,14 @@ namespace rogueLike
 
                     else if (mapArray[y, x] == "☻")
                     {
-                        //         Console.ForegroundColor = ConsoleColor.DarkCyan; // make portals magenta
+                        Console.ForegroundColor = ConsoleColor.DarkYellow; // make portals magenta
                     }
 
                     else if (mapArray[y, x] == "♣") // trees
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGreen; // make portals magenta    sun ☼ star ✶  ✸
                     }
-                    
+
 
 
                     else
