@@ -206,7 +206,7 @@ namespace rogueLike
             Random random = new Random();
             string ItemName = "";
             int price = random.Next(1, 25);
-            float DMG = random.Next(1, price / (5) + 2);
+            float DMG = random.Next(2, price / (5) + 3);
             float DEF = random.Next(0, price / (5));
             float extraMana = random.Next(0, price / (4));
             string itemIcon = "";
@@ -1475,21 +1475,21 @@ namespace rogueLike
 
                         if (mapArray[attackedFloorY, attackedFloorX] == "~")
                         {
-                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")          ";
                             //nothing happens
                             Console.ForegroundColor = ConsoleColor.DarkYellow;
                         }
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
                         {
-                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")        ";
                             //you destroy the tree and get some wood
                             Console.ForegroundColor = ConsoleColor.DarkGreen;
                         }
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "«")
                         {
-                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")          ";
                             //you destroy the grass and get herbs 
                             Console.ForegroundColor = ConsoleColor.Green;
 
@@ -1497,7 +1497,7 @@ namespace rogueLike
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
                         {
-                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")           ";
                             //you cannot destroy water
                             Console.ForegroundColor = ConsoleColor.DarkCyan;
 
@@ -1505,7 +1505,7 @@ namespace rogueLike
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "●")
                         {
-                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")              ";
                             //destroy the bush
                             Console.ForegroundColor = ConsoleColor.Green;
 
@@ -1513,7 +1513,7 @@ namespace rogueLike
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
                         {
-                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
                             //you cannot destroy rocks
                             Console.ForegroundColor = ConsoleColor.DarkGray;
 
@@ -1541,21 +1541,21 @@ namespace rogueLike
 
                         if (mapArray[attackedFloorY, attackedFloorX] == "~")
                         {
-                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")              ";
                             //nothing happens
                             Console.ForegroundColor = ConsoleColor.DarkYellow;
                         }
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
                         {
-                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
                             //you destroy the tree and get some wood
                             Console.ForegroundColor = ConsoleColor.DarkGreen;
                         }
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "«")
                         {
-                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")                   ";
                             //you destroy the grass and get herbs 
                             Console.ForegroundColor = ConsoleColor.Green;
 
@@ -1563,7 +1563,7 @@ namespace rogueLike
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
                         {
-                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")                 ";
                             //you cannot destroy water
                             Console.ForegroundColor = ConsoleColor.DarkCyan;
 
@@ -1571,7 +1571,7 @@ namespace rogueLike
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "●")
                         {
-                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")                    ";
                             //destroy the bush
                             Console.ForegroundColor = ConsoleColor.Green;
 
@@ -1579,7 +1579,7 @@ namespace rogueLike
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
                         {
-                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")                 ";
                             //you cannot destroy rocks
                             Console.ForegroundColor = ConsoleColor.DarkGray;
 
@@ -1606,21 +1606,21 @@ namespace rogueLike
 
                     if (mapArray[attackedFloorY, attackedFloorX] == "~")
                     {
-                        actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")           ";
                         //nothing happens
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
                     }
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
                     {
-                        actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")             ";
                         //you destroy the tree and get some wood
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
                     }
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "«")
                     {
-                        actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")               ";
                         //you destroy the grass and get herbs 
                         Console.ForegroundColor = ConsoleColor.Green;
 
@@ -1628,7 +1628,7 @@ namespace rogueLike
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
                     {
-                        actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")               " ;
                         //you cannot destroy water
                         Console.ForegroundColor = ConsoleColor.DarkCyan;
 
@@ -1636,7 +1636,7 @@ namespace rogueLike
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "●")
                     {
-                        actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
                         //destroy the bush
                         Console.ForegroundColor = ConsoleColor.Green;
 
@@ -1644,7 +1644,7 @@ namespace rogueLike
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
                     {
-                        actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")                  ";
                         //you cannot destroy rocks
                         Console.ForegroundColor = ConsoleColor.DarkGray;
 
@@ -1672,21 +1672,21 @@ namespace rogueLike
 
                     if (mapArray[attackedFloorY, attackedFloorX] == "~")
                     {
-                        actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")             ";
                         //nothing happens
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
                     }
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
                     {
-                        actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")                 ";
                         //you destroy the tree and get some wood
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
                     }
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "«")
                     {
-                        actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")                     ";
                         //you destroy the grass and get herbs 
                         Console.ForegroundColor = ConsoleColor.Green;
 
@@ -1694,7 +1694,7 @@ namespace rogueLike
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
                     {
-                        actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")                  ";
                         //you cannot destroy water
                         Console.ForegroundColor = ConsoleColor.DarkCyan;
 
@@ -1702,7 +1702,7 @@ namespace rogueLike
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "●")
                     {
-                        actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")                   ";
                         //destroy the bush
                         Console.ForegroundColor = ConsoleColor.Green;
 
@@ -1710,7 +1710,7 @@ namespace rogueLike
 
                     else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
                     {
-                        actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")                   ";
                         //you cannot destroy rocks
                         Console.ForegroundColor = ConsoleColor.DarkGray;
 
@@ -4362,7 +4362,7 @@ namespace rogueLike
                 xPos = 85;
                 if (inventory.Count > 10)
                 {
-                for (int i = 10; i < 20; i++)
+                for (int i = 10; i < inventory.Count; i++)
                 {
                     yPos++;
                     // we are looking at this from the inventory!
