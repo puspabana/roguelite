@@ -15,17 +15,18 @@ namespace rogueLike
         public int dmg;
         public int def;
         public int itemSubType = 0;            //differs for all itemTypes..
-
+        public int itemDefiningType = 0;
         public Item()
         {
         }
 
-        public Item(string Name, int Price, int ItemType, string ItemIcon, int ItemSubType)
+        public Item(string Name, int Price, int ItemType, int ItemDefiningType, string ItemIcon, int ItemSubType)
         {
             name = Name;
             price = Price;
             itemType = ItemType;
             itemIcon = ItemIcon;
+            itemDefiningType = ItemDefiningType;
             itemSubType = ItemSubType;
         }
     }
@@ -37,12 +38,13 @@ namespace rogueLike
         public Weapon()
         {
         }
-        public Weapon(string Name, int Price, int ItemType, string ItemIcon, int ItemSubType)
+        public Weapon(string Name, int Price, int ItemType, int ItemDefiningType, string ItemIcon, int ItemSubType)
         {
             name = Name;
             price = Price;
             itemType = ItemType;
             itemIcon = ItemIcon;
+            itemDefiningType = ItemDefiningType;
             itemSubType = ItemSubType;
 
         }

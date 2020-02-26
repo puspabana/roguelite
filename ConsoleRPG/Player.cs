@@ -14,7 +14,9 @@ namespace rogueLike
         public int maxMana = 15;
         public int coins = 0;
         public int life = 4;
-        public int race ;
+        public int race =0;
+        public int Class=0;
+
         public int DEX = 1;
         public int STR = 1;
         public int CON = 1;
@@ -169,7 +171,7 @@ namespace rogueLike
         //now declare what you have found to the player
                 itemName = number+"*"+itemName;
                 inventory.Add(itemName);
-                Item item = new Item(itemName, price, 3, ".", 5);
+                Item item = new Item(itemName, price, 3,0 ,".", 5);
                 eqList.Add(item);
                 actionString = "you found " + number + " * " + itemName + ". (" + itemID + " ID) ";
         }
@@ -193,7 +195,7 @@ namespace rogueLike
             itemName = number + "*" + itemName;
             inventory.Add(itemName);
 
-            Item item2 = new Item(itemName, price, 3, ".", 2);
+            Item item2 = new Item(itemName, price, 3,0, ".", 2);
             eqList.Add(item2);
             actionString = "you found " + number + " * " + itemName + ". (" + itemID + " ID) ";
         }
@@ -203,9 +205,9 @@ namespace rogueLike
             //deactive the function below if the player is loaded from playerprefs!
             Random random = new Random();
             string ItemName = "";
-            int price = random.Next(5, 30);
-            float DMG = random.Next(1, price / (2) + 2);
-            float DEF = random.Next(0, price / (2));
+            int price = random.Next(1, 25);
+            float DMG = random.Next(1, price / (5) + 2);
+            float DEF = random.Next(0, price / (5));
             float extraMana = random.Next(0, price / (4));
             string itemIcon = "";
             int SubType = 0;
@@ -221,8 +223,6 @@ namespace rogueLike
                 else if (SubType == 1) { ItemName = "sai fork"; itemIcon = "ψ"; }
                 else if (SubType == 2) { ItemName = "pushdagger"; itemIcon = "Џ"; }
                 else if (SubType > 2) { ItemName = "dagger"; itemIcon = "ƭ"; }
-
-                
 
             }
             //generate a unique starter sword!
@@ -274,9 +274,10 @@ namespace rogueLike
             //later generate weapon:item and so on up there!
             ItemName = ItemName + " (" + itemIcon + ") " + DMG + "/" + DEF;
 
-            Item item = new Item(ItemName, price, 0, itemIcon, SubType);
+            Item item = new Item(ItemName, price, 0, equipmentInteger, itemIcon, SubType);
             EquippedPrimary = item;
-            equipItem(itemIcon, (int)DMG, (int)DEF);
+            equipItem(itemIcon, (int)DMG, (int)DEF, item.itemDefiningType);
+
             inventory.Add(ItemName);
             eqList.Add(item);
         }
@@ -972,7 +973,7 @@ namespace rogueLike
             //item new item, then define the item down there!
             actionString = "                                                                               ";
             string itemName = "item";
-            int price = random.Next(5, lvl*15+30);
+            int price = random.Next(lvl, lvl*10+5);
             int itemType = 0;
 
             //you the weapon directly at the lootroll below
@@ -1066,7 +1067,7 @@ namespace rogueLike
                 //now declare what you have found to the player
                 actionString = "you found " + number + " * " + itemName + ". (" + itemID + " ID) ";
                 itemName = number+"*"+itemName;
-                Item item = new Item(itemName, price, itemType, ".", objectType);
+                Item item = new Item(itemName, price, itemType, 0, ".", objectType);
                 eqList.Add(item);
 
             }
@@ -1101,7 +1102,7 @@ namespace rogueLike
 
                     actionString = "you found " + itemName + ", price " + price + " $ (" + itemID + " ID)  ";
                     itemName = itemName+" tool";
-                    Item item = new Item(itemName, price, itemType, "[", SubType);
+                    Item item = new Item(itemName, price, itemType, 0,"[", SubType);
                     eqList.Add(item);
 
                 }
@@ -1123,7 +1124,7 @@ namespace rogueLike
 
                     actionString = "you found " + itemName + "[" + itemString + "] price " + price + " $ (" + itemID + " ID) ";
                     itemName = itemName + " (" + itemString + ") " + DMG + "/" + DEF;
-                    Weapon item = new Weapon(itemName, price, itemType, itemString, SubType);
+                    Weapon item = new Weapon(itemName, price, itemType, 0,itemString, SubType);
                     eqList.Add(item);
 
                 }
@@ -1195,7 +1196,7 @@ namespace rogueLike
 
                 actionString = "you found " + itemName + ", price " + price + " $ (" + itemID + " ID)";
                 itemName = itemName + " (" + DEF + ")";
-                Item item = new Item(itemName, price, itemType, ".", SubType);
+                Item item = new Item(itemName, price, itemType, 0,".", SubType);
                 eqList.Add(item);
 
 
@@ -1218,7 +1219,7 @@ namespace rogueLike
                 int SubType = random.Next(0, 4);
 
                 //swords
-                if (toolType == 0)
+                if (toolType == 1)
                 {
                     if (SubType == 0) { itemName = "longswords"; itemIcon = "†"; }
                     else if (SubType == 1) { itemName = "kodachi"; itemIcon = "Ϯ"; }
@@ -1227,7 +1228,7 @@ namespace rogueLike
 
                 }
                 //daggers
-                else if (toolType == 1)
+                else if (toolType == 0)
                 {
                     if (SubType == 0) { itemName = "stiletto"; itemIcon = "←"; }
                     else if (SubType == 1) { itemName = "sai fork"; itemIcon = "ψ"; }
@@ -1265,7 +1266,7 @@ namespace rogueLike
                 //axes      -     subtypes:     1=cleaver (Ƿ), 2= doublebearded axe (ȹ), 3=tomahawk (Ƭ)
                 actionString = "you found " + itemName + "[" + itemIcon + "] price " + price + " $ (" + itemID + " ID) ";
                 itemName = itemName + " (" + itemIcon + ") " + DMG + "/" + DEF;
-                Weapon item = new Weapon(itemName, price, itemType, itemIcon, SubType);
+                Weapon item = new Weapon(itemName, price, itemType, equipmentInteger, itemIcon, SubType);
                 eqList.Add(item);
             }
 
@@ -1329,7 +1330,7 @@ namespace rogueLike
                 int expAmount = lvl * (currentEnemy.att + currentEnemy.def) / (10) + currentEnemy.expirienceGained;
                 int expNumber = random.Next(expAmount / 2, expAmount * 2);
                 exp += expNumber;
-                actionString = "you gained (" + expNumber + ") expirience";
+                actionString = "you gained (" + expNumber + ") expirience            ";
 
 
 
@@ -1337,18 +1338,23 @@ namespace rogueLike
             }
             else
             {
-                actionString = "you deal [" + dmg + "] damage to an enemy";
+                actionString = "you deal [" + dmg + "] damage to an enemy             ";
             }
 
 
         }
 
 
-        public void equipItem(string itemIcon, int weaponDamage, int weaponDefense)
+        public void equipItem(string itemIcon, int weaponDamage, int weaponDefense, int weaponType)
         {
-            item1 = equippedPrimary.itemIcon;
+
+           
+                item1 = equippedPrimary.itemIcon;
                 weaponDMG = weaponDamage;
                 weaponDEF = weaponDefense;
+            
+            
+
         }
 
 
@@ -1429,23 +1435,23 @@ namespace rogueLike
                 string weaponName = "";
                 if (equipmentInteger == 0)
                 {
-                    criticalDamage = random.Next(0, DEX / 2 + STR / 2);
-                    dmg = DEX * STR / 10 + criticalDamage;
+                    criticalDamage = random.Next(1, DEX / 2 + STR / 2);
+                    dmg = weaponDMG + (DEX + STR) / 10 + criticalDamage;
                 }
                 else if (equipmentInteger == 1)
                 {
-                    criticalDamage = random.Next(0, DEX / 2 + STR / 2);
-                    dmg = STR * CON / 10 + criticalDamage;
+                    criticalDamage = random.Next(1, DEX / 2 + STR / 2);
+                    dmg = weaponDMG + (STR + CON) / 10 + criticalDamage;
                 }
                 else if (equipmentInteger == 2)
                 {
-                    criticalDamage = random.Next(0, DEX / 2 + CON / 2);
-                    dmg = CON * STR / 10 + criticalDamage;
+                    criticalDamage = random.Next(1, DEX / 2 + CON / 2);
+                    dmg = weaponDMG+(CON + STR) / 10 + criticalDamage;
                 }
                 else if (equipmentInteger == 3)
                 {
-                    criticalDamage = random.Next(0, DEX / 2 + INT / 2);
-                    dmg = INT * DEX / 10 + criticalDamage;
+                    criticalDamage = random.Next(1, DEX / 2 + INT / 2);
+                    dmg = weaponDMG + (INT + DEX) / 10 + criticalDamage;
                 }
 
                 actionString = "                                       ";
@@ -2329,7 +2335,7 @@ namespace rogueLike
                     criticalDamage = random.Next(0, STR);
 
                     dmg = 5 * STR * CON / 10 + criticalDamage;
-                    actionString = "heavy sword attack!! [" + dmg + "] damage";
+                    actionString = "heavy sword attack!! [" + dmg + "] damage                  ";
 
                     if (weaponGrade == 0)
                     {
@@ -2572,7 +2578,7 @@ namespace rogueLike
                     criticalDamage = random.Next(0, DEX);
 
                     dmg = 4 * DEX * STR / 10 + criticalDamage;
-                    actionString = "you deliver a critical hit! [" + dmg + "] damage";
+                    actionString = "you deliver a critical hit! [" + dmg + "] damage           ";
                     //Console.BackgroundColor = ConsoleColor.DarkRed;
 
 
@@ -2769,7 +2775,7 @@ namespace rogueLike
                     dmg = 4 * CON * STR / 10 + criticalDamage;
                     mana -= 2;
 
-                    actionString = "you crush your foes! [" + dmg + "] damage";
+                    actionString = "you crush your foes! [" + dmg + "] damage              ";
                     //      Console.BackgroundColor = ConsoleColor.DarkYellow;
 
                     if (weaponGrade == 0)
@@ -3008,7 +3014,7 @@ namespace rogueLike
                     int criticalDamage;
                     criticalDamage = random.Next(0, INT);
                     dmg = 4 * INT * DEX / 10 + criticalDamage;
-                    actionString = "you use your wand! [" + dmg + "] damage";
+                    actionString = "you use your wand! [" + dmg + "] damage                  ";
                     mana -= 2;
 
                     if (weaponGrade == 0)
@@ -4259,7 +4265,7 @@ namespace rogueLike
 
 
                 Console.SetCursorPosition(xPos, yPos + 1);
-                Console.Write("Level " + lvl + ", exp " + exp + "/" + requiredExp);
+                Console.Write("Level " + lvl + ", exp " + exp + "/" + requiredExp+"        ");
                 yPos++;
                 Console.SetCursorPosition(xPos, yPos + 1);
                 Console.Write("life ");
@@ -4314,7 +4320,7 @@ namespace rogueLike
                         {
                             if (equipNow == true && eqList[selectedItem].itemType == 0)
                             {
-                                equipItem(eqList[i].itemIcon, 2, 2);
+                                equipItem(eqList[i].itemIcon, 2, 2, eqList[i].itemDefiningType);
                                 item1 = eqList[i].itemIcon;
                                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
                                 musicPlayer.Play();
@@ -4371,7 +4377,7 @@ namespace rogueLike
                         {
                         if (equipNow == true && eqList[selectedItem].itemType == 0)
                         {
-                            equipItem(eqList[i].itemIcon, 2, 2);
+                            equipItem(eqList[i].itemIcon, 2, 2, eqList[i].itemDefiningType);
                             item1 = eqList[i].itemIcon;
                             musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
                             musicPlayer.Play();
@@ -4494,15 +4500,17 @@ namespace rogueLike
             }
 
             // display all actions via console.writeline
-            Console.Write("STR:" + STR);
+            Console.Write(" STR:" + STR);
     //        yPos++;
-            Console.Write("CON:" + CON);
+            Console.Write(" CON:" + CON);
     //        yPos++;
-            Console.Write("DEX:" + DEX);
+            Console.Write(" DEX:" + DEX);
     //        yPos++;
-            Console.Write("INT:" + INT);
-    //        yPos++;
-    //        yPos++;
+            Console.Write(" INT:" + INT);
+            //        yPos++;
+            Console.Write(" DMG:" + dmg);
+
+            Console.Write(" weapon damage:" + weaponDMG+"                   ");
 
 
 

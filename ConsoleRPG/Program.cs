@@ -528,6 +528,7 @@ namespace rogueLike
                     Console.WriteLine("nothing escapes your sharp sword!");
                     Console.WriteLine("attackers get +3 STR and +2 CON");
                     equipmentInteger = 1;
+                    player.Class = 1;
                     Console.WriteLine("                                                   ");
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#@@@@@@@@@@@@@@@@@");
@@ -569,6 +570,7 @@ namespace rogueLike
                     Console.WriteLine("as a wizard you trash your oppponents with a staff");
                     Console.WriteLine("sorcerers get +3 Int and +2 DEX");
                     equipmentInteger = 3;
+                    player.Class = 3;
                     Console.WriteLine("                                                   ");
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
@@ -616,6 +618,7 @@ namespace rogueLike
                     Console.WriteLine("you have learnt the art of backstabbing with daggers!");
                     Console.WriteLine("assassins get +3 DEX and +2 STR");
                     equipmentInteger = 0;
+                    player.Class = 0;
                     Console.WriteLine("                                                   ");
 
                     Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@#@@@@@@@@@@@@@@@@@@@@@@@@");
@@ -662,7 +665,7 @@ namespace rogueLike
                     Console.WriteLine("defenders get +3 Con and +2 STR");
                     Console.WriteLine("                                                   ");
                     equipmentInteger = 2;
-
+                    player.Class = 2;
                     Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@#@@@@@@@@@@@@@@@@@@@@@");
                     Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@# ....*@@@@@@@@@@@@@@@@");
                     Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@*,(%((*@@@@@@@@@@@@@@@@");
@@ -747,6 +750,7 @@ namespace rogueLike
 
                 map.DrawMap();
                 player.DrawPlayer();
+         //       player.equipItem(player.EquippedPrimary.itemIcon, player.EquippedPrimary.dmg, player.EquippedPrimary.def, player.EquippedPrimary.itemDefiningType);
                 player.populateLevels(8);
 
                 //           NPC.populateWithNPCs(5);
