@@ -237,7 +237,7 @@ namespace rogueLike
                 else if (SubType == 2) { ItemName = "katana"; itemIcon = "ϯ"; }
                 else if (SubType == 3) { ItemName = "sabre"; itemIcon = "ƪ"; }
                 else if (SubType == 4) { ItemName = "battleaxe"; itemIcon = "ȹ"; }
-                else if (SubType > 4) { ItemName = "tomahawk"; itemIcon = "Ƭ"; }
+                else if (SubType > 4) { ItemName = "tomahawk"; itemIcon = "ͳ"; }
 
             }
             //generate a unique starter mace!
@@ -250,7 +250,7 @@ namespace rogueLike
                 if (SubType == 0) { ItemName = "warhammer"; itemIcon = "┮"; }
                 else if (SubType == 1) { ItemName = "mace"; itemIcon = "ϙ"; }
                 else if (SubType == 2) { ItemName = "morningstar"; itemIcon = "✶"; }
-                else if (SubType == 3) { ItemName = "warplough"; itemIcon = "ӷ"; }
+                else if (SubType == 3) { ItemName = "warplough"; itemIcon = "Ƭ"; }//ӷ
                 else if (SubType == 4) { ItemName =  "halberd"; itemIcon = "ŧ"; }
                 else if (SubType > 4) { ItemName = "cleaver"; itemIcon = "Ƿ"; }
                 
@@ -265,8 +265,9 @@ namespace rogueLike
 
                  SubType = random.Next(0, 4); if (SubType == 0) { ItemName = "rod"; itemIcon = "/"; }
                 else if (SubType == 1) { ItemName = "warstaff"; itemIcon = "Ґ"; }
-                else if (SubType == 2) { ItemName = "trident"; itemIcon = "Ψ";  }
-                else if (SubType > 2) { ItemName = "shamanstaff"; itemIcon = "ϡ"; }
+                else if (SubType == 2) { ItemName = "shamanstaff"; itemIcon = "ϡ"; }
+                else if (SubType == 3) { ItemName = "sprig"; itemIcon = "Ԇ"; }
+                else if (SubType == 4) { ItemName = "trident"; itemIcon = "Ψ"; }
 
 
             }
@@ -1083,7 +1084,6 @@ namespace rogueLike
                 //tools: 0=offhandweapons,1=tools
                 int toolType = random.Next(0, 3);
 
-                // alternative weapon icons  --   (↡ ⥉ ⥖ ⫰ ← ⋲ џ ┮ Ґ ԇ  ∫ ҁ ӷ ϟ Ϡ ϡ  Ψ ϙ  ϟ  ϯ  Ƿ  Ͽ  ȹ  Ͳ  Ƭ ͳ Ϯ Ԇ ſ ƪ 
 
                
 
@@ -1116,11 +1116,12 @@ namespace rogueLike
                     else if (SubType == 4) { itemName = "recuvebow"; itemString = "}"; }
                     else if (SubType == 5) { itemName = "musket"; itemString = "Į"; }
                     else if (SubType == 6) { itemName = "wand"; itemString = "⫯"; }
-                    else if (SubType == 7) { itemName = "sprig"; itemString = "ԇ"; }
+                    else if (SubType == 7) { itemName = "liladanda"; itemString = "⥉"; }
                     else if (SubType == 8) { itemName = "discus"; itemString = "○"; }
                     else if (SubType == 9) { itemName = "pushdagger"; itemString = "Џ"; }
                     else if (SubType == 10) { itemName = "thumbscrews"; itemString = "≚"; }
 
+                // alternative weapon icons  --   (↡ ⥉ ⥖ ⫰ ← ⋲ џ ┮ Ґ ԇ  ∫ ҁ ӷ ϟ Ϡ ϡ  Ψ ϙ  ϟ  ϯ  Ƿ  Ͽ  ȹ  Ͳ  Ƭ ͳ Ϯ Ԇ ſ ƪ 
 
                     actionString = "you found " + itemName + "[" + itemString + "] price " + price + " $ (" + itemID + " ID) ";
                     itemName = itemName + " (" + itemString + ") " + DMG + "/" + DEF;
@@ -1241,7 +1242,7 @@ namespace rogueLike
                     if (SubType == 0) { itemName = "warhammer"; itemIcon = "┮"; }
                     else if (SubType == 1) { itemName = "mace"; itemIcon = "ϙ"; }
                     else if (SubType == 2) { itemName = "morningstar"; itemIcon = "✶"; }
-                    else if (SubType > 2) { itemName = "warplough"; itemIcon = "ӷ"; }
+                    else if (SubType > 2) { itemName = "warplough"; itemIcon = "Ƭ"; } //ӷ
                 }
                 //staves
                 else if (toolType == 3)
@@ -1249,7 +1250,10 @@ namespace rogueLike
                     if (SubType == 0) { itemName = "rod"; itemIcon = "/"; }
                     else if (SubType == 1) { itemName = "warstaff"; itemIcon = "Ґ"; }
                     else if (SubType == 2) { itemName = "shamanstaff"; itemIcon = "ϡ"; }
-                    else if (SubType > 2) { itemName = "trident"; itemIcon = "Ψ"; }
+                    else if (SubType ==3) { itemName = "sprig"; itemIcon = "Ԇ"; }
+                    else if (SubType == 4) { itemName = "trident"; itemIcon = "Ψ"; }
+
+                 
                 }
                 //axes
                 else if (toolType >= 4)
@@ -1257,7 +1261,7 @@ namespace rogueLike
                     if (SubType == 0) { itemName = "cleaver"; itemIcon = "Ƿ"; }
                     else if (SubType == 1) { itemName = "battleaxe"; itemIcon = "ȹ"; }
                     else if (SubType == 2) { itemName = "halberd"; itemIcon = "ŧ"; }
-                    else if (SubType > 2) { itemName = "tomahawk"; itemIcon = "Ƭ"; }
+                    else if (SubType > 2) { itemName = "tomahawk"; itemIcon = "ͳ"; }
                 }
                 //swords    -     subtypes:     1=longsword (†), 2=katana (Ϯ), 3=broadSword (ϯ), 4=rapier(ƪ)                           
                 //daggers   -     subtypes:     1=shiv (←), 2=sai (⫛), 3=dagger (ƭ), 4= knuckles (Ͽ)
