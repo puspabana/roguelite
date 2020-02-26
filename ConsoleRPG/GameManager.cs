@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace rogueLike
 {
@@ -19,14 +15,14 @@ namespace rogueLike
                 Instance = this;
 
 
-            
+
         }
 
         //
-        public void GameLoop() 
+        public void GameLoop()
         {
-        // make timer. Update enemy position after time, and other updates.. 
-        //while loop for game logic - counts time, etc..
+            // make timer. Update enemy position after time, and other updates.. 
+            //while loop for game logic - counts time, etc..
 
         }
 

@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using System.IO;
-using System.Timers;
 
 namespace rogueLike
 {
@@ -14,7 +8,7 @@ namespace rogueLike
         public string name = "ork";
         public int health = 15;
         public int maxHealth = 15;
-
+        public int expirienceGained = 10;
         public int att = 1;
         public int def = 1;
 
@@ -38,32 +32,33 @@ namespace rogueLike
 
         public bool dead = false;
         public bool ready = true;
-        public int movementInt;
+     //   public int movementInt;
         //public Random random = new Random();
         //public string[,] mapArray;
 
-        private static System.Timers.Timer aTimer;
+     //   private static System.Timers.Timer aTimer;
 
 
-        public Enemy(int race, int x, int y)
+        public Enemy(int race, int x, int y, int lvl)
         {
             //enum !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             // is this a snake?
-            if (race == 0) { STR = 3; CON = 2; DEX = 8; INT = 1; maxHealth = 12; attackString = ","; raceString = "snake"; dmg =  (DEX /4 + STR / 4); }
+            if (race == 0) { STR = 3 + 1 * lvl; CON = 2; DEX = 8 + 2 * lvl; INT = 1; maxHealth = 12; attackString = ","; raceString = "snake"; dmg = (DEX / 4 + STR / 4)/2; expirienceGained = 3 + 2 * lvl; }
             // is this a rabid wolf?
-            else if (race == 1) { STR = 4; CON = 3; DEX = 2; INT = 2; maxHealth = 16; attackString = "‼"; raceString = "wolf"; dmg =  (STR / 4 + CON / 4); }
+            else if (race == 1) { STR = 4 + 2 * lvl; CON = 2; DEX = 3 + 1 * lvl; INT = 2; maxHealth = 16; attackString = "‼"; raceString = "wolf"; dmg = (STR / 4 + CON / 4)/2; expirienceGained = 4 + 2 * lvl; }
             //is this a goblin?
-            else if (race == 2) { STR = 3; CON = 2; DEX = 2; INT = 2; maxHealth = 20; attackString = "→"; raceString = "goblin"; dmg =  (DEX / 4 + STR / 4); }
+            else if (race == 2) { STR = 3 + 1 * lvl; CON = 2; DEX = 4 + 2 * lvl; INT = 2; maxHealth = 20; attackString = "→"; raceString = "goblin"; dmg = (DEX / 4 + STR / 4)/2; expirienceGained = 5 + 2 * lvl; }
             //is this a troll?
-            else if (race == 3) { STR = 5; CON = 3; DEX = 2; INT = 3; maxHealth = 20; attackString = "┭"; raceString = "troll"; dmg = 2 * (CON / 4 + STR / 4); }
+            else if (race == 3) { STR = 5 + 2 * lvl; CON = 3 + 1 * lvl; DEX = 2; INT = 3; maxHealth = 20; attackString = "┭"; raceString = "troll"; dmg = 2 * (CON / 4 + STR / 5) / 2; expirienceGained = 5 + 2 * lvl; }
             //is this a knight?
-            else if (race == 4) { STR = 9; CON = 5; DEX = 2; INT = 1; maxHealth = 25; attackString = "†"; raceString = "knight"; dmg = 2 * (STR / 4 + CON / 4); }
+            else if (race == 4) { STR = 9 + 2 * lvl; CON = 5 + 1 * lvl; DEX = 2; INT = 1; maxHealth = 35; attackString = "†"; raceString = "knight"; dmg = 2 * (STR / 4 + CON / 5) / 2; expirienceGained = 10+2*lvl; }
             //is this a rogue?
-            else if (race == 5) { STR = 4; CON = 2; DEX = 10; INT = 2; maxHealth = 25; attackString = "→"; raceString = "rogue"; dmg = 2 * (DEX / 4 + STR / 4); }
+            else if (race == 5) { STR = 4 + 1 * lvl; CON = 2; DEX = 10 +2* lvl; INT = 2; maxHealth = 25; attackString = "→"; raceString = "rogue"; dmg = 2 * (DEX / 4 + STR / 5) / 2; expirienceGained = 10 + 2 * lvl; }
             //is this an enchanter?
-            else if (race == 6) { STR = 2; CON = 2; DEX = 4; INT = 10; maxHealth = 25; attackString = "Ґ"; raceString = "enchanter"; dmg = 2*( INT /4 + DEX / 4); }
+            else if (race == 6) { STR = 2; CON = 2; DEX = 4+1*lvl; INT = 10+2*lvl; maxHealth = 30; attackString = "Ґ"; raceString = "enchanter"; dmg = 2 * (INT / 4 + DEX / 5) / 2; expirienceGained = 10 + 2 * lvl; }
 
+            int calcHealth = maxHealth + (2) * lvl;
             health = maxHealth;
 
             if (dmg < 1)
@@ -92,7 +87,7 @@ namespace rogueLike
 
 
         public void attack(int playerHealth)
-            {
+        {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             if (dead == false)
@@ -105,16 +100,15 @@ namespace rogueLike
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("●");  // blutstropfen
                 Console.ForegroundColor = ConsoleColor.White;
+                //moveEnemy(xPos,yPos, mapArray[yPos,xPos],"e");
 
-            //moveEnemy(xPos,yPos, mapArray[yPos,xPos],"e");
+                //Thread.Sleep(450);
 
-            //Thread.Sleep(450);
 
-            
             }
-            
-            
-            
+
+
+
             return;
         }
 
@@ -133,9 +127,9 @@ namespace rogueLike
             {
             }
         }
-       
+
 
     }
 
-   
-    }
+
+}

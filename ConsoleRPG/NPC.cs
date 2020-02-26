@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rogueLike
 {
     class NPC
     {
-        
+
         public string name = "Rick";
         public string raceLetter;
         public int raceInt = 0; // 0=human,  1=goblin, 2=elf, 3=troll, 4=elf....
@@ -31,13 +27,13 @@ namespace rogueLike
         public string answer_C = "Maybe later";                             //undecided, neutral
 
 
-        public NPC (int race, string racestring, int x, int y)
+        public NPC(int race, string racestring, int x, int y)
         {
             //name generator  -- add more female names
-            string[] firstName = { "Matt", "Molly", "Johannes", "Bert", "Connor", "Luke", "Hans", "Jack", "Zoe", "Franz", "Oliver", "Nina", "Captain", "Rico", "Julian", "Claude", "Alice","Olivia","Lotte","Ellen","Lina","Theresa","Nina","Helen"};
+            string[] firstName = { "Matt", "Molly", "Johannes", "Bert", "Connor", "Luke", "Hans", "Jack", "Zoe", "Franz", "Oliver", "Nina", "Captain", "Rico", "Julian", "Claude", "Alice", "Olivia", "Lotte", "Ellen", "Lina", "Theresa", "Nina", "Helen" };
             string[] lastName = { "Meyer", "Weber", "Ferrera", "Colombo", "Johnson", "Williams", "Miller", "Taylor", "Walker", "Cook", "the village idiot", "Rogers", "Perry", "Brown", "Vasquez", "Hicks" };
             Random ran = new Random();
-            name = firstName [ran.Next(0,25)] + " " +lastName[ran.Next(0,16)];
+            name = firstName[ran.Next(0, 25)] + " " + lastName[ran.Next(0, 16)];
 
             string[] textGreeting = { "Hello stranger!", "Nice to see you!", "Hello Baby ;D", "How are things?", "Hi there", "Look what the cat dragged in!", "What have you been up to?", "Nice to meet you!", "What`s new?", "Who are you?", "Morning sir, how can I help you?", "Hey mate, what have you been up to?", "Who is that?", "Praise the gods!", "Burrp!", "By the gods..!" };
             string[] textRandom = { "I have a sword!!", "The weather is shit!", "Do you like my new dress?", "i saw a black cat..", "What happened? I want all the details!", "I have a cold, cough cough!", "If i were you i`d keep a low profile..", "I am envious of your armor!", "I am a silly person..", "What a nice day!", "We heard you do adventures now!", "", "Make sure you eat enough, my child..", "Check out my new shoes!", "The witch sells great potions!", "The forest is scary.." };
@@ -49,21 +45,21 @@ namespace rogueLike
 
         }
 
-        public void talk() 
+        public void talk()
         {
-            if (hasText == true) 
+            if (hasText == true)
             {
-            // display textstring + readkey
-            // if 
+                // display textstring + readkey
+                // if 
 
 
             }
         }
-        
+
         //random name generator for your NPCs!
         public static void populateWithNPCs(int numberOfNPCs)
         {
-            
+
             //Enemy list on emey.cs
             for (int i = 0; i < numberOfNPCs; i++)
             {
@@ -89,13 +85,13 @@ namespace rogueLike
                 NPC myNPC = new NPC(npcRaceInt, raceString, xpos, ypos);
 
                 //myNPC.xPos = xpos;
-               //myNPC.yPos = ypos;
+                //myNPC.yPos = ypos;
 
                 i++;
             }
         }
 
-         
-        }
+
     }
+}
 

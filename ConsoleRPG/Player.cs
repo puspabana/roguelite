@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Media;
-using System.Timers;
-
+using System.Threading;
 
 namespace rogueLike
 {
@@ -19,7 +14,7 @@ namespace rogueLike
         public int maxMana = 15;
         public int coins = 0;
         public int life = 4;
-
+        public int race ;
         public int DEX = 1;
         public int STR = 1;
         public int CON = 1;
@@ -36,6 +31,21 @@ namespace rogueLike
         public int xPos = 20;
         public int yPos = 3;
         public int dmg;
+
+        public List<string> inventory = new List<string>();  //the ints here are itemIDs!
+
+        public int weaponDMG;
+        public int weaponDEF;
+
+        private Item equippedPrimary = new Item();
+        private Item equippedOffhand = new Item();
+        List<Item> eqList = new List<Item>();
+
+        List<Enemy> enemyList = new List<Enemy>();
+        List<rogueLike.NPC> npcList = new List<rogueLike.NPC>();
+
+        public bool equipNow = false;
+
         public int equipmentInteger = 0;
         public int equipment2Integer = 0;
         public string actionString;
@@ -78,6 +88,7 @@ namespace rogueLike
         public string[,] mapArray;
         public string[,] enemyArray;
         public string floorString;
+        public bool indoors = false;
 
         bool attack = false;
         bool skillAttack = false;
@@ -86,8 +97,7 @@ namespace rogueLike
         public Map map;
         bool enemyContact = false;
         public Random random = new Random();
-        List<Enemy> enemyList = new List<Enemy>();
-        List<rogueLike.NPC> npcList = new List<rogueLike.NPC>();
+        
         private Enemy currentEnemy;
         private bool enemyContactEast;
         private bool enemyContactWest;
@@ -100,7 +110,29 @@ namespace rogueLike
         public int xCoordinates = 4;
         public int yCoordinates = 3;
 
+        public int exp = 0;
+        public int requiredExp = 100;
+        public int lvl = 1;
+        private bool lvlUp = false;
+
+
+        private bool displayInventory = false;
+        public int selectedItem = 0;
+
         internal Enemy CurrentEnemy { get => currentEnemy; set => currentEnemy = value; }
+        internal Item EquippedPrimary { get => equippedPrimary; set => equippedPrimary = value; }
+        internal Item EquippedOffhand { get => equippedPrimary; set => equippedPrimary = value; }
+
+
+
+        public int doorCounter;
+        private string enemyFloorString = " ";
+        private int attackedFloorX = 0;
+        private int attackedFloorY = 0;
+
+
+        public int itemID = 0;
+
 
 
 
@@ -109,27 +141,185 @@ namespace rogueLike
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             mapArray = MapArray;
             map = new Map();
-            // change to maparray 1
+
+            
         }
+
+        public void generateHerbs()
+        {
+            string itemName = " ";
+            int number = random.Next(1, 8);
+            int SubType = random.Next(0, 13);
+            int price = 5;
+            if (SubType == 0) { itemName = "dill"; price = 3; }
+            else if (SubType == 1) { itemName = "ginger"; price = 4; }
+            else if (SubType == 2) { itemName = "mandrake"; price = 15; }
+            else if (SubType == 3) { itemName = "sanjeevani"; price = 150; }
+            else if (SubType == 4) { itemName = "basil"; price = 5; }
+            else if (SubType == 5) { itemName = "thyme"; price = 6; }
+            else if (SubType == 6) { itemName = "Coriander"; price = 6; }
+            else if (SubType == 7) { itemName = "marihuana"; price = 6; }
+            else if (SubType == 8) { itemName = "mushroom"; price = 6; }
+            else if (SubType == 9) { itemName = "thistle"; price = 6; }
+            else if (SubType == 10) { itemName = "turmeric"; price = 6; }
+            else if (SubType == 11) { itemName = "rosemary"; price = 6; }
+            else if (SubType == 12) { itemName = "sage"; price = 6; }
+            else if (SubType == 13) { itemName = "sandalwood"; price = 6; }
+        
+        //now declare what you have found to the player
+                itemName = number+"*"+itemName;
+                inventory.Add(itemName);
+                Item item = new Item(itemName, price, 3, ".", 5);
+                eqList.Add(item);
+                actionString = "you found " + number + " * " + itemName + ". (" + itemID + " ID) ";
+        }
+        public void generateWood()
+        {
+            string itemName = " ";
+            int number = random.Next(1, 8);
+            int price = 5;
+            int SubType = random.Next(0, 5);
+            if (SubType == 0) { itemName = "ebony wood"; price = 45; }
+            else if (SubType == 1) { itemName = "hazel wood"; price = 25; }
+            else if (SubType == 2) { itemName = "acacia wood"; price = 15; }
+            else if (SubType == 3) { itemName = "cedar wood"; price = 22; }
+            else if (SubType == 4) { itemName = "ash wood"; price = 15; }
+            else if (SubType == 5) { itemName = "oak wood"; price = 35; }
+
+            //now declare what you have found to the player
+            
+
+
+            itemName = number + "*" + itemName;
+            inventory.Add(itemName);
+
+            Item item2 = new Item(itemName, price, 3, ".", 2);
+            eqList.Add(item2);
+            actionString = "you found " + number + " * " + itemName + ". (" + itemID + " ID) ";
+        }
+
+        public void generateStarterItem()
+        {
+            //deactive the function below if the player is loaded from playerprefs!
+            Random random = new Random();
+            string ItemName = "";
+            int price = random.Next(5, 30);
+            float DMG = random.Next(1, price / (2) + 2);
+            float DEF = random.Next(0, price / (2));
+            float extraMana = random.Next(0, price / (4));
+            string itemIcon = "";
+            int SubType = 0;
+
+            //generate a unique starter dagger!
+            if (equipmentInteger == 0)
+            {
+                //add a sword to your character!
+               
+
+                 SubType = random.Next(0, 3);
+                if (SubType == 0) { ItemName = "stiletto"; itemIcon = "←"; }
+                else if (SubType == 1) { ItemName = "sai fork"; itemIcon = "Ψ"; }
+                else if (SubType == 2) { ItemName = "dagger"; itemIcon = "ƭ"; }
+                else if (SubType == 3) { ItemName = "knuckles"; itemIcon = "Ͽ"; }
+
+                
+
+            }
+            //generate a unique starter sword!
+            else if (equipmentInteger == 1)
+            {
+                //add a sword to your character!
+               
+
+                 SubType = random.Next(0, 3);
+                if (SubType == 0) { ItemName = "longswords"; itemIcon = "†"; }
+                else if (SubType == 1) { ItemName = "kodachi"; itemIcon = "Ϯ"; }
+                else if (SubType == 2) { ItemName = "katana"; itemIcon = "ϯ"; }
+                else if (SubType == 3) { ItemName = "sabre"; itemIcon = "ƪ"; }
+
+            
+            }
+            //generate a unique starter mace!
+            else if (equipmentInteger == 2)
+            {
+                //add a sword to your character!
+                
+
+                 SubType = random.Next(0, 3);
+                if (SubType == 0) { ItemName = "warhammer"; itemIcon = "┮"; }
+                else if (SubType == 1) { ItemName = "mace"; itemIcon = "ϙ"; }
+                else if (SubType == 2) { ItemName = "morningstar"; itemIcon = "✶"; }
+                else if (SubType == 3) { ItemName = "warplough"; itemIcon = "ӷ"; }
+
+              
+
+            }
+            //generate a unique starter staff!
+            else if (equipmentInteger == 3)
+            {
+                //add a sword to your character!
+                
+
+                 SubType = random.Next(0, 3); if (SubType == 0) { ItemName = "rod"; itemIcon = "/"; }
+                else if (SubType == 1) { ItemName = "warstaff"; itemIcon = "Ґ"; }
+                else if (SubType == 2) { ItemName = "shamanstaff"; itemIcon = "ϡ"; }
+                else if (SubType == 3) { ItemName = "trident"; itemIcon = "∈"; }
+
+
+            }
+
+            //later generate weapon:item and so on up there!
+            ItemName = ItemName + " (" + itemIcon + ") " + DMG + "/" + DEF;
+
+            Item item = new Item(ItemName, price, 0, itemIcon, SubType);
+            EquippedPrimary = item;
+            equipItem(itemIcon, (int)DMG, (int)DEF);
+            inventory.Add(ItemName);
+            eqList.Add(item);
+        }
+
 
         public void die()
         {
             Thread.Sleep(1000);
-           // life -= 1;
-           // actionString = "You just died";
-           // riddleSolved = false;
-           // Map lvl = new Map();
+            // life -= 1;
+            // actionString = "You just died";
+            // riddleSolved = false;
+            // Map lvl = new Map();
         }
 
+        
+        private void levelUp()
+        {
+            if (exp >= requiredExp)
+            {
+            exp = 0;
+            lvl ++;
+            if (lvlUp == false)
+            {
+            if (equipmentInteger == 0) { STR++; DEX++; DEX++; maxMana++; maxHealth++; }//rogue gets dex and str
+            else if (equipmentInteger == 1) { STR++; STR++; CON++; maxMana++; maxHealth++; }//attacker gets str and con
+            else if (equipmentInteger == 2) { STR++; CON++; CON++; maxMana++; maxHealth++; }//priest gets con and str
+            else if (equipmentInteger == 3) { INT++; INT++; DEX++; maxMana++; maxHealth++; }//enchanter gets dex and int
+            mana = maxMana; health = maxHealth;
+            requiredExp += (lvl * (25));
+            lvlUp = true;
+
+            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
+            musicPlayer.Play();
+            }
+
+            lvlUp = false;
+            return;
+            }
+        }
         public void UpdatePlayer()
         {
-            Console.CursorVisible = false;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             //Console.SetWindowSize(90,30);
             Console.SetCursorPosition(xPos, yPos);
-
-
-            if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
+           
+            if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
             else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Magenta; }
             else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
             else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
@@ -137,13 +327,19 @@ namespace rogueLike
             Console.Write("@");
             Console.ForegroundColor = ConsoleColor.White;
 
+            // let us use the equipped items!!
+
+
+
+
+
             // *** Full Screen or only small windows? ***********************************************************************
 
-          //  if (zoomBool == true) { Console.SetWindowSize(140, 63); }
-        //    else { Console.SetWindowSize(oWidth, oHeigth); }
+            //  if (zoomBool == true) { Console.SetWindowSize(140, 63); }
+            //    else { Console.SetWindowSize(oWidth, oHeigth); }
 
             // *** LEVEL DESIGN CAMPAIGN ************************************************************************************
-
+      
 
             map = new Map();
 
@@ -154,7 +350,18 @@ namespace rogueLike
                 die();
             }
 
+            // 1up!
+            if (exp >= requiredExp && lvlUp == false)
+            {
+                // lvlUp = true;
+                levelUp();
+            }
+            else if (lvlUp == true)
+            {
+                lvlUp = false;
 
+            }
+           
 
             //let us check if we are in the right level!
             if (level == 1)
@@ -214,7 +421,7 @@ namespace rogueLike
 
                 if (burnCounter >= 1)
                 {
-                coins +=100;
+                    coins += 100;
                     burnCounter = 0;
                 }
                 //activate the lever
@@ -224,13 +431,27 @@ namespace rogueLike
 
             }
 
-            else if (level == 3 )
+            else if (level == 3)
             {
 
-          
+
             }
 
+            // *** item selection in inventory **************************************************************************************************
 
+            if (selectedItem < 0)
+            {
+
+                selectedItem = inventory.Count - 1;
+            }
+            else if (selectedItem < inventory.Count - 1)
+            {
+
+            }
+            else if (selectedItem > inventory.Count - 1)
+            {
+                selectedItem = 0;
+            }
 
             //*** Steuerung / Controls! ****************************************************************************
 
@@ -252,12 +473,34 @@ namespace rogueLike
                     case ConsoleKey.E:
                         use = true;
                         break;
+
                     // player use spell / skill
                     case ConsoleKey.Enter:
                         skillAttack = true;
                         break;
 
-                    
+                    case ConsoleKey.I:
+                       displayInventory = true;
+                        break;
+
+                    case ConsoleKey.B:
+                        displayInventory = false;
+                        break;
+
+                    case ConsoleKey.F:
+                        equipNow = true;
+                        break;
+
+                    //select different items!!
+                    case ConsoleKey.DownArrow:
+                        selectedItem++;
+                        actionString = "position "+ selectedItem;
+                        break;
+                    case ConsoleKey.UpArrow:
+                        selectedItem--;
+                        actionString = "position " + selectedItem;
+                        break;
+
 
                         // get the enemy array from map??
 
@@ -267,17 +510,37 @@ namespace rogueLike
                         else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
                         else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
 
+
+
+
+
+
+
                     case ConsoleKey.D:
                         direction = "East";
                         fieldsWalked++;
-                        if (mapArray[yPos, xPos + 1] != "█" && mapArray[yPos, xPos + 1] != "▒" && mapArray[yPos, xPos + 1] != "●" && mapArray[yPos, xPos + 1] != "#")
+                        if (mapArray[yPos, xPos + 1] != "█" && mapArray[yPos, xPos + 1] != "▒" && mapArray[yPos, xPos + 1] != "▲" && mapArray[yPos, xPos + 1] != "#")
                         {
+
+                            if (mapArray[yPos, xPos] == "~") {Console.ForegroundColor = ConsoleColor.DarkYellow; }
+                            else if (mapArray[yPos, xPos] == "«"){Console.ForegroundColor = ConsoleColor.Green;  }
+                            else if (mapArray[yPos, xPos] == "▒"){ Console.ForegroundColor = ConsoleColor.DarkCyan;  }
+                            else if (mapArray[yPos, xPos] == "●") {  Console.ForegroundColor = ConsoleColor.Green;  }
+                            else if (mapArray[yPos, xPos] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray;  }
+                            else if (mapArray[yPos, xPos] == "▲"){Console.ForegroundColor = ConsoleColor.DarkGreen; }
+
+
+
                             Console.SetCursorPosition(xPos, yPos); //Erst an Position Löschen
                             Console.Write(mapArray[yPos, xPos]);
 
                             xPos += 1;
                             Console.SetCursorPosition(xPos, yPos); //An neuer Position zeichnen
-                            
+                            if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
+                            else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Magenta; }
+                            else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+                            else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
+
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write("@");
                             Console.ForegroundColor = ConsoleColor.White;
@@ -285,7 +548,7 @@ namespace rogueLike
 
 
 
-                 //       Thread.Sleep(speed);
+                        //       Thread.Sleep(speed);
                         //array with only enemies on same size
 
 
@@ -293,56 +556,86 @@ namespace rogueLike
                     case ConsoleKey.A:
                         direction = "West";
                         fieldsWalked++;
-                        if (mapArray[yPos, xPos - 1] != "█" && mapArray[yPos, xPos - 1] != "▒" && mapArray[yPos, xPos - 1] != "●" && mapArray[yPos, xPos - 1] != "#") //Kollision links
+                        if (mapArray[yPos, xPos - 1] != "█" && mapArray[yPos, xPos - 1] != "▒" && mapArray[yPos, xPos - 1] != "▲" && mapArray[yPos, xPos - 1] != "#") //Kollision links
                         {
+                            if (mapArray[yPos, xPos] == "~") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+                            else if (mapArray[yPos, xPos] == "«") { Console.ForegroundColor = ConsoleColor.Green; }
+                            else if (mapArray[yPos, xPos] == "▒") { Console.ForegroundColor = ConsoleColor.DarkCyan; }
+                            else if (mapArray[yPos, xPos] == "●") { Console.ForegroundColor = ConsoleColor.Green; }
+                            else if (mapArray[yPos, xPos] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray; }
+                            else if (mapArray[yPos, xPos] == "▲") { Console.ForegroundColor = ConsoleColor.DarkGreen; }
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write(mapArray[yPos, xPos]);
 
                             xPos -= 1;
                             Console.SetCursorPosition(xPos, yPos);
-                          
+                            if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
+                            else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Magenta; }
+                            else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+                            else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
+
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write("@");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
 
 
-                //        Thread.Sleep(speed);
+                        //        Thread.Sleep(speed);
 
                         break;
                     case ConsoleKey.S:
                         direction = "South";
                         fieldsWalked++;
-                        if (mapArray[yPos + 1, xPos] != "█" && mapArray[yPos + 1, xPos] != "▒" && mapArray[yPos + 1, xPos] != "●" && mapArray[yPos + 1, xPos] != "#") //Kollision unten
+                        if (mapArray[yPos + 1, xPos] != "█" && mapArray[yPos + 1, xPos] != "▒" && mapArray[yPos + 1, xPos] != "▲" && mapArray[yPos + 1, xPos] != "#") //Kollision unten
                         {
+                            if (mapArray[yPos, xPos] == "~") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+                            else if (mapArray[yPos, xPos] == "«") { Console.ForegroundColor = ConsoleColor.Green; }
+                            else if (mapArray[yPos, xPos] == "▒") { Console.ForegroundColor = ConsoleColor.DarkCyan; }
+                            else if (mapArray[yPos, xPos] == "●") { Console.ForegroundColor = ConsoleColor.Green; }
+                            else if (mapArray[yPos, xPos] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray; }
+                            else if (mapArray[yPos, xPos] == "▲") { Console.ForegroundColor = ConsoleColor.DarkGreen; }
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write(mapArray[yPos, xPos]);
 
                             yPos += 1;
                             Console.SetCursorPosition(xPos, yPos);
+                            if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
+                            else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Magenta; }
+                            else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+                            else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
 
-                           
+
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write("@");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
 
 
-                 //       Thread.Sleep(speed);
+                        //       Thread.Sleep(speed);
 
                         break;
                     case ConsoleKey.W:
                         direction = "North";
                         fieldsWalked++;
-                        if (mapArray[yPos - 1, xPos] != "█" && mapArray[yPos - 1, xPos] != "▒" && mapArray[yPos - 1, xPos] != "●" && mapArray[yPos - 1, xPos] != "#") //Kollision oben
+                        if (mapArray[yPos - 1, xPos] != "█" && mapArray[yPos - 1, xPos] != "▒" && mapArray[yPos - 1, xPos] != "▲" && mapArray[yPos - 1, xPos] != "#") //Kollision oben
                         {
+                            if (mapArray[yPos, xPos] == "~") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+                            else if (mapArray[yPos, xPos] == "«") { Console.ForegroundColor = ConsoleColor.Green; }
+                            else if (mapArray[yPos, xPos] == "▒") { Console.ForegroundColor = ConsoleColor.DarkCyan; }
+                            else if (mapArray[yPos, xPos] == "●") { Console.ForegroundColor = ConsoleColor.Green; }
+                            else if (mapArray[yPos, xPos] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray; }
+                            else if (mapArray[yPos, xPos] == "▲") { Console.ForegroundColor = ConsoleColor.DarkGreen; }
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write(mapArray[yPos, xPos]);
 
                             yPos -= 1;
                             Console.SetCursorPosition(xPos, yPos);
+                            if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
+                            else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Magenta; }
+                            else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+                            else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
 
-
+                            
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write("@");
                             Console.ForegroundColor = ConsoleColor.White;
@@ -351,7 +644,7 @@ namespace rogueLike
 
 
 
-                  //      Thread.Sleep(speed);
+                        //      Thread.Sleep(speed);
 
                         break;
 
@@ -385,9 +678,7 @@ namespace rogueLike
                         item2 = ")→";
                         break;
 
-                    case ConsoleKey.F:
-                        zoomBool = !zoomBool;
-                        break;
+                 
 
                     case ConsoleKey.Escape:
                         Environment.Exit(0);
@@ -407,26 +698,26 @@ namespace rogueLike
 
                 // ►▼◄▲
 
-          /*      if (mapArray[yPos, xPos] == "◄")
-                {
-                    actionString = "you travel east";
-                    xCoordinates++;
-                }
-                else if (mapArray[yPos, xPos] == "▼")
-                {
-                    actionString = "you travel south";
-                    yCoordinates++;
-                }
-                else if (mapArray[yPos, xPos] == "►")
-                {
-                    actionString = "you travel west";
-                    xCoordinates--;
-                }
-                else if (mapArray[yPos, xPos] == "▲")
-                {
-                    actionString = "you travel north";
-                    yCoordinates--;
-                }*/
+                /*      if (mapArray[yPos, xPos] == "◄")
+                      {
+                          actionString = "you travel east";
+                          xCoordinates++;
+                      }
+                      else if (mapArray[yPos, xPos] == "▼")
+                      {
+                          actionString = "you travel south";
+                          yCoordinates++;
+                      }
+                      else if (mapArray[yPos, xPos] == "►")
+                      {
+                          actionString = "you travel west";
+                          xCoordinates--;
+                      }
+                      else if (mapArray[yPos, xPos] == "▲")
+                      {
+                          actionString = "you travel north";
+                          yCoordinates--;
+                      }*/
 
                 /* if (mapArray[yPos, xPos] == "►" || mapArray[yPos, xPos] == "▼" || mapArray[yPos, xPos] == "◄" || mapArray[yPos, xPos] == "▲")
                  {
@@ -443,17 +734,17 @@ namespace rogueLike
 
 
 
-              /*  if (mapArray[yPos, xPos] == "#")
-                {
-                    Console.SetCursorPosition(xPos, yPos);
-                    Console.Write(" ");
-                    actionString = "You found a ladder to level " + level;
-                    
-                //    level++;
-                    riddleSolved = false;
-                    Map lvl = new Map();
+                /*  if (mapArray[yPos, xPos] == "#")
+                  {
+                      Console.SetCursorPosition(xPos, yPos);
+                      Console.Write(" ");
+                      actionString = "You found a ladder to level " + level;
 
-                }*/
+                  //    level++;
+                      riddleSolved = false;
+                      Map lvl = new Map();
+
+                  }*/
                 if (mapArray[yPos, xPos] == "♥")
                 {
                     Console.SetCursorPosition(xPos, yPos);
@@ -467,6 +758,24 @@ namespace rogueLike
                     mapArray[yPos, xPos] = "⁃";
 
                 }
+
+                // pickup loot $
+                if (mapArray[yPos, xPos] == "$")
+                {
+                    Console.SetCursorPosition(xPos, yPos);
+                    Console.Write(" ");
+                    actionString = "You found 1Up!                                ";
+                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/credits.wav";
+                    musicPlayer.Play();
+                    
+                    //put a skeleton there!
+                    mapArray[yPos, xPos] = enemyFloorString;
+                    
+
+                    pickUpLoot( );
+                }
+
+
                 if (mapArray[yPos, xPos] == "□")
                 {
                     Console.SetCursorPosition(xPos, yPos);
@@ -482,7 +791,7 @@ namespace rogueLike
 
                     // give an item!!
                 }
-                
+
                 if (mapArray[yPos, xPos] == "┖")
                 {
                     Console.SetCursorPosition(xPos, yPos);
@@ -493,7 +802,7 @@ namespace rogueLike
                 }
 
 
-                
+
 
             }
 
@@ -503,23 +812,23 @@ namespace rogueLike
             {
                 //actionString = "north of you stands an enemy                    ";
                 enemyContact = true; ;
-                
-                    for (int i = 0; i < enemyList.Count; i++)
+
+                for (int i = 0; i < enemyList.Count; i++)
+                {
+                    if (enemyList[i].xPos == xPos + 1 && enemyList[i].yPos == yPos)
                     {
-                        if (enemyList[i].xPos == xPos + 1 && enemyList[i].yPos == yPos)
-                        {
-                            enemyIndex = i;
-                            enemyContactEast = true;
-                            enemyContactWest = false;
-                            enemyContactNorth = false;
-                            enemyContactSouth = false;
-
-                           // actionString = "you got the right enemy!";
-                            CurrentEnemy = enemyList[i];
-
-                        }
+                        enemyIndex = i;
+                        enemyContactEast = true;
+                        enemyContactWest = false;
+                        enemyContactNorth = false;
+                        enemyContactSouth = false;
+                        direction = "East";
+                        // actionString = "you got the right enemy!";
+                        CurrentEnemy = enemyList[i];
+                        enemyFloorString = CurrentEnemy.floorString;
                     }
-                
+                }
+
 
 
             }
@@ -527,22 +836,25 @@ namespace rogueLike
             {
                 // actionString = "west of you stands an enemy                    "; 
                 enemyContact = true; ;
-                
-                    for (int i = 0; i < enemyList.Count; i++)
-                    {
-                        if (enemyList[i].xPos == xPos - +1 && enemyList[i].yPos == yPos)
-                        {
-                            enemyIndex = i;
-                            enemyContactEast = false;
-                            enemyContactWest = true;
-                            enemyContactNorth = false;
-                            enemyContactSouth = false;
-                          //  actionString = "you got the right enemy !                   ";
-                            CurrentEnemy = enemyList[i];
 
-                        }
+                for (int i = 0; i < enemyList.Count; i++)
+                {
+                    if (enemyList[i].xPos == xPos - 1 && enemyList[i].yPos == yPos)
+                    {
+                        enemyIndex = i;
+                        enemyContactEast = false;
+                        enemyContactWest = true;
+                        enemyContactNorth = false;
+                        enemyContactSouth = false;
+                        direction = "West";
+
+                        //  actionString = "you got the right enemy !                   ";
+                        CurrentEnemy = enemyList[i];
+                        enemyFloorString = CurrentEnemy.floorString;
+
                     }
-                
+                }
+
 
 
             }
@@ -551,44 +863,50 @@ namespace rogueLike
 
                 //actionString = "north of you stands an enemy                    ";
                 enemyContact = true; ;
-                
-                    for (int i = 0; i < enemyList.Count; i++)
-                    {
-                        if (enemyList[i].xPos == xPos && enemyList[i].yPos == yPos + 1)
-                        {
-                            enemyIndex = i;
-                            enemyContactEast = false;
-                            enemyContactWest = false;
-                            enemyContactNorth = true;
-                            enemyContactSouth = false;
-                          //  actionString = "you got the right enemy!         ";
-                            CurrentEnemy = enemyList[i];
 
-                        }
+                for (int i = 0; i < enemyList.Count; i++)
+                {
+                    if (enemyList[i].xPos == xPos && enemyList[i].yPos == yPos + 1)
+                    {
+                        enemyIndex = i;
+                        enemyContactEast = false;
+                        enemyContactWest = false;
+                        enemyContactNorth = true;
+                        enemyContactSouth = false;
+                        direction = "South";
+
+                        //  actionString = "you got the right enemy!         ";
+                        CurrentEnemy = enemyList[i];
+                        enemyFloorString = CurrentEnemy.floorString;
+
                     }
-                
+                }
+
 
             }
             else if (mapArray[yPos - 1, xPos] == "e" || mapArray[yPos - 1, xPos] == "s" || mapArray[yPos - 1, xPos] == "w" || mapArray[yPos - 1, xPos] == "g" || mapArray[yPos - 1, xPos] == "t" || mapArray[yPos - 1, xPos] == "k" || mapArray[yPos - 1, xPos] == "r" || mapArray[yPos - 1, xPos] == "e")
             {
 
-               // actionString = "south of you stands an enemy                ";
+                // actionString = "south of you stands an enemy                ";
                 enemyContact = true;
-               
-                    for (int i = 0; i < enemyList.Count; i++)
-                    {
-                        if (enemyList[i].xPos == xPos && enemyList[i].yPos == yPos - 1)
-                        {
-                            enemyIndex = i;
-                            enemyContactEast = false;
-                            enemyContactWest = false;
-                            enemyContactNorth = false;
-                            enemyContactSouth = true;
-                        //    actionString = "you got the right enemy!                ";
-                            CurrentEnemy = enemyList[i];
 
-                        }
-                    
+                for (int i = 0; i < enemyList.Count; i++)
+                {
+                    if (enemyList[i].xPos == xPos && enemyList[i].yPos == yPos - 1)
+                    {
+                        enemyIndex = i;
+                        enemyContactEast = false;
+                        enemyContactWest = false;
+                        enemyContactNorth = false;
+                        enemyContactSouth = true;
+                        direction = "North";
+
+                        //    actionString = "you got the right enemy!                ";
+                        CurrentEnemy = enemyList[i];
+                        enemyFloorString = CurrentEnemy.floorString;
+
+                    }
+
                 }
 
             }
@@ -620,24 +938,376 @@ namespace rogueLike
             {
 
 
-               // Thread.Sleep(300);
+                // Thread.Sleep(300);
                 EnemyAttackFunction(enemyIndex);
                 return;
             }
             return;
         }
 
+        public void pickUpLoot( )
+        {
+
+
+
+
+
+            //how many loot items??
+            //int itemNumber = random.Next(1,5);
+            // for (int i = 0; i < itemNumber; i++)
+            //   {
+            int lootRoll = random.Next(0, 8);
+            int coinsGathered = random.Next(1, 25);
+            coins += coinsGathered;
+
+            
+
+
+
+            //item new item, then define the item down there!
+            actionString = "                                                                               ";
+            string itemName = "item";
+            int price = random.Next(5, lvl*15+30);
+            int itemType = 0;
+
+            //you the weapon directly at the lootroll below
+            //with defining all the params for the weapon:item
+
+            //consumables and resources
+            if (lootRoll >= 0 && lootRoll <= 4)
+            {
+                itemType = 3; price = 5;
+                //determine what kinda item it is, then name it!
+                //0=consumables,1=ammo,2=woods,3=crystals,4=resources,6=herbs
+                int objectType = random.Next(0,5);
+                //int objectType = random.Next(0, 5);
+                int number = random.Next(1, 10);
+                //consumables: 0=rations,1=medkit,2=potion
+                if (objectType == 0)
+                {
+                    int SubType = random.Next(0, 2);
+                    if (SubType == 0) { itemName = "rations"; price = 5; }
+                    else if (SubType == 1) { itemName = "medkit"; price = 15; }
+                    else if (SubType == 2) { itemName = "magic potion"; price = 20; }
+                }
+                //ammo: 0=arrows, 1=bullets
+                else if (objectType == 1)
+                {
+                    int SubType = random.Next(0, 2);
+                    if (SubType == 0) { itemName = "arrows"; price = 5; }
+                    else if (SubType == 1) { itemName = "bullets"; price = 10; }
+                    else if (SubType == 2) { itemName = "bombs"; price = 25; }
+
+                }
+                //woods: 0=ebony, 1=hazel, 2=Acacia, 3=cedar, 4=ash, 5=oak
+                else if (objectType == 2)
+                {
+                    int SubType = random.Next(0, 5);
+
+                    if (SubType == 0) { itemName = "ebony wood"; price = 45; }
+                    else if (SubType == 1) { itemName = "hazel wood"; price = 25; }
+                    else if (SubType == 2) { itemName = "acacia wood"; price = 15; }
+                    else if (SubType == 3) { itemName = "cedar wood"; price = 22; }
+                    else if (SubType == 4) { itemName = "ash wood"; price = 15; }
+                    else if (SubType == 5) { itemName = "oak wood"; price = 35; }
+                }
+                //crystals
+                else if (objectType == 3)
+                {
+                    number = random.Next(1, 3);
+                    int SubType = random.Next(0, 5);
+                    if (SubType == 0) { itemName = "diamond"; price = 350; }
+                    else if (SubType == 1) { itemName = "ruby"; price = 250; }
+                    else if (SubType == 2) { itemName = "emerald"; price = 150; }
+                    else if (SubType == 3) { itemName = "sapphire"; price = 225; }
+                    else if (SubType == 4) { itemName = "topaz"; price = 15; }
+                    else if (SubType == 5) { itemName = "amethyst"; price = 35; }
+                }
+                //resources
+                else if (objectType == 4)
+                {
+                    number = random.Next(1, 4);
+                    int SubType = random.Next(0, 8);
+                    if (SubType == 0) { itemName = "fabric"; price = 5; }
+                    else if (SubType == 1) { itemName = "fur"; price = 10; }
+                    else if (SubType == 2) { itemName = "leather"; price = 12; }
+                    else if (SubType == 3) { itemName = "silk"; price = 45; }
+                    else if (SubType == 4) { itemName = "cotton"; price = 15; }
+                    else if (SubType == 5) { itemName = "iron ore"; price = 35; }
+                    else if (SubType == 6) { itemName = "copper ore"; price = 25; }
+                    else if (SubType == 7) { itemName = "silver ore"; price = 400; }
+                    else if (SubType == 8) { itemName = "gold ore"; price = 1225; }
+                }
+                //herbs
+                else if (objectType == 5)
+                {
+                    number = random.Next(1, 8);
+                    int SubType = random.Next(0, 13);
+                    if (SubType == 0) { itemName = "dill"; price = 3; }
+                    else if (SubType == 1) { itemName = "ginger"; price = 4; }
+                    else if (SubType == 2) { itemName = "mandrake"; price = 15; }
+                    else if (SubType == 3) { itemName = "sanjeevani"; price = 150; }
+                    else if (SubType == 4) { itemName = "basil"; price = 5; }
+                    else if (SubType == 5) { itemName = "thyme"; price = 6; }
+                    else if (SubType == 6) { itemName = "Coriander"; price = 6; }
+                    else if (SubType == 7) { itemName = "marihuana"; price = 6; }
+                    else if (SubType == 8) { itemName = "mushroom"; price = 6; }
+                    else if (SubType == 9) { itemName = "thistle"; price = 6; }
+                    else if (SubType == 10) { itemName = "turmeric"; price = 6; }
+                    else if (SubType == 11) { itemName = "rosemary"; price = 6; }
+                    else if (SubType == 12) { itemName = "sage"; price = 6; }
+                    else if (SubType == 13) { itemName = "sandalwood"; price = 6; }
+                }
+                //now declare what you have found to the player
+                actionString = "you found " + number + " * " + itemName + ". (" + itemID + " ID) ";
+                itemName = number+"*"+itemName;
+                Item item = new Item(itemName, price, itemType, ".", objectType);
+                eqList.Add(item);
+
+            }
+            // offhand weapons and tools
+            else if (lootRoll == 5)
+            {
+                itemType = 2;
+                float DMG = random.Next(1, price / (2*lvl)+2);
+                float DEF = random.Next(0, price / (2 * lvl));
+                float extraMana = random.Next(0, price / (4 * lvl));
+                string itemString = " ";
+                //determine what kinda item it is, then name it!
+                //tools: 0=offhandweapons,1=tools
+                int toolType = random.Next(0, 3);
+
+                // alternative weapon icons  --   (↡ ⥉ ⥖ ⫰ ← ⋲ џ ┮ Ґ ԇ  ∫ ҁ ӷ ϟ Ϡ ϡ  Ψ ϙ  ϟ  ϯ  Ƿ  Ͽ  ȹ  Ͳ  Ƭ ͳ Ϯ Ԇ ſ ƪ 
+
+               
+
+               
+                //tools
+                 if (toolType == 0)
+                {
+                    int SubType = random.Next(0, 6);
+                    if (SubType == 0) { itemName = "firekit"; price = 15; }
+                    else if (SubType == 1) { itemName = "shovel"; price = 25; }
+                    else if (SubType == 2) { itemName = "magnet"; price = 40; }
+                    else if (SubType == 3) { itemName = "lockpick"; price = 10; }
+                    else if (SubType == 4) { itemName = "hookshot"; price = 25; }
+                    else if (SubType == 5) { itemName = "destillator"; price = 35; }
+                    else if (SubType == 6) { itemName = "hammer"; price = 15; }
+
+                    actionString = "you found " + itemName + ", price " + price + " $ (" + itemID + " ID)  ";
+                    itemName = itemName+" tool";
+                    Item item = new Item(itemName, price, itemType, "[", SubType);
+                    eqList.Add(item);
+
+                }
+                else if (toolType > 0)
+                {
+                    int SubType = random.Next(0, 6);
+                    if (SubType == 0) { itemName = "shield"; itemString = "■"; }
+                    else if (SubType == 1) { itemName = "buckler"; itemString = "●"; }
+                    else if (SubType == 2) { itemName = "mirroshield"; itemString = "Θ"; }
+                    else if (SubType == 3) { itemName = "longbow"; itemString = ")"; }
+                    else if (SubType == 4) { itemName = "recuvebow"; itemString = "}"; }
+                    else if (SubType == 5) { itemName = "musket"; itemString = "Į"; }
+                    else if (SubType == 6) { itemName = "wand"; itemString = "⫯"; }
+                    else if (SubType == 7) { itemName = "sprig"; itemString = "ԇ"; }
+                    else if (SubType == 8) { itemName = "discus"; itemString = "○"; }
+                    else if (SubType == 9) { itemName = "pushdagger"; itemString = "Џ"; }
+                    else if (SubType == 10) { itemName = "thumbscrews"; itemString = "≚"; }
+
+
+                    actionString = "you found " + itemName + "[" + itemString + "] price " + price + " $ (" + itemID + " ID) ";
+                    itemName = itemName + " (" + itemString + ") " + DMG + "/" + DEF;
+                    Weapon item = new Weapon(itemName, price, itemType, itemString, SubType);
+                    eqList.Add(item);
+
+                }
+            }
+            // armor, helmets, boots..
+            else if (lootRoll == 6)
+            {
+                price = price;
+                //assess quality and grade by the value of the price!
+                //randomly define if this is a dagger, sword, mace, staff or axe!
+                //then define the 4 subclasses for each of the 5 types!
+                float DEF = random.Next(0, price / (2 * lvl) + 1);
+                float extraMana = random.Next(0, price / (2 * lvl));
+                string itemIcon = "";
+                //determine what kinda item it is, then name it!
+                //armor: 0=helmet,1=armor,2=gloves,3=boots,4=rings
+                int toolType = random.Next(0, 5);
+                int SubType = 0;
+                //helmet
+                if (toolType == 0)
+                {
+                     SubType = random.Next(0, 4);
+                    if (SubType == 0) { itemName = "helmet"; }
+                    else if (SubType == 1) { itemName = "circlet"; }
+                    else if (SubType == 2) { itemName = "hood"; }
+                    else if (SubType == 3) { itemName = "hat"; }
+                }
+                //armor
+                else if (toolType == 1)
+                {
+                     SubType = random.Next(0, 4);
+                    if (SubType == 0) { itemName = "iron armor"; }
+                    else if (SubType == 1) { itemName = "leather armor"; }
+                    else if (SubType == 2) { itemName = "robes"; }
+                    else if (SubType == 3) { itemName = "chainmall"; }
+                }
+                //gloves
+                else if (toolType == 2)
+                {
+                     SubType = random.Next(0, 3);
+                    if (SubType == 0) { itemName = "gloves"; }
+                    else if (SubType == 1) { itemName = "mitten"; }
+                    else if (SubType == 2) { itemName = "gauntlet"; }
+                }
+                //boots
+                else if (toolType == 3)
+                {
+                     SubType = random.Next(0, 4);
+                    if (SubType == 0) { itemName = "sandals"; }
+                    else if (SubType == 1) { itemName = "boots"; }
+                    else if (SubType == 2) { itemName = "shoes"; }
+                    else if (SubType == 3) { itemName = "footwear"; }
+                }
+                //rings
+                else if (toolType >= 4)
+                {
+                     SubType = random.Next(0, 6);
+                    if (SubType == 0) { itemName = "diamond ring"; }
+                    else if (SubType == 1) { itemName = "ruby ring"; }
+                    else if (SubType == 2) { itemName = "emerald ring"; }
+                    else if (SubType == 3) { itemName = "sapphire ring"; }
+                    else if (SubType == 4) { itemName = "amethyst ring"; }
+                    else if (SubType == 5) { itemName = "topaz ring"; }
+                    else if (SubType == 6) { itemName = "sulphur ring"; }
+
+
+
+                }
+
+                actionString = "you found " + itemName + ", price " + price + " $ (" + itemID + " ID)";
+                itemName = itemName + " (" + DEF + ")";
+                Item item = new Item(itemName, price, itemType, ".", SubType);
+                eqList.Add(item);
+
+
+            }
+            // primary weapons ;D
+            else
+            {
+                //primary weapons: item
+
+                //assess quality and grade by the value of the price!
+                //randomly define if this is a dagger, sword, mace, staff or axe!
+                //then define the 4 subclasses for each of the 5 types!
+                float DMG = random.Next(1, price / (2 * lvl) + 2);
+                float DEF = random.Next(0, price / (2 * lvl));
+                float extraMana = random.Next(0, price / (4 * lvl));
+                string itemIcon = "";
+                //determine what kinda item it is, then name it!
+                //weapons: 0=daggers,1=swords,2=maces,3=staves,4=axes
+                int toolType = random.Next(0, 5);
+                int SubType = random.Next(0, 3);
+
+                //swords
+                if (toolType == 0)
+                {
+                    if (SubType == 0) { itemName = "longswords"; itemIcon = "†"; }
+                    else if (SubType == 1) { itemName = "kodachi"; itemIcon = "Ϯ"; }
+                    else if (SubType == 2) { itemName = "katana"; itemIcon = "ϯ"; }
+                    else if (SubType == 3) { itemName = "sabre"; itemIcon = "ƪ"; }
+
+                }
+                //daggers
+                else if (toolType == 1)
+                {
+                    if (SubType == 0) { itemName = "stiletto"; itemIcon = "←"; }
+                    else if (SubType == 1) { itemName = "sai fork"; itemIcon = "Ψ"; }
+                    else if (SubType == 2) { itemName = "dagger"; itemIcon = "ƭ"; }
+                    else if (SubType == 3) { itemName = "knuckles"; itemIcon = "Ͽ"; }
+                }
+                //warhammers
+                else if (toolType == 2)
+                {
+                    if (SubType == 0) { itemName = "warhammer"; itemIcon = "┮"; }
+                    else if (SubType == 1) { itemName = "mace"; itemIcon = "ϙ"; }
+                    else if (SubType == 2) { itemName = "morningstar"; itemIcon = "✶"; }
+                    else if (SubType == 3) { itemName = "warplough"; itemIcon = "ӷ"; }
+                }
+                //staves
+                else if (toolType == 3)
+                {
+                    if (SubType == 0) { itemName = "rod"; itemIcon = "/"; }
+                    else if (SubType == 1) { itemName = "warstaff"; itemIcon = "Ґ"; }
+                    else if (SubType == 2) { itemName = "shamanstaff"; itemIcon = "ϡ"; }
+                    else if (SubType == 3) { itemName = "trident"; itemIcon = "∈"; }
+                }
+                //axes
+                else if (toolType >= 4)
+                {
+                    if (SubType == 0) { itemName = "cleaver"; itemIcon = "Ƿ"; }
+                    else if (SubType == 1) { itemName = "battleaxe"; itemIcon = "ȹ"; }
+                    else if (SubType == 2) { itemName = "halberd"; itemIcon = "ŧ"; }
+                    else if (SubType == 3) { itemName = "tomahawk"; itemIcon = "Ƭ"; }
+                }
+                //swords    -     subtypes:     1=longsword (†), 2=katana (Ϯ), 3=broadSword (ϯ), 4=rapier(ƪ)                           
+                //daggers   -     subtypes:     1=shiv (←), 2=sai (⫛), 3=dagger (ƭ), 4= knuckles (Ͽ)
+                //hammers   -     subtypes:     1=warhammer (┮), 2=mace (ϙ), 3=morningstar (✸), 4=warplow (ӷ)                       
+                //staves    -     subtypes:     1=staff (/), 2=trident (∈), 3=treebranch (ϡ), 4=warstaff (Ґ)
+                //axes      -     subtypes:     1=cleaver (Ƿ), 2= doublebearded axe (ȹ), 3=tomahawk (Ƭ)
+                actionString = "you found " + itemName + "[" + itemIcon + "] price " + price + " $ (" + itemID + " ID) ";
+                itemName = itemName + " (" + itemIcon + ") " + DMG + "/" + DEF;
+                Weapon item = new Weapon(itemName, price, itemType, itemIcon, SubType);
+                eqList.Add(item);
+            }
+
+            //generate an item!
+            //later generate weapon:item and so on up there!
+            inventory.Add( itemName);
+
+            itemID++;
+            return;
+         //   mapArray[CurrentEnemy.yPos, CurrentEnemy.xPos] = currentEnemy.floorString;
+        }
+
+
+      
+
 
         public void dealDamage()
         {
             //hit currentEnemy!
-            CurrentEnemy.health -= dmg;
-            CurrentEnemy.ready = true;
-            actionString = "you hit "+CurrentEnemy.raceString;
+            currentEnemy.health -= dmg;
+            currentEnemy.ready = true;
+            actionString = "you hit " + currentEnemy.raceString;
+
+            // lightning damage!
+            /*if (equipmentInteger == 3)
+            {
+                Console.SetCursorPosition(CurrentEnemy.xPos, CurrentEnemy.yPos);
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.Yellow;
+                Console.Write("ϟ");  // blutstropfen 
+                Thread.Sleep(70);
+                Console.SetCursorPosition(CurrentEnemy.xPos, CurrentEnemy.yPos);
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write("ϟ");  // staves give off charge! 
+                Console.ForegroundColor = ConsoleColor.White;
+                Thread.Sleep(200);
+                
+            }*/
+
+            //normal damage with blood spatter!
             Console.SetCursorPosition(CurrentEnemy.xPos, CurrentEnemy.yPos);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("●");  // blutstropfen 
-            Thread.Sleep(100);
+            Thread.Sleep(200);
+            
+
             Console.SetCursorPosition(CurrentEnemy.xPos, CurrentEnemy.yPos);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(CurrentEnemy.raceLetter);
@@ -645,57 +1315,35 @@ namespace rogueLike
             if (CurrentEnemy.health < 1)
             {
                 Console.SetCursorPosition(CurrentEnemy.xPos, CurrentEnemy.yPos);
-                mapArray[CurrentEnemy.yPos, CurrentEnemy.xPos] = CurrentEnemy.floorString;
+                mapArray[CurrentEnemy.yPos, CurrentEnemy.xPos] = "$";
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write("$");
+                Console.ForegroundColor = ConsoleColor.White;
                 actionString = "the enemy died                  ";
-                Thread.Sleep(100);
+                // give exp
+                int expAmount = lvl * (currentEnemy.att + currentEnemy.def) / (10) + currentEnemy.expirienceGained;
+                int expNumber = random.Next(expAmount / 2, expAmount * 2);
+                exp += expNumber;
+                actionString = "you gained (" + expNumber + ") expirience";
 
-                // give exp, coins and loot!
-                int lootRoll = random.Next(0, 8); // 0 sticks, 1 ore, 2 herbs, 3 life potion, 4 magicpotion, 5 arrows, 6 bombs, 7 extra coins, 8 loot items
-                int coinsGathered = random.Next(1, 25);
-                coins += coinsGathered;
-                if (lootRoll == 0)
-                {
-                    actionString = "you found sticks.";
-                }
-                if (lootRoll == 1)
-                {
-                    actionString = "you found iron ore.";
-                }
-                if (lootRoll == 2)
-                {
-                    actionString = "you found healing herbs.";
-                }
-                if (lootRoll == 3)
-                {
-                    actionString = "you found a life potion.";
-                }
-                if (lootRoll == 4)
-                {
-                    actionString = "you found a magic potion.";
-                }
-                if (lootRoll == 5)
-                {
-                    actionString = "you found arrows.";
-                }
-                if (lootRoll == 6)
-                {
-                    actionString = "you found bombs.";
-                }
-                if (lootRoll == 7)
-                {
-                    actionString = "you found extra coins.";
-                }
-                if (lootRoll == 8)
-                {
-                    actionString = "you found a weapon.";
-                }
+
 
                 CurrentEnemy = null;
             }
             else
             {
-                actionString = "you deal [" + dmg + "] damage to an enemy       ";
+                actionString = "you deal [" + dmg + "] damage to an enemy";
             }
+
+
+        }
+
+
+        public void equipItem(string itemIcon, int weaponDamage, int weaponDefense)
+        {
+            item1 = equippedPrimary.itemIcon;
+                weaponDMG = weaponDamage;
+                weaponDEF = weaponDefense;
         }
 
 
@@ -705,39 +1353,25 @@ namespace rogueLike
             Console.OutputEncoding = System.Text.Encoding.Unicode;
 
             // if the sword should be removed again, read pos from map string array..
-          
+
 
             // for now only four classes!    if (equipmentInteger == 4) { item1 = "┲"; }
 
-
+            
             Console.SetCursorPosition(xPos, yPos);
-            if (equipmentInteger == 1) { item1 = "†"; Console.ForegroundColor = ConsoleColor.DarkGreen; }
-            if (equipmentInteger == 0) { item1 = "←"; Console.ForegroundColor = ConsoleColor.Magenta; }
-            if (equipmentInteger == 2) { item1 = "┲"; Console.ForegroundColor = ConsoleColor.DarkYellow; }
-            if (equipmentInteger == 3) { item1 = "Ґ"; Console.ForegroundColor = ConsoleColor.DarkCyan; }
+            if (equipmentInteger == 1) {  Console.ForegroundColor = ConsoleColor.DarkGreen; }
+            if (equipmentInteger == 0) {  Console.ForegroundColor = ConsoleColor.Magenta; }
+            if (equipmentInteger == 2) {  Console.ForegroundColor = ConsoleColor.DarkYellow; }
+            if (equipmentInteger == 3) {  Console.ForegroundColor = ConsoleColor.DarkCyan; }
             Console.Write("@");
             Console.ForegroundColor = ConsoleColor.White;
 
 
+          //  item1 = equippedPrimary.itemIcon;
+            
+            //     
 
-
-
-            // firekit      @▲
-            // magnet       @∩
-            // discus       @○
-            // shield       @■
-            // bomb         @●       
-            // bow          @)→
-            // slingshot    @y  °
-            // hookshot     @--->
-
-            // life         ♥
-            // treasure     □
-            // ladder       #
-            // fire         ▲
-
-          
-
+            // alternative weapon icons  --   (↡ ⥉ ⥖ ⫰ ← ⋲ џ ┮ Ґ ԇ  ∫ ҁ ӷ ϟ Ϡ ϡ  Ψ ϙ  ϟ  ϯ  Ƿ  Ͽ  ȹ  Ͳ  Ƭ ͳ Ϯ Ԇ ſ ƪ 
 
 
             if (attack == true)
@@ -754,363 +1388,922 @@ namespace rogueLike
                 else if (weaponGrade == 2)
                 {
                     Console.ForegroundColor = ConsoleColor.Cyan;
-               
+
                 }
 
-                // alternative weapon icons Ψ trident    ϙ mace  ϟ charge  ϯ katana   Ϯ dagger  Ԇ twisted staff  ſ cane
-                // snake Ҩ	
+                //shrine Ħ   smile ☺ ☻  
+
+                //swords    -     subtypes:     1=longsword (†), 2=katana (Ϯ), 3=broadSword (ϯ), 4=rapier(ƪ)                        //sins 1 sword 1 dagger
+                //daggers   -     subtypes:     1=stiletto (←), 2=sai (∈), 3=dagger (ƭ), 4=pushdagger (Џ)             //katar, sai and stiletto are offhand too
+                //hammers   -     subtypes:     1=warhammer (┮), 2=mace (ϙ), 3=morningstar (✸), 4=warplow (ӷ)                       
+                //staves    -     subtypes:     1=staff (/), 2=trident (⫛ Ψ), 3=treebranch (ϡ), 4=warstaff (Ґ)
+                //axes      -     subtypes:     1=executioner (Ƿ), 2= doublebearded axe (ȹ), 3=pickaxe (Ƭ)
+
+                //offhand weapons for left hand
+
+                //offhand shield        -       1= studded shield (■), 2=buckler (●), 3=mirrorshield  (⧫) 
+                //offhand bows          -       1= longbow(❫), 2= recurve (❵), compoundbow (❱)
+                //offhand discus        -       1= chakram (Ѳ), 2= sunwheel (⛭), 3= discus (○) 
+                //offhand musket        -       1= flintlock (Į), 2= pistol (⌐), 3= musket (⥖)
+                //offhand wand          -       1= wand (⫯), 2= szepter (⫰) pole (ı) 
+                //offhand torturedevice -       thumbscrews (≚), garotte (ю)
+
+
+
+                // alternative weapon icons  --   (↡ ⥉ ⥖ ⫰ ← ⋲ џ ┮ Ґ  ∫ ҁ ӷ ϟ Ϡ ϡ  Ψ ϙ  ϟ  ϯ  Ƿ  Ͽ  ȹ  Ͳ  Ƭ ͳ Ϯ Ԇ ſ ƪ 
 
                 // paint map new: mapArray[yPos, xPos]
 
                 // ****** sword      @† ⚠  **********************************************************************************************************
-                if (equipmentInteger == 1)
-                {
+                //      if (equipmentInteger == 1)
+                //    {
 
-                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_sword.wav";
-                    musicPlayer.Play();
-                    int criticalDamage;
-                    criticalDamage = random.Next(0, 3);
-                    dmg = STR * CON / 10+criticalDamage;
-                    actionString = "you swing your sword! [" + dmg + "] damage";
-                    if (direction == "East")
-                    {
-
-
-
-                        Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write("†");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write(mapArray[yPos, xPos + 1]);
-
-                        attack = false;
-                    }
-
-                    else if (direction == "South")
-                    {
-
-                        Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write("†");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos, yPos);
-                        Thread.Sleep(300);
-                        Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write(mapArray[yPos + 1, xPos]);
-
-                        attack = false;
-                    }
-
-                    else if (direction == "West")
-                    {
-
-                        Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write("†");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Thread.Sleep(300);
-                        Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write(mapArray[yPos, xPos - 1]);
-
-                        attack = false;
-                    }
-
-                    else if (direction == "North")
-                    {
-
-                        Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write("†");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos, yPos);
-                        Thread.Sleep(300);
-                        Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write(mapArray[yPos - 1, xPos]);
-
-                        attack = false;
-
-                    }
-                    
-                    else
-                    {
-
-                    }
-
-                    // withdraw health from enemy
-
-                    if (enemyContact == true && CurrentEnemy != null)
-                    {
-
-                        dealDamage();
-
-
-                    }
-
-                }
-
-                // ****** dagger      @†   **********************************************************************************************************
+                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_sword.wav";
+                musicPlayer.Play();
+                int criticalDamage;
+                string weaponName = "";
                 if (equipmentInteger == 0)
                 {
-                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_dagger.wav";
-                    musicPlayer.Play();
-                    int criticalDamage;
-                    criticalDamage = random.Next(0, 3);
-                    dmg = DEX * STR / 10+criticalDamage;
-                    actionString = "you stab with your daggers! [" + dmg + "] damage";
-
-                    if (direction == "East")
-                    {
-                        
-
-                        Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write("←");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write(mapArray[yPos, xPos + 1]);
-                        attack = false;
-
-                    }
-
-                    else if (direction == "South")
-                    {
-                        
-                        Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write("↑");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write(mapArray[yPos + 1, xPos]);
-
-                        attack = false;
-                    }
-
-                    else if (direction == "West")
-                    {
-                       
-                        Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write("→");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write(mapArray[yPos, xPos - 1]);
-                        attack = false;
-                    }
-
-                    else if (direction == "North")
-                    {
-                        
-
-                        Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write("↓");
-                        Console.SetCursorPosition(xPos, yPos);
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write(mapArray[yPos - 1, xPos]);
-                        attack = false;
-
-                    }
-                    else
-                    {
-
-
-
-                    }
-                    // withdraw health from enemy
-
-                    if (enemyContact == true && CurrentEnemy != null)
-                    {
-
-                        dealDamage();
-
-
-                    }
+                    criticalDamage = random.Next(0, DEX / 2 + STR / 2);
+                    dmg = DEX * STR / 10 + criticalDamage;
+                }
+                else if (equipmentInteger == 1)
+                {
+                    criticalDamage = random.Next(0, DEX / 2 + STR / 2);
+                    dmg = STR * CON / 10 + criticalDamage;
+                }
+                else if (equipmentInteger == 2)
+                {
+                    criticalDamage = random.Next(0, DEX / 2 + CON / 2);
+                    dmg = CON * STR / 10 + criticalDamage;
+                }
+                else if (equipmentInteger == 3)
+                {
+                    criticalDamage = random.Next(0, DEX / 2 + INT / 2);
+                    dmg = INT * DEX / 10 + criticalDamage;
                 }
 
-                // ****** warplow      @┲   **********************************************************************************************************
-                if (equipmentInteger == 2)
+                actionString = "                                       ";
+                actionString = "you swing your " + EquippedPrimary.name + "! [" + dmg + "] damage      ";
+                if (direction == "East")
                 {
-                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_plow.wav";
-                    musicPlayer.Play();
-                    int criticalDamage;
-                    criticalDamage = random.Next(0, 3);
-                    dmg = INT * CON / 10+ criticalDamage;
-                    actionString = "you swing your warplow! [" + dmg + "] damage";
+                    attackedFloorX = xPos + 1;
+                    attackedFloorY = yPos;
 
-                    if (direction == "East")
-                    {
-                        Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write("┮");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos + 1, yPos);
-
-                        Console.Write(mapArray[yPos, xPos + 1]);
-                        attack = false;
-                        
-
-                    }
-
-                    else if (direction == "South")
-                    {
-                        Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write("┶");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos, yPos + 1);
-
-                        Console.Write(mapArray[yPos + 1, xPos]);
-                        attack = false;
-                       
-
-                    }
-
-                    else if (direction == "West")
-                    {
-                        Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write("┭");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos - 1, yPos);
-
-                        Console.Write(mapArray[yPos, xPos - 1]);
-                        attack = false;
-                        
-
-                    }
-
-                    else if (direction == "North")
+                    Console.SetCursorPosition(xPos + 1, yPos);
+                    Console.Write(item1);
+                    Thread.Sleep(300);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.SetCursorPosition(xPos + 1, yPos);
+                    if (enemyContact == false)
                     {
 
-                        Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write("┭");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.SetCursorPosition(xPos, yPos - 1);
-
-                        Console.Write(mapArray[yPos - 1, xPos]);
-                        attack = false;
-                        
-
-
-                    }
-                    else
-                    {
-
-
-
-                    }
-                    // withdraw health from enemy
-
-                    if (enemyContact == true && CurrentEnemy != null)
-                    {
-
-                        dealDamage();
-
-
-                    }
-                }
-
-
-
-                // ****** staff      @Ґ☇   **********************************************************************************************************
-                if (equipmentInteger == 3)
-                {
-                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_staff.wav";
-                    musicPlayer.Play();
-                    int criticalDamage;
-                    criticalDamage = random.Next(0, 3);
-                    dmg = INT * DEX / 10+ criticalDamage;
-                    actionString = "you trash with your staff! [" + dmg + "] damage";
-
-                    if (direction == "East")
-                    {
-                        Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write("Ґ");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-
-                        Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write(mapArray[yPos, xPos + 1]);
-                        attack = false;
-                        
-
-
-                    }
-
-                    else if (direction == "South")
-                    {
-                        Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write("Ґ");
-                        Console.SetCursorPosition(xPos, yPos);
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-
-                        Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write(mapArray[yPos + 1, xPos]);
-                        attack = false;
-                        
-                        
+                        if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                        {
+                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //nothing happens
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
                         }
 
-                    else if (direction == "West")
-                    {
-                        Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write("Ґ");
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        }
 
-                        Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write(mapArray[yPos, xPos - 1]);
-                        attack = false;
-                        
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                        {
+                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the grass and get herbs 
+                            Console.ForegroundColor = ConsoleColor.Green;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                        {
+                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy water
+                            Console.ForegroundColor = ConsoleColor.DarkCyan;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                        {
+                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //destroy the bush
+                            Console.ForegroundColor = ConsoleColor.Green;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                        {
+                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                        }
+                    }
+                    else { }
+                    Console.Write(mapArray[yPos, xPos + 1]);
+                    attack = false;
+
+                }
+
+                else if (direction == "South")
+                {
+                    attackedFloorX = xPos;
+                    attackedFloorY = yPos + 1;
+
+                    Console.SetCursorPosition(xPos, yPos + 1);
+                    Console.Write(item1);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Thread.Sleep(300);
+                    Console.SetCursorPosition(xPos, yPos + 1);
+
+                    if (enemyContact == false)
+                    {
+
+                        if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                        {
+                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //nothing happens
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                        {
+                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the grass and get herbs 
+                            Console.ForegroundColor = ConsoleColor.Green;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                        {
+                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy water
+                            Console.ForegroundColor = ConsoleColor.DarkCyan;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                        {
+                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //destroy the bush
+                            Console.ForegroundColor = ConsoleColor.Green;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                        {
+                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                        }
+                    }
+                    else { }
+                    Console.Write(mapArray[yPos + 1, xPos]);
+
+                    attack = false;
+                }
+
+                else if (direction == "West")
+                {
+                    attackedFloorX = xPos - 1;
+                    attackedFloorY = yPos;
+
+                    Console.SetCursorPosition(xPos - 1, yPos);
+                    Console.Write(item1);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Thread.Sleep(300);
+                    Console.SetCursorPosition(xPos - 1, yPos);
+                    if (enemyContact == false)
+                    {
+
+                    if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                    {
+                        actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //nothing happens
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    }
+
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                    {
+                        actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //you destroy the tree and get some wood
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    }
+
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                    {
+                        actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //you destroy the grass and get herbs 
+                        Console.ForegroundColor = ConsoleColor.Green;
 
                     }
 
-                    else if (direction == "North")
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
                     {
-
-                        Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write("Ґ");
-                        Console.SetCursorPosition(xPos, yPos);
-                        Thread.Sleep(300);
-                        Console.ForegroundColor = ConsoleColor.White;
-
-                        Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write(mapArray[yPos - 1, xPos]);
-                        attack = false;
-                        
+                        actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //you cannot destroy water
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
 
                     }
-                    else
+
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "●")
                     {
-                     
+                        actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //destroy the bush
+                        Console.ForegroundColor = ConsoleColor.Green;
 
                     }
-                    // withdraw health from enemy
 
-                    if (enemyContact == true && CurrentEnemy != null)
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
                     {
-
-                        dealDamage();
-
+                        actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //you cannot destroy rocks
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
 
                     }
+                    }
+                    else { }
+
+                    Console.Write(mapArray[yPos, xPos - 1]);
+
+                    attack = false;
+                }
+
+                else if (direction == "North")
+                {
+                    attackedFloorX = xPos;
+                    attackedFloorY = yPos - 1;
+
+                    Console.SetCursorPosition(xPos, yPos - 1);
+                    Console.Write(item1);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Thread.Sleep(300);
+                    Console.SetCursorPosition(xPos, yPos - 1);
+                    if (enemyContact == false)
+                    {
+
+                    if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                    {
+                        actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //nothing happens
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    }
+
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                    {
+                        actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //you destroy the tree and get some wood
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    }
+
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                    {
+                        actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //you destroy the grass and get herbs 
+                        Console.ForegroundColor = ConsoleColor.Green;
+
+                    }
+
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                    {
+                        actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //you cannot destroy water
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+
+                    }
+
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                    {
+                        actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //destroy the bush
+                        Console.ForegroundColor = ConsoleColor.Green;
+
+                    }
+
+                    else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                    {
+                        actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                        //you cannot destroy rocks
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                    }
+                    }
+                    else { }
+                    Console.Write(mapArray[yPos - 1, xPos]);
+                attack = false;
 
 
                 }
 
+            // withdraw health from enemy
 
-
-
-
+            if (enemyContact == true && CurrentEnemy != null)
+            {
+                dealDamage();
             }
+            }
+
+          
+
+
+            /* if (direction == "East")
+                   {
+                       attackedFloorX = xPos + 1;
+                       attackedFloorY = yPos;
+
+                       Console.SetCursorPosition(xPos + 1, yPos);
+                       Console.Write(item1);
+                       Thread.Sleep(300);
+                       Console.ForegroundColor = ConsoleColor.White;
+                       Console.SetCursorPosition(xPos + 1, yPos);
+                       if (enemyContact == false)
+                       {
+
+                           if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                           {
+                               actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //nothing happens
+                               Console.ForegroundColor = ConsoleColor.DarkYellow;
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                           {
+                               actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //you destroy the tree and get some wood
+                               Console.ForegroundColor = ConsoleColor.DarkGreen;
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                           {
+                               actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //you destroy the grass and get herbs 
+                               Console.ForegroundColor = ConsoleColor.Green;
+
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                           {
+                               actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //you cannot destroy water
+                               Console.ForegroundColor = ConsoleColor.DarkCyan;
+
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                           {
+                               actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //destroy the bush
+                               Console.ForegroundColor = ConsoleColor.Green;
+
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                           {
+                               actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //you cannot destroy rocks
+                               Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                           }
+                       }
+                       else { }
+                       Console.Write(mapArray[yPos, xPos + 1]);
+                       attack = false;
+
+                   }
+
+                   else if (direction == "South")
+                   {
+                       attackedFloorX = xPos;
+                       attackedFloorY = yPos + 1;
+
+                       Console.SetCursorPosition(xPos, yPos + 1);
+                       Console.Write(item1);
+                       Console.ForegroundColor = ConsoleColor.White;
+                       Thread.Sleep(300);
+                       Console.SetCursorPosition(xPos, yPos + 1);
+
+                       if (enemyContact == false)
+                       {
+
+                           if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                           {
+                               actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //nothing happens
+                               Console.ForegroundColor = ConsoleColor.DarkYellow;
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                           {
+                               actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //you destroy the tree and get some wood
+                               Console.ForegroundColor = ConsoleColor.DarkGreen;
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                           {
+                               actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //you destroy the grass and get herbs 
+                               Console.ForegroundColor = ConsoleColor.Green;
+
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                           {
+                               actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //you cannot destroy water
+                               Console.ForegroundColor = ConsoleColor.DarkCyan;
+
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                           {
+                               actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //destroy the bush
+                               Console.ForegroundColor = ConsoleColor.Green;
+
+                           }
+
+                           else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                           {
+                               actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                               //you cannot destroy rocks
+                               Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                           }
+                       }
+                       else { }
+                       Console.Write(mapArray[yPos + 1, xPos]);
+
+                       attack = false;
+                   }
+
+                   else if (direction == "West")
+                   {
+                       attackedFloorX = xPos - 1;
+                       attackedFloorY = yPos;
+
+                       Console.SetCursorPosition(xPos - 1, yPos);
+                       Console.Write(item1);
+                       Console.ForegroundColor = ConsoleColor.White;
+                       Thread.Sleep(300);
+                       Console.SetCursorPosition(xPos - 1, yPos);
+                       if (enemyContact == false)
+                       {
+
+                       if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                       {
+                           actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //nothing happens
+                           Console.ForegroundColor = ConsoleColor.DarkYellow;
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                       {
+                           actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //you destroy the tree and get some wood
+                           Console.ForegroundColor = ConsoleColor.DarkGreen;
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                       {
+                           actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //you destroy the grass and get herbs 
+                           Console.ForegroundColor = ConsoleColor.Green;
+
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                       {
+                           actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //you cannot destroy water
+                           Console.ForegroundColor = ConsoleColor.DarkCyan;
+
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                       {
+                           actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //destroy the bush
+                           Console.ForegroundColor = ConsoleColor.Green;
+
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                       {
+                           actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //you cannot destroy rocks
+                           Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                       }
+                       }
+                       else { }
+
+                       Console.Write(mapArray[yPos, xPos - 1]);
+
+                       attack = false;
+                   }
+
+                   else if (direction == "North")
+                   {
+                       attackedFloorX = xPos;
+                       attackedFloorY = yPos - 1;
+
+                       Console.SetCursorPosition(xPos, yPos - 1);
+                       Console.Write(item1);
+                       Console.ForegroundColor = ConsoleColor.White;
+                       Thread.Sleep(300);
+                       Console.SetCursorPosition(xPos, yPos - 1);
+                       if (enemyContact == false)
+                       {
+
+                       if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                       {
+                           actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //nothing happens
+                           Console.ForegroundColor = ConsoleColor.DarkYellow;
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                       {
+                           actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //you destroy the tree and get some wood
+                           Console.ForegroundColor = ConsoleColor.DarkGreen;
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                       {
+                           actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //you destroy the grass and get herbs 
+                           Console.ForegroundColor = ConsoleColor.Green;
+
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                       {
+                           actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //you cannot destroy water
+                           Console.ForegroundColor = ConsoleColor.DarkCyan;
+
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                       {
+                           actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //destroy the bush
+                           Console.ForegroundColor = ConsoleColor.Green;
+
+                       }
+
+                       else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                       {
+                           actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                           //you cannot destroy rocks
+                           Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                       }
+                       }
+                       else { }
+                       Console.Write(mapArray[yPos - 1, xPos]);
+                   attack = false;
+
+
+                   }*/
+
+
+            /*        }
+
+                    // ****** dagger      @←←   **********************************************************************************************************
+                    if (equipmentInteger == 0)
+                    {
+                        musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_dagger.wav";
+                        musicPlayer.Play();
+                        int criticalDamage;
+                        criticalDamage = random.Next(0, 3);
+                        dmg = (DEX * STR / 10 + criticalDamage)/2;
+                        actionString = "you stab with your daggers! [" + dmg + "] damage";
+
+                        if (direction == "East")
+                        {
+
+
+                            Console.SetCursorPosition(xPos + 1, yPos);
+                            Console.Write("←");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos + 1, yPos);
+                            Console.Write(mapArray[yPos, xPos + 1]);
+                            Thread.Sleep(100);
+                            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_dagger.wav";
+                            musicPlayer.Play();
+                            if (enemyContact == true)
+                                dealDamage();
+
+                            Console.SetCursorPosition(xPos + 1, yPos);
+                            Console.Write("←");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos + 1, yPos);
+                            Console.Write(mapArray[yPos, xPos + 1]);
+                            attack = false;
+
+                        }
+
+                        else if (direction == "South")
+                        {
+
+                            Console.SetCursorPosition(xPos, yPos + 1);
+                            Console.Write("↑");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos, yPos + 1);
+                            Console.Write(mapArray[yPos + 1, xPos]);
+                            Thread.Sleep(100);
+                            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_dagger.wav";
+                            musicPlayer.Play();
+                            if (enemyContact == true)
+
+                                dealDamage();
+
+                            Console.SetCursorPosition(xPos, yPos + 1);
+                            Console.Write("↑");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos, yPos + 1);
+                            Console.Write(mapArray[yPos + 1, xPos]);
+                            attack = false;
+                        }
+
+                        else if (direction == "West")
+                        {
+
+                            Console.SetCursorPosition(xPos - 1, yPos);
+                            Console.Write("→");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos - 1, yPos);
+                            Console.Write(mapArray[yPos, xPos - 1]);
+                            Thread.Sleep(100);
+                            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_dagger.wav";
+                            musicPlayer.Play();
+                            if (enemyContact == true)
+
+                                dealDamage();
+
+                            Console.SetCursorPosition(xPos - 1, yPos);
+                            Console.Write("→");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos - 1, yPos);
+                            Console.Write(mapArray[yPos, xPos - 1]);
+                            attack = false;
+                        }
+
+                        else if (direction == "North")
+                        {
+
+
+                            Console.SetCursorPosition(xPos, yPos - 1);
+                            Console.Write("↓");
+                            Console.SetCursorPosition(xPos, yPos);
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos, yPos - 1);
+                            Console.Write(mapArray[yPos - 1, xPos]);
+                            Thread.Sleep(100);
+                            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_dagger.wav";
+                            musicPlayer.Play();
+                            if (enemyContact == true)
+
+                                dealDamage();
+
+                            Console.SetCursorPosition(xPos, yPos - 1);
+                            Console.Write("↓");
+                            Console.SetCursorPosition(xPos, yPos);
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos, yPos - 1);
+                            Console.Write(mapArray[yPos - 1, xPos]);
+                            attack = false;
+
+                        }
+                        else
+                        {
+
+
+
+                        }
+                        // withdraw health from enemy
+
+                        if (enemyContact == true && CurrentEnemy != null)
+                        {
+
+                            dealDamage();
+
+
+                        }
+                    }
+
+                    // ****** warplow      @┲   **********************************************************************************************************
+                    if (equipmentInteger == 2)
+                    {
+                        musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_plow.wav";
+                        musicPlayer.Play();
+                        int criticalDamage;
+                        criticalDamage = random.Next(0, 3);
+                        dmg = CON * STR / 10 + criticalDamage;
+                        actionString = "you swing your warplow! [" + dmg + "] damage";
+
+                        if (direction == "East")
+                        {
+                            Console.SetCursorPosition(xPos + 1, yPos);
+                            Console.Write("┮");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos + 1, yPos);
+
+                            Console.Write(mapArray[yPos, xPos + 1]);
+                            attack = false;
+
+
+                        }
+
+                        else if (direction == "South")
+                        {
+                            Console.SetCursorPosition(xPos, yPos + 1);
+                            Console.Write("┶");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos, yPos + 1);
+
+                            Console.Write(mapArray[yPos + 1, xPos]);
+                            attack = false;
+
+
+                        }
+
+                        else if (direction == "West")
+                        {
+                            Console.SetCursorPosition(xPos - 1, yPos);
+                            Console.Write("┭");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos - 1, yPos);
+
+                            Console.Write(mapArray[yPos, xPos - 1]);
+                            attack = false;
+
+
+                        }
+
+                        else if (direction == "North")
+                        {
+
+                            Console.SetCursorPosition(xPos, yPos - 1);
+                            Console.Write("┭");
+                            Thread.Sleep(300);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos, yPos - 1);
+
+                            Console.Write(mapArray[yPos - 1, xPos]);
+                            attack = false;
+
+
+
+                        }
+                        else
+                        {
+
+
+
+                        }
+                        // withdraw health from enemy
+
+                        if (enemyContact == true && CurrentEnemy != null)
+                        {
+
+                            dealDamage();
+
+
+                        }
+                    }
+
+
+
+                    // ****** staff      @Ґ☇   **********************************************************************************************************
+                    if (equipmentInteger == 3)
+                    {
+                        musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_staff.wav";
+                        musicPlayer.Play();
+                        int criticalDamage;
+                        criticalDamage = random.Next(0, 3);
+                        dmg = INT * DEX / 10 + criticalDamage;
+                        actionString = "you trash with your staff! [" + dmg + "] damage";
+
+                        if (direction == "East")
+                        {
+                            Console.SetCursorPosition(xPos + 1, yPos);
+                            Console.Write("Ґ");
+                            Thread.Sleep(300);
+
+                            Console.ForegroundColor = ConsoleColor.White;
+
+                            Console.SetCursorPosition(xPos + 1, yPos);
+                            Console.Write(mapArray[yPos, xPos + 1]);
+                            attack = false;
+
+
+
+                        }
+
+                        else if (direction == "South")
+                        {
+                            Console.SetCursorPosition(xPos, yPos + 1);
+                            Console.Write("Ґ");
+                            Console.SetCursorPosition(xPos, yPos);
+                            Thread.Sleep(300);
+
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(xPos, yPos + 1);
+                            Console.Write(mapArray[yPos + 1, xPos]);
+                            attack = false;
+
+
+                        }
+
+                        else if (direction == "West")
+                        {
+                            Console.SetCursorPosition(xPos - 1, yPos);
+                            Console.Write("Ґ");
+                            Thread.Sleep(300);
+
+                            Console.ForegroundColor = ConsoleColor.White;
+
+                            Console.SetCursorPosition(xPos - 1, yPos);
+                            Console.Write(mapArray[yPos, xPos - 1]);
+                            attack = false;
+
+
+                        }
+
+                        else if (direction == "North")
+                        {
+
+                            Console.SetCursorPosition(xPos, yPos - 1);
+                            Console.Write("Ґ");
+                            Console.SetCursorPosition(xPos, yPos);
+                            Thread.Sleep(300);
+
+                            Console.ForegroundColor = ConsoleColor.White;
+
+                            Console.SetCursorPosition(xPos, yPos - 1);
+                            Console.Write(mapArray[yPos - 1, xPos]);
+                            attack = false;
+
+
+                        }
+                        else
+                        {
+
+
+                        }
+                        // withdraw health from enemy
+
+                        if (enemyContact == true && CurrentEnemy != null)
+                        {
+
+                            dealDamage();
+
+
+                        }
+
+
+                    }
+                    */
+
+
+
+
+
 
             //*************************************************************************************************************************************
 
             //press enter!
 
 
-            if (skillAttack == true && mana >=2)
+            if (skillAttack == true && mana >= 2)
             {
 
 
@@ -1128,9 +2321,9 @@ namespace rogueLike
                     musicPlayer.Play();
 
                     int criticalDamage;
-                    criticalDamage = random.Next(0,STR);
+                    criticalDamage = random.Next(0, STR);
 
-                     dmg = 2*STR * CON / 10 + criticalDamage;
+                    dmg = 4 * STR * CON / 10 + criticalDamage;
                     actionString = "heavy sword attack!! [" + dmg + "] damage";
 
                     if (weaponGrade == 0)
@@ -1146,72 +2339,94 @@ namespace rogueLike
                         Console.ForegroundColor = ConsoleColor.Cyan;
                     }
 
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write("†");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Thread.Sleep(100);
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write(mapArray[yPos - 1, xPos]);
-                    if (weaponGrade == 0)
+                    if (direction == "East")
                     {
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                    }
-                    else if (weaponGrade == 1)
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    }
-                    else if (weaponGrade == 2)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                    }
+                        attackedFloorX = xPos + 1;
+                        attackedFloorY = yPos;
+                        Console.SetCursorPosition(xPos + 1, yPos);
+                        Console.Write(item1);
+                        Thread.Sleep(300);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(xPos + 1, yPos);
 
-                    Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write("†");
-                        Thread.Sleep(100);
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write("/");
+                        Thread.Sleep(200);
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.SetCursorPosition(xPos + 1, yPos);
                         Console.Write(mapArray[yPos, xPos + 1]);
-                    if (weaponGrade == 0)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                    }
-                    else if (weaponGrade == 1)
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    }
-                    else if (weaponGrade == 2)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
+
                     }
 
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write("†");
-                    Thread.Sleep(100);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write(mapArray[yPos + 1, xPos]);
-                    if (weaponGrade == 0)
+                    else if (direction == "South")
                     {
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                    }
-                    else if (weaponGrade == 1)
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    }
-                    else if (weaponGrade == 2)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                    }
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write("†");
-                    Thread.Sleep(300);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write(mapArray[yPos, xPos - 1]);
+                        attackedFloorX = xPos;
+                        attackedFloorY = yPos + 1;
+                        Console.SetCursorPosition(xPos, yPos + 1);
+                        Console.Write(item1);
+                        Thread.Sleep(300);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(xPos, yPos + 1);
 
-                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/skill_missile_exp.wav";
-                    musicPlayer.Play(); 
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write("/");
+                        Thread.Sleep(200);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.SetCursorPosition(xPos, yPos + 1);
+                        Console.Write(mapArray[yPos + 1, xPos]);
+                    }
 
+                    else if (direction == "West")
+                    {
+                        attackedFloorX = xPos - 1;
+                        attackedFloorY = yPos;
+
+                        Console.SetCursorPosition(xPos - 1, yPos);
+                        Console.Write(item1);
+                        Thread.Sleep(300);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(xPos - 1, yPos);
+
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write("/");
+                        Thread.Sleep(200);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.SetCursorPosition(xPos - 1, yPos);
+                        Console.Write(mapArray[yPos, xPos - 1]);
+                    }
+
+                    else if (direction == "North")
+                    {
+                        attackedFloorX = xPos;
+                        attackedFloorY = yPos - 1;
+
+                        Console.SetCursorPosition(xPos, yPos - 1);
+                        Console.Write(item1);
+                        Thread.Sleep(300);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(xPos, yPos - 1);
+
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write("/");
+                        Thread.Sleep(200);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.SetCursorPosition(xPos, yPos - 1);
+                        Console.Write(mapArray[yPos - 1, xPos]);
+
+                    }
+                    else
+                    {
+
+
+
+                    }
+
+                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/item_explosion.wav";
+                    musicPlayer.Play();
 
                     if (enemyContactEast || enemyContactSouth || enemyContactWest || enemyContactNorth)
                     {
@@ -1219,19 +2434,22 @@ namespace rogueLike
                         dealDamage();
                     }
 
-                 
-
-
-                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/skill_missile_exp.wav";
-                    musicPlayer.Play();
-                    Console.BackgroundColor = ConsoleColor.DarkYellow;
                     Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = ConsoleColor.DarkYellow;
+                    /*attackedFloorX = xPos;
+                    attackedFloorY = yPos - 1;
+
+
+                     
+                     */
+                    Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                    Console.Write(mapArray[attackedFloorY, attackedFloorX]);
+
                     Console.SetCursorPosition(xPos, yPos);
                     Console.Write("@");
 
-             /*       
-                    */
-                  
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.Black;
 
                     //*********************************************************************
 
@@ -1239,77 +2457,89 @@ namespace rogueLike
                     Thread.Sleep(300);
 
 
-                    Console.ForegroundColor = ConsoleColor.White;
+                    if (enemyContact == false)
+                    {
+
+                        if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                        {
+                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //nothing happens
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = ".";
+                            generateWood();
+                            //generate woods
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                        {
+                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the grass and get herbs 
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateHerbs();
+                            //generate herbs
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                        {
+                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy water
+                            Console.ForegroundColor = ConsoleColor.DarkCyan;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                        {
+                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //destroy the bush
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            //generate herbs
+                            generateHerbs();
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                        {
+                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+                    }
+                    else
+                    {
+                        actionString = "you hit the ground";
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                        Console.Write(mapArray[attackedFloorY, attackedFloorX]);
+                    }
+
+
+                    Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                    //recolorize this map tile ASAP!
+                    Console.Write(mapArray[attackedFloorY, attackedFloorX]);
+
                     Console.BackgroundColor = ConsoleColor.Black;
+
                     Console.SetCursorPosition(xPos, yPos);
                     Console.Write("@");
 
-                    Console.BackgroundColor = ConsoleColor.DarkYellow;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    Console.BackgroundColor = ConsoleColor.DarkYellow;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-
-                    Console.BackgroundColor = ConsoleColor.DarkYellow;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos + 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    Console.BackgroundColor = ConsoleColor.DarkYellow;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-
-                    /* */
-                    Thread.Sleep(200);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write(mapArray[yPos - 1, xPos]);
-
-
-
-                    //1st row
-
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos + 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write(mapArray[yPos, xPos - 1]);
-                    //2nd row
-
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write(mapArray[yPos + 1, xPos]);
-
-                    //3rd row
-
-                    
-
-                    
-
-                    //******************************************************
-
-
                     skillAttack = false;
-
 
                 }
 
@@ -1329,169 +2559,93 @@ namespace rogueLike
                         Console.ForegroundColor = ConsoleColor.Cyan;
                     }
 
-                    mana -= 4;
+                    mana -= 2;
                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_dagger.wav";
                     musicPlayer.Play();
 
                     int criticalDamage;
                     criticalDamage = random.Next(0, DEX);
 
-                    dmg = 3*DEX * STR / 10 + criticalDamage;
+                    dmg = 4 * DEX * STR / 10 + criticalDamage;
                     actionString = "you deliver a critical hit! [" + dmg + "] damage";
                     //Console.BackgroundColor = ConsoleColor.DarkRed;
 
 
                     if (direction == "East")
                     { //Norden
-                        Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write("←");
-                        Console.SetCursorPosition(xPos, yPos);
-                        Thread.Sleep(100);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write(mapArray[yPos - 1, xPos]);
-
-
-
-
-                        if (weaponGrade == 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Gray;
-                        }
-                        else if (weaponGrade == 1)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkYellow;
-                        }
-                        else if (weaponGrade == 2)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                        }
+                        attackedFloorX = xPos + 1;
+                        attackedFloorY = yPos;
                         //Osten
                         Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write("↑");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.BackgroundColor = ConsoleColor.Red;
                         Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write("↑");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.SetCursorPosition(xPos + 1, yPos);
                         Console.Write(mapArray[yPos, xPos + 1]);
-                        
+
                     }
 
-                    else if (direction == "South") 
+                    else if (direction == "South")
                     {
-                        //Osten
-                        Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write("↑");
-                        Thread.Sleep(100);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write(mapArray[yPos, xPos + 1]);
-                        if (weaponGrade == 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Gray;
-                        }
-                        else if (weaponGrade == 1)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkYellow;
-                        }
-                        else if (weaponGrade == 2)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                        }
+                        attackedFloorX = xPos;
+                        attackedFloorY = yPos+1;
                         //Süden
                         Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write("→");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.BackgroundColor = ConsoleColor.Red;
                         Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write("→");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.SetCursorPosition(xPos, yPos + 1);
                         Console.Write(mapArray[yPos + 1, xPos]);
 
-                        
+
 
                     }
 
                     else if (direction == "West")
                     {
-                        //Süden
-                        Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write("→");
-                        Thread.Sleep(100);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write(mapArray[yPos + 1, xPos]);
-                        if (weaponGrade == 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Gray;
-                        }
-                        else if (weaponGrade == 1)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkYellow;
-                        }
-                        else if (weaponGrade == 2)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                        }
+                        attackedFloorX = xPos - 1;
+                        attackedFloorY = yPos;
                         //Westen 
                         Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write("↓");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.BackgroundColor = ConsoleColor.Red;
                         Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write("↓");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.SetCursorPosition(xPos - 1, yPos);
                         Console.Write(mapArray[yPos, xPos - 1]);
 
-                        
+
                     }
 
                     else if (direction == "North")
                     {
-                        //Westen 
-                        Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write("↓");
-                        Thread.Sleep(100);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write(mapArray[yPos, xPos - 1]);
-                        if (weaponGrade == 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Gray;
-                        }
-                        else if (weaponGrade == 1)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkYellow;
-                        }
-                        else if (weaponGrade == 2)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                        }
+                        attackedFloorX = xPos;
+                        attackedFloorY = yPos-1;
                         //Norden
                         Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write("←");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.BackgroundColor = ConsoleColor.Red;
                         Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write("←");
+                        Console.Write(item1);
 
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.White;
@@ -1511,10 +2665,91 @@ namespace rogueLike
                         dealDamage();
                     }
                     //*********************************************************************************************
-                    
+                    //       map.DrawMap();
+
+
+                    if (enemyContact == false)
+                    {
+
+                        if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                        {
+                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //nothing happens
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = ".";
+                            generateWood();
+                            //generate woods
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                        {
+                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the grass and get herbs 
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateHerbs();
+                            //generate herbs
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                        {
+                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy water
+                            Console.ForegroundColor = ConsoleColor.DarkCyan;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                        {
+                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //destroy the bush
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateHerbs();
+                            //generate herbs
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                        {
+                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+                    }
+                    else
+                    {
+                        actionString = "you hit the ground";
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                        Console.Write(mapArray[attackedFloorY, attackedFloorX]);
+                    }
+
+                    Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                    //recolorize this map tile ASAP!
+                    Console.Write(mapArray[attackedFloorY, attackedFloorX]);
+
+                    Console.SetCursorPosition(xPos, yPos);
+                    Console.Write("@");
+
                     skillAttack = false;
 
-                  
+                
 
                 }
 
@@ -1526,7 +2761,7 @@ namespace rogueLike
 
                     int criticalDamage;
                     criticalDamage = random.Next(0, CON);
-                    dmg = 2*CON * INT/10 + criticalDamage;
+                    dmg = 4 * CON * INT / 10 + criticalDamage;
                     mana -= 2;
 
                     actionString = "you crush your foes! [" + dmg + "] damage";
@@ -1548,8 +2783,10 @@ namespace rogueLike
 
                     if (direction == "East")
                     {
+                        attackedFloorX = xPos+1;
+                        attackedFloorY = yPos;
                         Console.SetCursorPosition(xPos + 1, yPos);
-                        Console.Write("┮");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
@@ -1569,16 +2806,18 @@ namespace rogueLike
 
                     else if (direction == "South")
                     {
+                        attackedFloorX = xPos;
+                        attackedFloorY = yPos + 1;
                         Console.SetCursorPosition(xPos, yPos + 1);
-                        Console.Write("┶");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
-                        Console.SetCursorPosition(xPos, yPos+1);
+                        Console.SetCursorPosition(xPos, yPos + 1);
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
                         Console.Write("●");
                         Thread.Sleep(200);
-                        Console.SetCursorPosition(xPos, yPos+1);
+                        Console.SetCursorPosition(xPos, yPos + 1);
                         Console.ForegroundColor = ConsoleColor.Gray;
                         Console.Write("O");
                         Thread.Sleep(200);
@@ -1589,8 +2828,11 @@ namespace rogueLike
 
                     else if (direction == "West")
                     {
+                        attackedFloorX = xPos-1;
+                        attackedFloorY = yPos;
+
                         Console.SetCursorPosition(xPos - 1, yPos);
-                        Console.Write("┭");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
@@ -1609,9 +2851,11 @@ namespace rogueLike
 
                     else if (direction == "North")
                     {
+                        attackedFloorX = xPos;
+                        attackedFloorY = yPos - 1;
 
                         Console.SetCursorPosition(xPos, yPos - 1);
-                        Console.Write("┭");
+                        Console.Write(item1);
                         Thread.Sleep(300);
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
@@ -1645,36 +2889,19 @@ namespace rogueLike
                     }
 
                     Console.ForegroundColor = ConsoleColor.Black;
-                    Console.BackgroundColor = ConsoleColor.DarkYellow;
+                    Console.BackgroundColor = ConsoleColor.Yellow;
+                    /*attackedFloorX = xPos;
+                    attackedFloorY = yPos - 1;
 
-                    Console.SetCursorPosition(xPos - 1, yPos - 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
 
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    Console.SetCursorPosition(xPos + 1, yPos - 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    //
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
+                     
+                     */
+                    Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                    Console.Write(mapArray[attackedFloorY, attackedFloorX]);
                     Console.SetCursorPosition(xPos, yPos);
                     Console.Write("@");
-
-                    Console.SetCursorPosition(xPos + 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    //
-                    Console.SetCursorPosition(xPos - 1, yPos + 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    Console.SetCursorPosition(xPos + 1, yPos + 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.Black;
 
                     //*********************************************************************
 
@@ -1682,72 +2909,100 @@ namespace rogueLike
                     Thread.Sleep(300);
 
 
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos + 1, yPos - 1);
-                    Console.Write(mapArray[yPos - 1, xPos + 1]);
+                    if (enemyContact == false)
+                    {
 
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write(mapArray[yPos - 1, xPos]);
+                        if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                        {
+                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //nothing happens
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = ".";
+                            generateWood();
+                            //generate woods
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                        {
+                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the grass and get herbs 
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateHerbs();
+                            //generate herbs
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                        {
+                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy water
+                            Console.ForegroundColor = ConsoleColor.DarkCyan;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                        {
+                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //destroy the bush
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateHerbs();
+                            //generate herbs
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                        {
+                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+                    }
+                    else
+                    {
+                        actionString = "you hit the ground";
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                        Console.Write(mapArray[attackedFloorY, attackedFloorX]);
+                    }
 
 
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos - 1, yPos - 1);
-                    Console.Write(mapArray[yPos - 1, xPos - 1]);
-                    //1st row
+                    Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                    //recolorize this map tile ASAP!
+                    Console.Write(mapArray[attackedFloorY, attackedFloorX]);
 
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos + 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
                     Console.SetCursorPosition(xPos, yPos);
                     Console.Write("@");
 
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write(mapArray[yPos, xPos - 1]);
-                    //2nd row
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos + 1, yPos + 1);
-                    Console.Write(mapArray[yPos + 1, xPos + 1]);
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write(mapArray[yPos + 1, xPos]);
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos - 1, yPos + 1);
-                    Console.Write(mapArray[yPos + 1, xPos - 1]);
-                    //3rd row
                     skillAttack = false;
 
                 }
 
 
 
-                // ****** staff      @Ґ☇   **********************************************************************************************************
+                // ****** staff      @Ґϟ   **********************************************************************************************************
                 if (equipmentInteger == 3)
                 {
                     musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/item_firekit.wav";
                     musicPlayer.Play();
                     int criticalDamage;
                     criticalDamage = random.Next(0, INT);
-                    dmg = 2*INT * DEX / 10 + criticalDamage;
+                    dmg = 4 * INT * DEX / 10 + criticalDamage;
                     actionString = "you use your wand! [" + dmg + "] damage";
                     mana -= 2;
 
@@ -1767,73 +3022,94 @@ namespace rogueLike
 
 
 
-
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write("Ґ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Thread.Sleep(100);
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write(mapArray[yPos - 1, xPos]);
-                    if (weaponGrade == 0)
+                    if (direction == "East")
                     {
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                    }
-                    else if (weaponGrade == 1)
-                    {
+                        attackedFloorX = xPos + 1;
+                        attackedFloorY = yPos;
+                        Console.SetCursorPosition(xPos + 1, yPos);
+                        Console.Write(item1);
+                        Thread.Sleep(300);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(xPos + 1, yPos);
+                        
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    }
-                    else if (weaponGrade == 2)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("ϟ");
+                        Thread.Sleep(200);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.SetCursorPosition(xPos + 1, yPos);
+                        Console.Write(mapArray[yPos, xPos + 1]);
+
                     }
 
-                    Console.SetCursorPosition(xPos + 1, yPos);
-                    Console.Write("Ґ");
-                    Thread.Sleep(100);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.SetCursorPosition(xPos + 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-                    if (weaponGrade == 0)
+                    else if (direction == "South")
                     {
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                    }
-                    else if (weaponGrade == 1)
-                    {
+                        attackedFloorX = xPos;
+                        attackedFloorY = yPos + 1;
+                        Console.SetCursorPosition(xPos, yPos + 1);
+                        Console.Write(item1);
+                        Thread.Sleep(300);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(xPos, yPos + 1);
+                        
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    }
-                    else if (weaponGrade == 2)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("ϟ");
+                        Thread.Sleep(200);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.SetCursorPosition(xPos, yPos + 1);
+                        Console.Write(mapArray[yPos + 1, xPos]);
                     }
 
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write("Ґ");
-                    Thread.Sleep(100);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write(mapArray[yPos + 1, xPos]);
-                    if (weaponGrade == 0)
+                    else if (direction == "West")
                     {
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                    }
-                    else if (weaponGrade == 1)
-                    {
+                        attackedFloorX = xPos - 1;
+                        attackedFloorY = yPos;
+
+                        Console.SetCursorPosition(xPos - 1, yPos);
+                        Console.Write(item1);
+                        Thread.Sleep(300);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(xPos - 1, yPos);
+                        
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write("ϟ");
+                        Thread.Sleep(200);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.SetCursorPosition(xPos - 1, yPos);
+                        Console.Write(mapArray[yPos, xPos - 1]);
                     }
-                    else if (weaponGrade == 2)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                    }
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write("Ґ");
-                    Thread.Sleep(300);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write(mapArray[yPos, xPos - 1]);
 
-                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/skill_missile_exp.wav";
+                    else if (direction == "North")
+                    {
+                        attackedFloorX = xPos;
+                        attackedFloorY = yPos - 1;
+
+                        Console.SetCursorPosition(xPos, yPos - 1);
+                        Console.Write(item1);
+                        Thread.Sleep(300);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(xPos, yPos - 1);
+                        
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write("ϟ");
+                        Thread.Sleep(200);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.SetCursorPosition(xPos, yPos - 1);
+                        Console.Write(mapArray[yPos - 1, xPos]);
+
+                    }
+                    else
+                    {
+
+
+
+                    }
+
+                    musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/item_explosion.wav";
                     musicPlayer.Play();
-
 
                     if (enemyContactEast || enemyContactSouth || enemyContactWest || enemyContactNorth)
                     {
@@ -1842,102 +3118,116 @@ namespace rogueLike
                     }
 
                     Console.ForegroundColor = ConsoleColor.Black;
-                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.BackgroundColor = ConsoleColor.Cyan;
+                    /*attackedFloorX = xPos;
+                    attackedFloorY = yPos - 1;
 
-                    Console.SetCursorPosition(xPos - 1, yPos - 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
 
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    Console.SetCursorPosition(xPos + 1, yPos - 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    //
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
+                     
+                     */
+                    Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                    Console.Write(mapArray[attackedFloorY, attackedFloorX]);
 
                     Console.SetCursorPosition(xPos, yPos);
                     Console.Write("@");
 
-                    Console.SetCursorPosition(xPos + 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    //
-                    Console.SetCursorPosition(xPos - 1, yPos + 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-                    Console.SetCursorPosition(xPos + 1, yPos + 1);
-                    Console.Write(mapArray[yPos, xPos + 1]);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.Black;
 
                     //*********************************************************************
 
 
                     Thread.Sleep(300);
 
+                    if (enemyContact == false)
+                    {
 
-                    Console.ForegroundColor = ConsoleColor.White;
+                        if (mapArray[attackedFloorY, attackedFloorX] == "~")
+                        {
+                            actionString = "we are hitting sand! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //nothing happens
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = ".";
+                            generateWood();
+                            //generate woods
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                        {
+                            actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the grass and get herbs 
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateHerbs();
+                            //generate herbs
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▒")
+                        {
+                            actionString = "we are hitting water! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy water
+                            Console.ForegroundColor = ConsoleColor.DarkCyan;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "●")
+                        {
+                            actionString = "we are hitting a bush! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //destroy the bush
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateHerbs();
+                            //generate herbs
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▀")
+                        {
+                            actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+                    }
+                    else
+                    {
+                        actionString = "you hit the ground";
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                        Console.Write(mapArray[attackedFloorY, attackedFloorX]);
+                    }
+
+
+                    Console.SetCursorPosition(attackedFloorX, attackedFloorY);
+                    //recolorize this map tile ASAP!
+                    Console.Write(mapArray[attackedFloorY, attackedFloorX]);
+
                     Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos + 1, yPos - 1);
-                    Console.Write(mapArray[yPos - 1, xPos + 1]);
 
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos, yPos - 1);
-                    Console.Write(mapArray[yPos - 1, xPos]);
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos - 1, yPos - 1);
-                    Console.Write(mapArray[yPos - 1, xPos - 1]);
-                    //1st row
-
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos + 1, yPos);
-                    Console.Write(mapArray[yPos, xPos + 1]);
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
                     Console.SetCursorPosition(xPos, yPos);
                     Console.Write("@");
 
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos - 1, yPos);
-                    Console.Write(mapArray[yPos, xPos - 1]);
-                    //2nd row
-
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos + 1, yPos + 1);
-                    Console.Write(mapArray[yPos + 1, xPos + 1]);
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos, yPos + 1);
-                    Console.Write(mapArray[yPos + 1, xPos]);
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(xPos - 1, yPos + 1);
-                    Console.Write(mapArray[yPos + 1, xPos - 1]);
-                    //3rd row
                     skillAttack = false;
 
                 }
 
 
 
-                
+
 
             }
 
@@ -2532,13 +3822,13 @@ namespace rogueLike
 
                 else
                 {
-                   /* if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
-                    else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Green; }
-                    else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
-                    else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
-                    Console.SetCursorPosition(xPos, yPos);
-                    Console.Write("@");
-                    Console.ForegroundColor = ConsoleColor.White;*/
+                    /* if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
+                     else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Green; }
+                     else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+                     else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
+                     Console.SetCursorPosition(xPos, yPos);
+                     Console.Write("@");
+                     Console.ForegroundColor = ConsoleColor.White;*/
                 }
 
 
@@ -2575,12 +3865,12 @@ namespace rogueLike
 
 
             }
-            
+
             // activate lever
             else if (mapArray[yPos, xPos] == "┖")
             {
                 Console.SetCursorPosition(xPos, yPos - 1);
-                giveLadder(xPos, yPos-1);
+                giveLadder(xPos, yPos - 1);
             }
 
 
@@ -2664,12 +3954,12 @@ namespace rogueLike
                 actionString = "a ladder [#] appeared!                 ";
             }
 
-           /* else if (map.mapArray == map.map2Array)
-            {
-                Console.SetCursorPosition(x, y);
-                Console.Write(" ");
-                actionString = "a ladder [#] appeared!                 ";
-            }*/
+            /* else if (map.mapArray == map.map2Array)
+             {
+                 Console.SetCursorPosition(x, y);
+                 Console.Write(" ");
+                 actionString = "a ladder [#] appeared!                 ";
+             }*/
         }
         public void coverLadder(int x, int y)
         {
@@ -2722,24 +4012,22 @@ namespace rogueLike
         {
             int xPos = 0;
             int yPos = mapArray.GetLength(0) + 1;
-            
-
-
-
-                //Console.BackgroundColor = ConsoleColor.Black;
-                //Console.ForegroundColor = ConsoleColor.Green;
-                //Console.ResetColor();
 
 
 
 
+            //Console.BackgroundColor = ConsoleColor.Black;
+            //Console.ForegroundColor = ConsoleColor.Green;
+            //Console.ResetColor();
 
 
 
-                Console.SetCursorPosition(xPos + 25, yPos + 3);
-                Console.Write("                     "); // Alte Richtung löschen, mit Leerschlag überschreiben
-                Console.Write(actionString + "           ");  // was machst du?
 
+
+
+
+         //   Console.SetCursorPosition(xPos + 25, yPos + 3);
+          
 
             /*    Console.SetCursorPosition(xPos + 25, yPos + 6);
                 Console.Write("                     "); // Alte Richtung löschen, mit Leerschlag überschreiben
@@ -2747,7 +4035,7 @@ namespace rogueLike
                 */
 
 
-            
+
 
 
 
@@ -2760,9 +4048,12 @@ namespace rogueLike
             // xPos can be maparray.getlength!!
 
             int xPos = 60;
-            int yPos = 1;
+            int yPos = 12;
 
-            
+            //display stats only when needed!
+
+         /*   if ()
+            {
 
             Console.SetCursorPosition(xPos, yPos);
             Console.Write("STR      " + STR);
@@ -2779,29 +4070,11 @@ namespace rogueLike
             Console.SetCursorPosition(xPos, yPos);
             Console.Write(" ");
             yPos++;
+            }*/
 
 
 
 
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("weapon [space] " + item1);
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            if (equipmentInteger == 1) { Console.Write("skill [enter] " + item1); }
-            if (equipmentInteger == 0) { Console.Write("skill [enter] " + item1); }
-            if (equipmentInteger == 2) { Console.Write("skill [enter] " + item1); }
-            if (equipmentInteger == 3) { Console.Write("skill [enter] " + item1); }
-
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("item [e] " + item2);
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("walk [wasd]");
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write(" ");
-            yPos++;
 
 
 
@@ -2821,195 +4094,355 @@ namespace rogueLike
             // ladder       #
             // fire         ▲
 
-/*
-            if (hasFire)
-            {
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("firekit [1] ▲");
-                yPos++;
-            }
+            /*
+                        if (hasFire)
+                        {
+                            Console.SetCursorPosition(xPos, yPos);
+                            Console.Write("firekit [1] ▲");
+                            yPos++;
+                        }
 
-           else
-            {
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write(" 1");
-                yPos++;
-            }
+                       else
+                        {
+                            Console.SetCursorPosition(xPos, yPos);
+                            Console.Write(" 1");
+                            yPos++;
+                        }
 
-            if (hasMagnet)
-            {
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("magnet [2] ∩");
-                yPos++;
-            }
+                        if (hasMagnet)
+                        {
+                            Console.SetCursorPosition(xPos, yPos);
+                            Console.Write("magnet [2] ∩");
+                            yPos++;
+                        }
 
-            if (hasDiscus)
-            {
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("discus [3] ○");
-                yPos++;
-            }
+                        if (hasDiscus)
+                        {
+                            Console.SetCursorPosition(xPos, yPos);
+                            Console.Write("discus [3] ○");
+                            yPos++;
+                        }
 
-            if (hasShield)
-            {
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("shield [4] ■");
-                yPos++;
-            }
-
-
-
-            if (hasBomb)
-            {
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("bomb [5] ●");
-                yPos++;
-            }
-
-            if (hasBow)
-            {
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("bow [6] )→");
-                yPos++;
-            }
-
-            else
-            {
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write(" ");
-                yPos++;
-            }
-
-                if (hasHookshot)
-            {
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("rope [7] --->");
-                yPos++;
-            }
-            */
+                        if (hasShield)
+                        {
+                            Console.SetCursorPosition(xPos, yPos);
+                            Console.Write("shield [4] ■");
+                            yPos++;
+                        }
 
 
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("coins");
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.Write(" ♦ ");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(+ coins);
 
-            Console.SetCursorPosition(xPos, yPos+1);
-            Console.Write("life ") ;
-            Console.ForegroundColor = ConsoleColor.Green;
-            //Console.Write(" ♥ ");
-            for (int i = 0; i < life; i++)
-            {
-                if (i < health)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("♥ ");  // wieviel leben hast du?
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else
-                {
-                    Console.Write(" ");  // wieviel leben hast du?
-                }
-            }
+                        if (hasBomb)
+                        {
+                            Console.SetCursorPosition(xPos, yPos);
+                            Console.Write("bomb [5] ●");
+                            yPos++;
+                        }
+
+                        if (hasBow)
+                        {
+                            Console.SetCursorPosition(xPos, yPos);
+                            Console.Write("bow [6] )→");
+                            yPos++;
+                        }
+
+                        else
+                        {
+                            Console.SetCursorPosition(xPos, yPos);
+                            Console.Write(" ");
+                            yPos++;
+                        }
+
+                            if (hasHookshot)
+                        {
+                            Console.SetCursorPosition(xPos, yPos);
+                            Console.Write("rope [7] --->");
+                            yPos++;
+                        }
+                        */
+         //   Console.Write(actionString);
+           
 
 
             //Console.SetCursorPosition(xPos, yPos);
             //Console.Write(burnCounter);
             //yPos++;
 
-            yPos++;
-            yPos++;
-            yPos++;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.BackgroundColor = ConsoleColor.DarkCyan;
-            Console.SetCursorPosition(xPos, yPos);
+           
 
-            //    << minimap >>  ****************************************************************************************************************
-      
+            yPos++;
+          
 
-            for (int y = 1; y <9;y++)
-            {
-                for (int x = 1; x < 9; x++)
+                //    << minimap >>  ****************************************************************************************************************
+
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.DarkGray;
+                yPos++;
+                Console.SetCursorPosition(xPos, yPos);
+
+                int oldYpos = yPos;
+
+
+                for (int y = 1; y < 9; y++)
                 {
-                    if (x < 9)
+                    for (int x = 1; x < 9; x++)
                     {
-                        
-                        if (x == xCoordinates && y == yCoordinates)
+                        if (x < 9)
                         {
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.BackgroundColor = ConsoleColor.Green;
-                            Console.Write(xCoordinates+""+yCoordinates+" ");
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.BackgroundColor = ConsoleColor.Black;
-                            
+
+                            if (x == xCoordinates && y == yCoordinates)
+                            {
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.BackgroundColor = ConsoleColor.Green;
+                                Console.Write(xCoordinates + "" + yCoordinates + " ");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.BackgroundColor = ConsoleColor.Black;
+
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Black;
+                                Console.BackgroundColor = ConsoleColor.DarkGray;
+                                Console.Write(x + "" + y + ",");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.BackgroundColor = ConsoleColor.Black;
+
+                            }
+                            if (x == 8)
+                            {
+                                yPos++;
+                                Console.SetCursorPosition(xPos, yPos);
+                                //y++;
+                            }
                         }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.BackgroundColor = ConsoleColor.DarkCyan;
-                            Console.Write(x+""+y+",");
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.BackgroundColor = ConsoleColor.Black;
-                            
-                        }
-                        if (x == 8)
-                        {
-                            yPos++;
-                            Console.SetCursorPosition(xPos, yPos);
-                            //y++;
-                        }
+
+                    }
+
+
+                }
+
+                xPos = 88;
+                yPos = oldYpos;
+
+                Console.SetCursorPosition(xPos, yPos);
+                Console.Write("weapon [space] " + item1);
+                yPos++;
+                Console.SetCursorPosition(xPos, yPos);
+                if (equipmentInteger == 1) { Console.Write("bash [enter] " + item1); }
+                if (equipmentInteger == 0) { Console.Write("backstab [enter] " + item1); }
+                if (equipmentInteger == 2) { Console.Write("holy hammer [enter] " + item1); }
+                if (equipmentInteger == 3) { Console.Write("magic blast [enter] " + item1); }
+
+                yPos++;
+                Console.SetCursorPosition(xPos, yPos);
+                Console.Write("offhand [e] " + item2);
+                yPos++;
+
+                Console.SetCursorPosition(xPos, yPos);
+                Console.Write(" ");
+                yPos++;
+
+
+
+                Console.SetCursorPosition(xPos, yPos);
+                Console.Write("coins");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write(" ♦ ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(+coins);
+
+
+
+
+                Console.SetCursorPosition(xPos, yPos + 1);
+                Console.Write("Level " + lvl + ", exp " + exp + "/" + requiredExp);
+                yPos++;
+                Console.SetCursorPosition(xPos, yPos + 1);
+                Console.Write("life ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                //Console.Write(" ♥ ");
+                for (int i = 0; i < life; i++)
+                {
+                    if (i < health)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("♥ ");  // wieviel leben hast du?
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write(" ");  // wieviel leben hast du?
                     }
                 }
 
-                
+
+            
+
+                //display inventory
+                yPos = 0;
+                xPos = 60;
+                Console.SetCursorPosition(xPos, yPos);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.BackgroundColor = ConsoleColor.DarkGray;
+                Console.Write("inventory");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.BackgroundColor = ConsoleColor.Black;
+
+                yPos++;
+                if (inventory.Count >= 1)
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        yPos++;
+                        // we are looking at this from the inventory!
+                        if (selectedItem == i)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.SetCursorPosition(xPos, yPos);
+                            if (inventory.Count >= 1 && i < inventory.Count)
+                            Console.Write("" + inventory[i]);
+                            Console.ForegroundColor = ConsoleColor.White;
+
+                        //if we press r while over this item,
+                        //then equip it!
+
+                        if (eqList[i] != null)
+                        {
+                            if (equipNow == true && eqList[selectedItem].itemType == 0)
+                            {
+                                equipItem(eqList[i].itemIcon, 2, 2);
+                                item1 = eqList[i].itemIcon;
+                                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
+                                musicPlayer.Play();
+                                equipNow = false;
+
+                            }
+                        }
+                        //consume items!
+                        /*       else if (equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 0 || equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 5)
+                               {
+                                   actionString = ("you are eating " + eqList[selectedItem].name);
+                                   eqList.RemoveAt(selectedItem);
+                                   health +=5; mana += 2;
+                               }*/
+                        //other things dont work yet!
+                        else if (equipNow == true)
+                        {
+                            actionString= ("you can not equip " + eqList[selectedItem].name);
+                        }
+
+                        itemID++;
+                        }
+                        else
+                        {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.SetCursorPosition(xPos, yPos);
+                        if (inventory.Count >= 1 && i < inventory.Count)
+                            Console.Write("" + inventory[i]);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        itemID++;
+                        }
+                    }
+                }
+                yPos = 1;
+                xPos = 85;
+                if (inventory.Count > 10)
+                {
+                for (int i = 10; i < 20; i++)
+                {
+                    yPos++;
+                    // we are looking at this from the inventory!
+                    // we are looking at this from the inventory!
+                    if (selectedItem == i)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.SetCursorPosition(xPos, yPos);
+                        if (inventory.Count >= 1 && i < inventory.Count)
+                            Console.Write("" + inventory[i]);
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        //if we press r while over this item,
+                        //then equip it!
+                        if (eqList[i] != null)
+                        {
+                        if (equipNow == true && eqList[selectedItem].itemType == 0)
+                        {
+                            equipItem(eqList[i].itemIcon, 2, 2);
+                            item1 = eqList[i].itemIcon;
+                            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
+                            musicPlayer.Play();
+                            equipNow = false;
+
+                        }
+                        }
+                        //consume items!
+                      /*  else if (equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 0 || equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 5)
+                        {
+                            actionString = ("you are eating " + eqList[selectedItem].name);
+                            eqList.RemoveAt(selectedItem);
+                            health += 5; mana += 2;
+                        }*/
+                        //other things dont work yet!
+                        else if (equipNow == true)
+                        {
+                            actionString = ("you can not equip " + eqList[selectedItem].name);
+                        }
+
+                        itemID++;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.SetCursorPosition(xPos, yPos);
+                        if (inventory.Count >= 1 && i < inventory.Count)
+                            Console.Write("" + inventory[i]);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        itemID++;
+                    }
+                }
 
             }
+            
 
-            yPos++;
-            /*
-            Console.Write("┌────────────────┐");
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("│ A2,B2,C2,D2,E2 │");
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("│ A3,B3,C3,D3,E3 │");
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("│ A3,B4,C4,D4,E4 │");
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("│ A4,B5,C5,D5,E5 │");
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("│ A6,B6,C6,D6,E6 │");
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("└────────────────┘");
-            yPos++;*/
+          
+           
+            
+
+           
+
+           
 
             //**********************************************************************************************************************************
-            Console.SetCursorPosition(xPos, yPos);
+            //Console.SetCursorPosition(xPos, yPos);
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
 
             // other parts of interface
             xPos = 0;
-            yPos = mapArray.GetLength(0) + 2;
+            yPos = mapArray.GetLength(0) +1;
 
             Console.SetCursorPosition(xPos, yPos);
-            Console.WriteLine("────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────");
+            Console.WriteLine("──────────────────────────────────────────────────────────────────────────────────────────────────────────────");
             yPos++;
             Console.Write("                               "); // Alte Richtung löschen, mit Leerschlag überschreiben
             Console.SetCursorPosition(xPos, yPos);
             Console.Write(" level " + xCoordinates + "/" + yCoordinates + ", compass: " + direction);  // neue Richtungsangabe
-            Console.Write("                               ");
+
+            //            Console.Write("                               ");
+
+            xPos = 40;
+            //yPos++;
+            Console.SetCursorPosition(xPos, yPos);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(" "+actionString + "");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            yPos++;
+            xPos = 0;
 
             //for each life u got, for loop and write "█"
-            Console.SetCursorPosition(xPos, yPos + 2);
+            Console.SetCursorPosition(xPos, yPos + 1);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(" ♥ ");
             Console.ForegroundColor = ConsoleColor.White;
@@ -3026,14 +4459,14 @@ namespace rogueLike
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.Write("▄");  // wieviel leben hast du?
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
 
             //for each life u got, for loop and write "█"
-            Console.SetCursorPosition(xPos, yPos + 3);
+            Console.SetCursorPosition(xPos, yPos + 2);
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.Write(" ▲ ");
             Console.ForegroundColor = ConsoleColor.White;
@@ -3050,20 +4483,23 @@ namespace rogueLike
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.Write("▄");  // wieviel mana hast du?
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
 
-            
+            // display all actions via console.writeline
+
+           
+
 
 
         }
 
         public bool playerDied()
         {
-            if (health <=0)
+            if (health <= 0)
             {
                 return true;
             }
@@ -3075,86 +4511,79 @@ namespace rogueLike
 
 
         //turn into an enum...
-       /* public enum GameState
-        {
-            door1,
-            door2,
-            door3,
-            door4,
-            door5,
-            door6,
-            outside
-        }*/
+        /* public enum GameState
+         {
+             door1,
+             door2,
+             door3,
+             door4,
+             door5,
+             door6,
+             outside
+         }*/
 
         public bool enterDoor()        //open doors
         {
             if (mapArray[yPos, xPos] == "1")
             {
-                actionString = "you open door 1";
+                indoors = true;
+                actionString = "you open a door";
                 return true;
             }
-            return false;
-        }
 
-        public bool enterDoor2()        //open doors
-        {
-            if (mapArray[yPos, xPos] == "2")
+            else if (mapArray[yPos, xPos] == "2")
             {
-                actionString = "you open door 2";
+                indoors = true;
+                actionString = "you open a door";
                 return true;
             }
-            return false;
-        }
 
-        public bool enterDoor3()        //open doors
-        {
-            if (mapArray[yPos, xPos] == "3")
+            else if (mapArray[yPos, xPos] == "3")
             {
-                actionString = "you open door 3";
+                indoors = true;
+                actionString = "you open a door";
                 return true;
             }
-            return false;
-        }
 
-        public bool enterDoor4()        //open doors
-        {
-            if (mapArray[yPos, xPos] == "4")
+            else if (mapArray[yPos, xPos] == "4")
             {
-                actionString = "you open door 4";
-                
+                indoors = true;
+                actionString = "you open a door";
                 return true;
             }
-            return false;
-        }
 
-        public bool enterDoor5()        //open doors
-        {
-            if (mapArray[yPos, xPos] == "5")
+            else if (mapArray[yPos, xPos] == "5")
             {
-                actionString = "you open door 5";
-             
+                indoors = true;
+                actionString = "you open a door";
                 return true;
             }
-            return false;
-        }
 
-        public bool enterDoor6()        //open doors
-        {
-            if (mapArray[yPos, xPos] == "6")
+            else if(mapArray[yPos, xPos] == "6")
             {
-                actionString = "you open door 6";
-                
+                indoors = true;
+                actionString = "you open a door";
                 return true;
             }
             return false;
         }
 
+
+        public bool leaveDoor()        //open doors
+        {
+            if (yPos > 10 && indoors == true)
+            {
+                actionString = "you leave the house";
+                return true;
+            }
+            return false;
+        }
 
         //*************** move global map ********************************************************************************
 
         public bool travelEast()        //enchanted forests
         {
-            if (xPos == 52)
+            if (xPos == 52 && indoors == false && xCoordinates <8)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
@@ -3167,7 +4596,7 @@ namespace rogueLike
 
         public bool travelWest()        //city of the sonnenritter, schönwelt
         {
-            if (xPos == 2)
+            if (xPos == 2 && indoors == false && xCoordinates > 1)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
@@ -3180,7 +4609,7 @@ namespace rogueLike
 
         public bool travelSouth()        //ocean of milk 
         {
-            if (yPos == 2)
+            if (yPos == 2 && indoors == false && yCoordinates > 1)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
@@ -3193,7 +4622,7 @@ namespace rogueLike
 
         public bool travelNorth()        //silver mountains
         {
-            if (yPos == 18)
+            if (yPos == 18 && indoors == false && yCoordinates < 8)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
@@ -3256,7 +4685,7 @@ namespace rogueLike
                      actionString = "you travel north " + xCoordinates + "/" + (yCoordinates + 1);
                      //   yCoordinates--;
                      return true;
-                 }
+                 }com
                  return false;
              }
 
@@ -3291,23 +4720,34 @@ namespace rogueLike
                 string enemyRace = "e";
                 int enemyRaceInt = 0;
                 Random random = new Random();
-                enemyRaceInt = random.Next(0, 6);
+                enemyRaceInt = random.Next(0, 7);
 
                 int xpos;
                 int ypos;
-                xpos = random.Next(4, 55);
+                xpos = random.Next(4, 53);
                 ypos = random.Next(7, 18);
 
-                Enemy myEnemy = new Enemy(enemyRaceInt, xpos, ypos);
+                if (mapArray[ypos, xpos] == "█")
+                {
+                    int newYPos = random.Next(-2,2);
+                    ypos = ypos + newYPos;
+                    if (mapArray[ypos, xpos] == "█")
+                    {
+                        int newXPos = random.Next(-2, 2);
+                        xpos = xpos+ newXPos;
+                    }
+                }
+                Enemy myEnemy = new Enemy(enemyRaceInt, xpos, ypos, lvl);
 
                 //enum
-                if (enemyRaceInt == 0) { enemyRace = "s"; enemyList.Add(myEnemy); myEnemy.raceInt = 0;  }   //this is a snake
-                else if (enemyRaceInt == 1) { enemyRace = "w"; enemyList.Add(myEnemy); myEnemy.raceInt = 1;  }   //this is a wolf
-                else if (enemyRaceInt == 2) { enemyRace = "g"; enemyList.Add(myEnemy); myEnemy.raceInt = 2;  }   //this is a goblin
-                else if (enemyRaceInt == 3) { enemyRace = "t"; enemyList.Add(myEnemy); myEnemy.raceInt = 3;  }   //this is a troll
+                if (enemyRaceInt == 0) { enemyRace = "s"; enemyList.Add(myEnemy); myEnemy.raceInt = 0; }   //this is a snake
+                else if (enemyRaceInt == 1) { enemyRace = "w"; enemyList.Add(myEnemy); myEnemy.raceInt = 1; }   //this is a wolf
+                else if (enemyRaceInt == 2) { enemyRace = "g"; enemyList.Add(myEnemy); myEnemy.raceInt = 2; }   //this is a goblin
+                else if (enemyRaceInt == 3) { enemyRace = "t"; enemyList.Add(myEnemy); myEnemy.raceInt = 3; }   //this is a troll
                 else if (enemyRaceInt == 4) { enemyRace = "k"; enemyList.Add(myEnemy); myEnemy.raceInt = 4; }   //this is a knight
                 else if (enemyRaceInt == 5) { enemyRace = "r"; enemyList.Add(myEnemy); myEnemy.raceInt = 5; }   //this is a rogue
                 else if (enemyRaceInt == 6) { enemyRace = "e"; enemyList.Add(myEnemy); myEnemy.raceInt = 6; }   //this is an enchanter
+                else { enemyRace = "e"; enemyList.Add(myEnemy); myEnemy.raceInt = 6; }   //this is an enchanter
 
                 myEnemy.raceLetter = enemyRace;
                 //else if (enemyRaceInt == 4) { enemyRace = "o"; }   //this is a ork
@@ -3316,19 +4756,20 @@ namespace rogueLike
                 myEnemy.yPos = ypos;
 
 
-                
-                    //enemy.raceInt = enemyNumbers;
-                    myFloor = mapArray[ypos, xpos];
-                    myEnemy.floorString = myFloor;
-                    UpdateEnemy(xpos, ypos, myFloor, enemyRace);
 
-                    //setupEnemy(xpos, ypos, mapArray[xpos, ypos]);
-                    enemyRaceInt = random.Next(0, 3);
-           
+                //enemy.raceInt = enemyNumbers;
+                myFloor = mapArray[ypos, xpos];
+                myEnemy.floorString = myFloor;
+                
+                UpdateEnemy(xpos, ypos, myFloor, enemyRace);
+
+                //setupEnemy(xpos, ypos, mapArray[xpos, ypos]);
+                enemyRaceInt = random.Next(0, 3);
+
 
                 i++;
             }
-           
+
         }
 
         public void UpdateEnemy(int x, int y, string floor, string enemy)
@@ -3352,15 +4793,15 @@ namespace rogueLike
 
             //*** attack player ************************************************************************************************************************************
 
-            
+
 
             //battle method
             if (enemyContact == true)
             {
                 //
 
-                
-               
+
+
                 EnemyAttackFunction(enemyIndex);
             }
             else
@@ -3371,7 +4812,7 @@ namespace rogueLike
 
         //**********************************************************************************************************************************************
 
-       
+
 
 
 
@@ -3380,55 +4821,55 @@ namespace rogueLike
 
             int movementInt = random.Next(0, 3);
             Thread.Sleep(100);
-/*
+            /*
+                        //move east
+                        if (movementInt == 0 && mapArray[y, x + 1] != "█" && mapArray[yPos, xPos + 1] != "▒")
+                        {
+                            Console.SetCursorPosition(x+1, y); //Erst an Position Löschen
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write(enemy);
+                            mapArray[y, x + 1] = enemy;
+
+                        }
+                        //move south
+                        else if (movementInt == 1 && mapArray[y + 1, x] != "█" && mapArray[yPos + 1, xPos] != "▒")
+                        {
+                            Console.SetCursorPosition(x, y+1); //Erst an Position Löschen
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write(enemy);
+                            mapArray[y + 1, x] = enemy;
+                        }
+                        //move west
+                        else if (movementInt == 2 && mapArray[y, x - 1] != "█" && mapArray[yPos, xPos - 1] != "▒")
+                        {
+                            Console.SetCursorPosition(x - 1, y); //Erst an Position Löschen
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write(enemy);
+                            mapArray[y, x - 1] = enemy;
+
+                        }
+                        //move north
+                        else if (movementInt == 3 && mapArray[y - 1, x] != "█" && mapArray[yPos - 1, xPos] != "▒")
+                        {
+                            Console.SetCursorPosition(x, y-1); //Erst an Position Löschen
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write(enemy);
+                            mapArray[y - 1, x] = enemy;
+
+                        }
+
+                        else
+                        {
+                            return;
+                        }
+                        */
+
+
+
             //move east
             if (movementInt == 0 && mapArray[y, x + 1] != "█" && mapArray[yPos, xPos + 1] != "▒")
             {
-                Console.SetCursorPosition(x+1, y); //Erst an Position Löschen
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(enemy);
-                mapArray[y, x + 1] = enemy;
 
-            }
-            //move south
-            else if (movementInt == 1 && mapArray[y + 1, x] != "█" && mapArray[yPos + 1, xPos] != "▒")
-            {
-                Console.SetCursorPosition(x, y+1); //Erst an Position Löschen
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(enemy);
-                mapArray[y + 1, x] = enemy;
-            }
-            //move west
-            else if (movementInt == 2 && mapArray[y, x - 1] != "█" && mapArray[yPos, xPos - 1] != "▒")
-            {
-                Console.SetCursorPosition(x - 1, y); //Erst an Position Löschen
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(enemy);
-                mapArray[y, x - 1] = enemy;
-
-            }
-            //move north
-            else if (movementInt == 3 && mapArray[y - 1, x] != "█" && mapArray[yPos - 1, xPos] != "▒")
-            {
-                Console.SetCursorPosition(x, y-1); //Erst an Position Löschen
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(enemy);
-                mapArray[y - 1, x] = enemy;
-
-            }
-
-            else
-            {
-                return;
-            }
-            */
-
-
-            
-            //move east
-            if (movementInt == 0 && mapArray[y, x + 1] != "█" && mapArray[yPos, xPos + 1] != "▒")
-            {
-                
                 //replace floor with old floor! maparray y,x!!
                 mapArray[y, x] = floor;
                 Console.ForegroundColor = ConsoleColor.White;
@@ -3448,7 +4889,7 @@ namespace rogueLike
             //move south
             else if (movementInt == 1 && mapArray[y + 1, x] != "█" && mapArray[yPos + 1, xPos] != "▒")
             {
-                
+
                 //replace floor with old floor! maparray y,x!!
                 mapArray[y, x] = floor;
                 Console.ForegroundColor = ConsoleColor.White;
@@ -3468,7 +4909,7 @@ namespace rogueLike
             //move west
             else if (movementInt == 2 && mapArray[y, x - 1] != "█" && mapArray[yPos, xPos - 1] != "▒")
             {
-                
+
                 //replace floor with old floor! maparray y,x!!
                 mapArray[y, x] = floor;
                 Console.ForegroundColor = ConsoleColor.White;
@@ -3488,7 +4929,7 @@ namespace rogueLike
             //move north
             else if (movementInt == 3 && mapArray[y - 1, x] != "█" && mapArray[yPos - 1, xPos] != "▒")
             {
-                
+
                 //replace floor with old floor! maparray y,x!!
                 mapArray[y, x] = floor;
                 Console.ForegroundColor = ConsoleColor.White;
@@ -3525,52 +4966,52 @@ namespace rogueLike
         {
             if (health >= 1 && enemyList[i].ready == true)
             {
-            currentEnemy = enemyList[i];
-            int enemySTR = enemyList[i].STR;
-            int enemyCON = enemyList[i].CON;
-            int enemyDEX = enemyList[i].DEX;
-            int enemyINT = enemyList[i].INT;
-            int enemyRaceInt = enemyList[i].raceInt;
+                currentEnemy = enemyList[i];
+                int enemySTR = enemyList[i].STR;
+                int enemyCON = enemyList[i].CON;
+                int enemyDEX = enemyList[i].DEX;
+                int enemyINT = enemyList[i].INT;
+                int enemyRaceInt = enemyList[i].raceInt;
 
                 Thread.Sleep(250);
-            Console.SetCursorPosition(xPos, yPos);
-            currentEnemy.targetPosX = xPos;
-            currentEnemy.targetPosY = yPos;
+                Console.SetCursorPosition(xPos, yPos);
+                currentEnemy.targetPosX = xPos;
+                currentEnemy.targetPosY = yPos;
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_mace.wav";
                 musicPlayer.Play();
-            // Thread.Sleep(200);
+                // Thread.Sleep(200);
 
-            //int enemyDamage = random.Next (1, currentEnemy.dmg);
+                //int enemyDamage = random.Next (1, currentEnemy.dmg);
 
-            if (enemyRaceInt == 0)
-            {
-                actionString = "a snake attacks you! " + currentEnemy.dmg + "/" + currentEnemy.health + ")                       ";
-            }
-            else if (enemyRaceInt == 1)
-            {
-                actionString = "a wolf attacks you! (" + currentEnemy.dmg + "/"+ currentEnemy.health+")            ";
-            }
-            else if (enemyRaceInt == 2)
-            {
-                actionString = "a goblin attacks you! " + currentEnemy.dmg + "/" + currentEnemy.health + ")             ";
-            }
-            else if (enemyRaceInt == 3)
-            {
-                actionString = "a troll attacks you! " + currentEnemy.dmg + "/" + currentEnemy.health + ")      ";
-            }
+                if (enemyRaceInt == 0)
+                {
+                    actionString = "a snake attacks you! (" + currentEnemy.dmg + "/" + currentEnemy.health + ") level " +lvl+ "                       ";
+                }
+                else if (enemyRaceInt == 1)
+                {
+                    actionString = "a wolf attacks you! (" + currentEnemy.dmg + "/" + currentEnemy.health + ") level " + lvl + "            ";
+                }
+                else if (enemyRaceInt == 2)
+                {
+                    actionString = "a goblin attacks you! (" + currentEnemy.dmg + "/" + currentEnemy.health + ") level " + lvl + "             ";
+                }
+                else if (enemyRaceInt == 3)
+                {
+                    actionString = "a troll attacks you! (" + currentEnemy.dmg + "/" + currentEnemy.health + ") level " + lvl + "      ";
+                }
                 else if (enemyRaceInt == 4)
                 {
-                    actionString = "a knight attacks you! " + currentEnemy.dmg + "/" + currentEnemy.health + ")               ";
+                    actionString = "a knight attacks you! (" + currentEnemy.dmg + "/" + currentEnemy.health + ") level " + lvl + "               ";
                 }
                 else if (enemyRaceInt == 5)
                 {
-                    actionString = "a rogue attacks you! " + currentEnemy.dmg + "/" + currentEnemy.health + ")                 ";
+                    actionString = "a rogue attacks you! (" + currentEnemy.dmg + "/" + currentEnemy.health + ") level " + lvl + "                 ";
                 }
                 else if (enemyRaceInt == 6)
                 {
-                    actionString = "an enchanter attacks you! " + currentEnemy.dmg + "/" + currentEnemy.health + ")             ";
+                    actionString = "an enchanter attacks you! (" + currentEnemy.dmg + "/" + currentEnemy.health + ") level " + lvl + "             ";
                 }
 
 
@@ -3579,49 +5020,49 @@ namespace rogueLike
                 if (enemyContact == true)
 
                     Console.SetCursorPosition(xPos, yPos);
-                    Console.Write(currentEnemy.attackString);  // angriffbildchen? 
+                Console.Write(currentEnemy.attackString);  // angriffbildchen? 
 
-                    currentEnemy.ready = false;
-                    Thread.Sleep(400);
-                    health -= currentEnemy.dmg;
-                    enemyList[i].attack(health);
-                    Thread.Sleep(200);
+                currentEnemy.ready = false;
+                Thread.Sleep(400);
+                health -= currentEnemy.dmg;
+                enemyList[i].attack(health);
+                Thread.Sleep(200);
 
             }
-            }
-            
-
         }
 
 
-
-
-        /*  public void enemyAttack(int x, int y)
-          {
-              musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_sword.wav";
-              musicPlayer.Play();
-
-              enemyContact = true;
-              actionString = "this enemy wants to attack you!";
-              Console.SetCursorPosition(x, y); //Erst an Position Löschen
-
-              //enemyList[enemyIndex];  //this is your enemy
-              int enemyIndex; //which enemy in the array stands on coordinates x/y??
-
-              //Console.SetCursorPosition(x,y);
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.Write("X");  // wieviel leben hast du?
-              Console.ForegroundColor = ConsoleColor.White;
-              Thread.Sleep(200);
-              if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
-              else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Green; }
-              else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
-              else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkMagenta; }
-              Console.Write("@");  // wieviel leben hast du?
-              Console.ForegroundColor = ConsoleColor.White;
-          }*/
-
-
-
     }
+
+
+
+
+    /*  public void enemyAttack(int x, int y)
+      {
+          musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/att_sword.wav";
+          musicPlayer.Play();
+
+          enemyContact = true;
+          actionString = "this enemy wants to attack you!";
+          Console.SetCursorPosition(x, y); //Erst an Position Löschen
+
+          //enemyList[enemyIndex];  //this is your enemy
+          int enemyIndex; //which enemy in the array stands on coordinates x/y??
+
+          //Console.SetCursorPosition(x,y);
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.Write("X");  // wieviel leben hast du?
+          Console.ForegroundColor = ConsoleColor.White;
+          Thread.Sleep(200);
+          if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
+          else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Green; }
+          else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+          else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkMagenta; }
+          Console.Write("@");  // wieviel leben hast du?
+          Console.ForegroundColor = ConsoleColor.White;
+      }*/
+
+
+
+}
 

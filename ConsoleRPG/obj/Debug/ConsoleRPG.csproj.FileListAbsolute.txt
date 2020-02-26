@@ -226,3 +226,6 @@ C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\bin\Debug\rogueLike
 C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\obj\Debug\ConsoleRPG.csprojAssemblyReference.cache
 C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\obj\Debug\rogueLike.exe
 C:\Users\Philipp\Desktop\projekte qantm\roguelite\ConsoleRPG\obj\Debug\rogueLike.pdb
+D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\credits.wav
+D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\item_explosion.wav
+D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\secret.wav
