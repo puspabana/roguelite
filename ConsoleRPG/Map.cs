@@ -12,6 +12,11 @@ namespace rogueLike
         public int xCoordinates = 4;
         public int yCoordinates = 3;
         public string[,] braneWorld = new string[3250, 900];
+
+
+        private int xMachinePos = 100;
+        private int yMachinePos =100;
+
         // structure levels this way: All dungeons are linear and use ladders to go from room to toom. 
 
         // the open map is an array from A1...
@@ -4198,7 +4203,7 @@ namespace rogueLike
                     {
                         Console.ForegroundColor = ConsoleColor.Green; // make portals magenta    sun ☼ star ✶  ✸
                     }
-                    else if (mapArray[y, x] == "o") { Console.ForegroundColor = ConsoleColor.DarkMagenta; }
+                    else if (mapArray[y, x] == "o") { Console.ForegroundColor = ConsoleColor.Gray; }
 
                     else if (mapArray[y, x] == "●") { Console.ForegroundColor = ConsoleColor.Green; }
 
@@ -4268,7 +4273,7 @@ namespace rogueLike
                         int nSampleY1 = (y / nPitch) * nPitch;
 
                         int nSampleX2 = (nSampleX1 + nPitch) % 45;
-                        int nSampleY2 = (nSampleY1 + nPitch) % 15;
+                        int nSampleY2 = (nSampleY1 + nPitch) % 12;
 
                         float fBlendX = ((x - nSampleX1)) / (float)nPitch;
                         float fBlendY = (y - nSampleY1) / (float)nPitch;
@@ -4290,8 +4295,7 @@ namespace rogueLike
 
 
 
-                    if (fNoise < 3) { { braneWorld[y, x] = "░"; } }
-                    else if (fNoise > 3 && fNoise < 30) { braneWorld[y, x] = "▒"; }
+                    if (fNoise < 30) { { braneWorld[y, x] = "▒"; } }
                     else if (fNoise > 30 && fNoise < 180) { braneWorld[y, x] = "~"; }
                     else if (fNoise > 180 && fNoise < 270) { braneWorld[y, x] = "«"; }
                     else if (fNoise > 270 && fNoise < 320) { braneWorld[y, x] = "∩"; }
@@ -4319,11 +4323,14 @@ namespace rogueLike
             for (int u = 0; u < amountOfMachines; u++)    // y axis!
             {
 
-                int machineWidth = seed.Next(6, 40);
-                int machineLength = seed.Next(6, 30);
+                int machineWidth = seed.Next(6, 30);
+                int machineLength = seed.Next(6, 20);
 
                 int housePositionX = seed.Next(4, 880 - machineWidth);
                 int housePositionY = seed.Next(4, 320 - machineLength);
+
+
+
 
                 //determine what kinda machine this is..
                 //water, lava, totem, key, npc, graveyard
@@ -4347,7 +4354,7 @@ namespace rogueLike
                 if (machineType == 1)
                 {
                     Tile = "▒";
-                    TotemTile = "L";
+                    TotemTile = "□";
                 }
                 //this is an enemy area with totem, a goblinwarlord and goblins
                 if (machineType == 2)
@@ -4365,12 +4372,12 @@ namespace rogueLike
                 if (machineType == 4)
                 {
                     Tile = "+";
-                    TotemTile = "±";
+                    TotemTile = "□";
                 }
                 if (machineType == 5)
                 {
                     Tile = "●";
-                    TotemTile = "L";
+                    TotemTile = "□";
                    
                 }
 
@@ -4379,27 +4386,48 @@ namespace rogueLike
                 int totem2 = seed.Next(1, machineWidth - 2);
                 bool totemPlaced = false;
                 bool doorPlaced = false;
+                int door = seed.Next(0, machineLength);
+
+
+
+
+
+
+                //draw the machine //some could be perlin??
+
                 for (int i = 0; i < machineLength; i++)
                 {
                     for (int j = 0; j < machineWidth; j++)
                     {
+
+
                         //color the inside of the machine!
                         string myTile = Tile;
+                        int MachineLength = seed.Next(1, machineWidth - 2);
 
 
-                        if (j>0 && j< machineWidth -1&& i>0 && i<machineLength-1)
+
+                        if (j > 0 && j < machineWidth - 1 && i > 0 && i < machineLength - 1)
                         {
-                            //regular terrain and totems
-                            if (totemPlaced == false && j == totem - 1 && i == totem2 - 1)
+                            if (j > 0 && j < machineWidth - 1 && i > 0 && i < MachineLength - 1)
                             {
-                                totemPlaced = true;
-                                myTile = TotemTile;
-                                braneWorld[i + housePositionY, j + housePositionX] = TotemTile;
-                                doorPlaced = false;
+                                braneWorld[i + housePositionY, j + housePositionX] = "⁃";
+                                //regular terrain and totems
+                                
                             }
-                            braneWorld[i + housePositionY, j + housePositionX] = myTile;
-                        }
+                            else
+                            {
+                                braneWorld[i + housePositionY, j + housePositionX] = myTile;
+                                if (totemPlaced == false && j == totem - 1 && i == totem2 - 1)
+                                {
+                                    totemPlaced = true;
+                                    myTile = TotemTile;
+                                    braneWorld[i + housePositionY, j + housePositionX] = TotemTile;
+                                    doorPlaced = false;
+                                }
+                            }
 
+                        }
                         else
                         {
                             //set boundaries
@@ -4411,14 +4439,14 @@ namespace rogueLike
 
                         }
 
-                        //after filling setting boundaries, placing totems and
-                        //filling the machine, we set a door to enter/leave the machine!
-                        int door = seed.Next(0, machineWidth);
+                      
 
                         if (i == machineLength - 1 && j == door - 1)
                         {
                             if (doorPlaced == false)
                             {
+
+                                //write doors
                                 myTile = Tile;
                                 braneWorld[i + housePositionY, j + housePositionX - 1] = myTile;
                                 braneWorld[i + housePositionY, j + housePositionX] = myTile;
@@ -4451,7 +4479,6 @@ namespace rogueLike
 
                 //use previous data to compare psitions x and y
 
-
                 //then draw machines
 
             }
@@ -4461,7 +4488,7 @@ namespace rogueLike
 
 
             // draw buildings!
-            int amountOfHouses = seed.Next(50, 222);
+            int amountOfHouses = seed.Next(120, 222);
 
 
             for (int u = 0; u < amountOfHouses; u++)    // y axis!
@@ -4472,6 +4499,46 @@ namespace rogueLike
 
                 int housePositionX = seed.Next(4, 880 - houseWidth);
                 int housePositionY = seed.Next(4, 320 - houseLength);
+
+
+                //we connect the door with the previous dungeon
+/*
+                //subract the current from last position!
+                int pathX = xMachinePos - housePositionX ;
+                int pathY = yMachinePos -housePositionY ;
+
+                if (pathY <1)
+                {
+                    pathY =  yMachinePos - housePositionY;
+                }
+
+                if (pathX < 1)
+                {
+                    pathX = xMachinePos - housePositionX;
+                }
+
+                if (pathX - 1 < braneWorld.GetLength(1) && pathY - 1 < braneWorld.GetLength(0))
+                {
+                    for (int m = 0; m < pathY - 1; m++)
+                    {
+                        for (int n = 0; n < pathX - 1; n++)
+                        {
+
+                            
+                                braneWorld[m + yMachinePos, n + xMachinePos] = "⁃";
+                            
+                        }
+                    }
+                    //then save this pos as the last machine!
+                    xMachinePos = housePositionX;
+                    yMachinePos = housePositionY;
+                }
+                else { }
+                    //paint path 
+                   
+                */
+
+
 
                 bool doorPlaced = false;
                 for (int i = 0; i < houseLength; i++)
