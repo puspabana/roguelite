@@ -42,6 +42,7 @@ namespace rogueLike
         public Enemy(int race, int x, int y, int lvl)
         {
             //enum !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             // is this a snake?
             if (race == 0) { STR = 3 + 1 * lvl; CON = 2; DEX = 8 + 2 * lvl; INT = 1; maxHealth = 12; attackString = ","; raceString = "snake"; dmg = (DEX / 4 + STR / 4)/2; expirienceGained = 3 + 2 * lvl; }
@@ -92,6 +93,7 @@ namespace rogueLike
 
             if (dead == false)
             {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
                 Console.SetCursorPosition(targetPosX, targetPosY);
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write(attackString);  // angriffbildchen? 

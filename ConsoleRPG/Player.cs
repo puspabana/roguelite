@@ -326,17 +326,20 @@ namespace rogueLike
             //Console.SetWindowSize(90,30);
             Console.SetCursorPosition(xPos, yPos);
            
-            if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
+            if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.Green; }
             else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Magenta; }
             else if (equipmentInteger == 2) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
             else if (equipmentInteger == 3) { Console.ForegroundColor = ConsoleColor.DarkCyan; }
 
-            Console.Write("@");
+         Console.Write("@");
             Console.ForegroundColor = ConsoleColor.White;
 
             // let us use the equipped items!!
 
-
+            if (life <1) 
+            {
+                actionString = "GAME OVER!!!!!!!!             ";
+            }
 
 
 
@@ -498,6 +501,8 @@ namespace rogueLike
                         equipNow = true;
                         break;
 
+                  
+
                     //select different items!!
                     case ConsoleKey.DownArrow:
                         selectedItem++;
@@ -521,27 +526,28 @@ namespace rogueLike
 
 
 
-
+                        
 
                     case ConsoleKey.D:
                         direction = "East";
                         fieldsWalked++;
-                        if (mapArray[yPos, xPos + 1] != "█" && mapArray[yPos, xPos + 1] != "▒" && mapArray[yPos, xPos + 1] != "▲" && mapArray[yPos, xPos + 1] != "#")
+                        if (xCoordinates < 8 && mapArray[yPos, xPos + 1] != "█" && mapArray[yPos, xPos + 1] != "▒" && mapArray[yPos, xPos + 1] != "▲" && mapArray[yPos, xPos + 1] != "#" && mapArray[yPos, xPos + 1] != "▼")
                         {
 
-                            if (mapArray[yPos, xPos] == "~") {Console.ForegroundColor = ConsoleColor.DarkYellow; }
-                            else if (mapArray[yPos, xPos] == "«"){Console.ForegroundColor = ConsoleColor.Green;  }
-                            else if (mapArray[yPos, xPos] == "▒"){ Console.ForegroundColor = ConsoleColor.DarkCyan;  }
-                            else if (mapArray[yPos, xPos] == "●") {  Console.ForegroundColor = ConsoleColor.Green;  }
-                            else if (mapArray[yPos, xPos] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray;  }
-                            else if (mapArray[yPos, xPos] == "▲"){Console.ForegroundColor = ConsoleColor.DarkGreen; }
-
-
-
                             Console.SetCursorPosition(xPos, yPos); //Erst an Position Löschen
-                            Console.Write(mapArray[yPos, xPos]);
+                            if (mapArray[yPos, xPos] == "~") { Console.ForegroundColor = ConsoleColor.DarkYellow; Console.Write(mapArray[yPos, xPos]); }
+                            else if (mapArray[yPos, xPos] == "«") { Console.ForegroundColor = ConsoleColor.Green; Console.Write(mapArray[yPos, xPos]); }
+                            else if (mapArray[yPos, xPos] == "▒") { Console.ForegroundColor = ConsoleColor.DarkCyan; Console.Write(mapArray[yPos, xPos]); }
+                            else if (mapArray[yPos, xPos] == "●") { Console.ForegroundColor = ConsoleColor.Green; Console.Write(mapArray[yPos, xPos]); }
+                            else if (mapArray[yPos, xPos] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray; Console.Write(mapArray[yPos, xPos]); }
+                            else if (mapArray[yPos, xPos] == "▲") { Console.ForegroundColor = ConsoleColor.DarkGreen; Console.Write(mapArray[yPos, xPos]); }
+                            else if (mapArray[yPos, xPos] == "▼") { Console.ForegroundColor = ConsoleColor.White; Console.Write("▲"); }
+                            else if (mapArray[yPos, xPos] == "∩") { Console.ForegroundColor = ConsoleColor.DarkYellow; Console.Write(mapArray[yPos, xPos]); }
+                            else { Console.ForegroundColor = ConsoleColor.White; Console.Write("⁃"); }
 
-                            xPos += 1;
+
+
+                                xPos += 1;
                             Console.SetCursorPosition(xPos, yPos); //An neuer Position zeichnen
                             if (equipmentInteger == 1) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
                             else if (equipmentInteger == 0) { Console.ForegroundColor = ConsoleColor.Magenta; }
@@ -563,7 +569,7 @@ namespace rogueLike
                     case ConsoleKey.A:
                         direction = "West";
                         fieldsWalked++;
-                        if (mapArray[yPos, xPos - 1] != "█" && mapArray[yPos, xPos - 1] != "▒" && mapArray[yPos, xPos - 1] != "▲" && mapArray[yPos, xPos - 1] != "#") //Kollision links
+                        if (xCoordinates > 0 && mapArray[yPos, xPos - 1] != "█" && mapArray[yPos, xPos - 1] != "▒" && mapArray[yPos, xPos - 1] != "▲" && mapArray[yPos, xPos - 1] != "#" && mapArray[yPos, xPos - 1] != "▼") //Kollision links
                         {
                             if (mapArray[yPos, xPos] == "~") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
                             else if (mapArray[yPos, xPos] == "«") { Console.ForegroundColor = ConsoleColor.Green; }
@@ -571,6 +577,9 @@ namespace rogueLike
                             else if (mapArray[yPos, xPos] == "●") { Console.ForegroundColor = ConsoleColor.Green; }
                             else if (mapArray[yPos, xPos] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray; }
                             else if (mapArray[yPos, xPos] == "▲") { Console.ForegroundColor = ConsoleColor.DarkGreen; }
+                            else if (mapArray[yPos, xPos] == "▼") { Console.ForegroundColor = ConsoleColor.White; Console.Write("▲"); }
+                            else if (mapArray[yPos, xPos] == "∩") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write(mapArray[yPos, xPos]);
 
@@ -593,7 +602,7 @@ namespace rogueLike
                     case ConsoleKey.S:
                         direction = "South";
                         fieldsWalked++;
-                        if (mapArray[yPos + 1, xPos] != "█" && mapArray[yPos + 1, xPos] != "▒" && mapArray[yPos + 1, xPos] != "▲" && mapArray[yPos + 1, xPos] != "#") //Kollision unten
+                        if (yCoordinates < 8 && mapArray[yPos + 1, xPos] != "█" && mapArray[yPos + 1, xPos] != "▒" && mapArray[yPos + 1, xPos] != "▲" && mapArray[yPos + 1, xPos] != "#" && mapArray[yPos + 1, xPos] != "▼") //Kollision unten
                         {
                             if (mapArray[yPos, xPos] == "~") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
                             else if (mapArray[yPos, xPos] == "«") { Console.ForegroundColor = ConsoleColor.Green; }
@@ -601,6 +610,9 @@ namespace rogueLike
                             else if (mapArray[yPos, xPos] == "●") { Console.ForegroundColor = ConsoleColor.Green; }
                             else if (mapArray[yPos, xPos] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray; }
                             else if (mapArray[yPos, xPos] == "▲") { Console.ForegroundColor = ConsoleColor.DarkGreen; }
+                            else if (mapArray[yPos, xPos] == "▼") { Console.ForegroundColor = ConsoleColor.White; Console.Write("▲"); }
+                            else if (mapArray[yPos, xPos] == "∩") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write(mapArray[yPos, xPos]);
 
@@ -624,7 +636,7 @@ namespace rogueLike
                     case ConsoleKey.W:
                         direction = "North";
                         fieldsWalked++;
-                        if (mapArray[yPos - 1, xPos] != "█" && mapArray[yPos - 1, xPos] != "▒" && mapArray[yPos - 1, xPos] != "▲" && mapArray[yPos - 1, xPos] != "#") //Kollision oben
+                        if (yCoordinates > 0 && mapArray[yPos - 1, xPos] != "█" && mapArray[yPos - 1, xPos] != "▒" && mapArray[yPos - 1, xPos] != "▲" && mapArray[yPos - 1, xPos] != "#" && mapArray[yPos - 1, xPos] != "▼") //Kollision oben
                         {
                             if (mapArray[yPos, xPos] == "~") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
                             else if (mapArray[yPos, xPos] == "«") { Console.ForegroundColor = ConsoleColor.Green; }
@@ -632,6 +644,9 @@ namespace rogueLike
                             else if (mapArray[yPos, xPos] == "●") { Console.ForegroundColor = ConsoleColor.Green; }
                             else if (mapArray[yPos, xPos] == "▀") { Console.ForegroundColor = ConsoleColor.DarkGray; }
                             else if (mapArray[yPos, xPos] == "▲") { Console.ForegroundColor = ConsoleColor.DarkGreen; }
+                            else if (mapArray[yPos, xPos] == "▼") { Console.ForegroundColor = ConsoleColor.White; Console.Write("▲"); }
+                            else if (mapArray[yPos, xPos] == "∩") { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+
                             Console.SetCursorPosition(xPos, yPos);
                             Console.Write(mapArray[yPos, xPos]);
 
@@ -1121,8 +1136,7 @@ namespace rogueLike
                     else if (SubType == 9) { itemName = "pushdagger"; itemString = "Џ"; }
                     else if (SubType == 10) { itemName = "thumbscrews"; itemString = "≚"; }
 
-                // alternative weapon icons  --   (↡ ⥉ ⥖ ⫰ ← ⋲ џ ┮ Ґ ԇ  ∫ ҁ ӷ ϟ Ϡ ϡ  Ψ ϙ  ϟ  ϯ  Ƿ  Ͽ  ȹ  Ͳ  Ƭ ͳ Ϯ Ԇ ſ ƪ 
-
+                    // alternative weapon icons  --   (↡ ⥉ ⥖ ⫰ ← ⋲ џ ┮ Ґ ԇ  ∫ ҁ ӷ ϟ Ϡ ϡ  Ψ ϙ  ϟ  ϯ  Ƿ  Ͽ  ȹ  Ͳ  Ƭ ͳ Ϯ Ԇ ſ ƪ ❲ ❳
                     actionString = "you found " + itemName + "[" + itemString + "] price " + price + " $ (" + itemID + " ID) ";
                     itemName = itemName + " (" + itemString + ") " + DMG + "/" + DEF;
                     Weapon item = new Weapon(itemName, price, itemType, 0,itemString, SubType);
@@ -1484,9 +1498,21 @@ namespace rogueLike
                         {
                             actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")        ";
                             //you destroy the tree and get some wood
-                            Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            Console.ForegroundColor = ConsoleColor.White;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            Console.Write("⁃");
+
                         }
 
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▼")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")        ";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            Console.Write("⁃");
+
+                        }
                         else if (mapArray[attackedFloorY, attackedFloorX] == "«")
                         {
                             actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")          ";
@@ -1516,6 +1542,14 @@ namespace rogueLike
                             actionString = "we are hitting rocks! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
                             //you cannot destroy rocks
                             Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "∩")
+                        {
+                            actionString = "we are hitting bushes! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.Green;
 
                         }
                     }
@@ -1548,9 +1582,22 @@ namespace rogueLike
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
                         {
-                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")        ";
                             //you destroy the tree and get some wood
-                            Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            Console.ForegroundColor = ConsoleColor.White;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            Console.Write("⁃");
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▼")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")        ";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            Console.Write("⁃");
+
                         }
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "«")
@@ -1584,6 +1631,13 @@ namespace rogueLike
                             Console.ForegroundColor = ConsoleColor.DarkGray;
 
                         }
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "∩")
+                        {
+                            actionString = "we are hitting bushes! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.Green;
+
+                        }
                     }
                     else { }
                     Console.Write(mapArray[yPos + 1, xPos]);
@@ -1611,14 +1665,27 @@ namespace rogueLike
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
                     }
 
-                    else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
-                    {
-                        actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")             ";
-                        //you destroy the tree and get some wood
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    }
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")        ";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            Console.Write("⁃");
 
-                    else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▼")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")        ";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            Console.Write("⁃");
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "«")
                     {
                         actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")               ";
                         //you destroy the grass and get herbs 
@@ -1649,6 +1716,13 @@ namespace rogueLike
                         Console.ForegroundColor = ConsoleColor.DarkGray;
 
                     }
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "∩")
+                        {
+                            actionString = "we are hitting bushes! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.Green;
+
+                        }
                     }
                     else { }
 
@@ -1677,14 +1751,27 @@ namespace rogueLike
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
                     }
 
-                    else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
-                    {
-                        actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")                 ";
-                        //you destroy the tree and get some wood
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    }
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")        ";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            Console.Write("⁃");
 
-                    else if (mapArray[attackedFloorY, attackedFloorX] == "«")
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▼")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")        ";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            Console.Write("⁃");
+
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "«")
                     {
                         actionString = "we are hitting the grass! (" + attackedFloorX + "/" + attackedFloorY + ")                     ";
                         //you destroy the grass and get herbs 
@@ -1715,6 +1802,13 @@ namespace rogueLike
                         Console.ForegroundColor = ConsoleColor.DarkGray;
 
                     }
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "∩")
+                        {
+                            actionString = "we are hitting bushes! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.Green;
+
+                        }
                     }
                     else { }
                     Console.Write(mapArray[yPos - 1, xPos]);
@@ -1951,7 +2045,7 @@ namespace rogueLike
                            Console.ForegroundColor = ConsoleColor.DarkYellow;
                        }
 
-                       else if (mapArray[attackedFloorY, attackedFloorX] == "▲")
+                       else if (mapArray[attackedFloorY, attackedFloorX] == www)
                        {
                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
                            //you destroy the tree and get some wood
@@ -2490,10 +2584,22 @@ namespace rogueLike
                             //you destroy the tree and get some wood
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.Black;
-                            mapArray[attackedFloorY, attackedFloorX] = ".";
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
                             generateWood();
                             //generate woods
                         }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▼")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateWood();
+                            //generate woods
+                        }
+
 
                         else if (mapArray[attackedFloorY, attackedFloorX] == "«")
                         {
@@ -2701,7 +2807,18 @@ namespace rogueLike
                             //you destroy the tree and get some wood
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.Black;
-                            mapArray[attackedFloorY, attackedFloorX] = ".";
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateWood();
+                            //generate woods
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▼")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
                             generateWood();
                             //generate woods
                         }
@@ -2942,7 +3059,18 @@ namespace rogueLike
                             //you destroy the tree and get some wood
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.Black;
-                            mapArray[attackedFloorY, attackedFloorX] = ".";
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateWood();
+                            //generate woods
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▼")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
                             generateWood();
                             //generate woods
                         }
@@ -2986,6 +3114,14 @@ namespace rogueLike
                             Console.BackgroundColor = ConsoleColor.Black;
 
                         }
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "∩")
+                        {
+                            actionString = "we are hitting bushes! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.Green;
+
+                        }
+
                     }
                     else
                     {
@@ -3172,7 +3308,18 @@ namespace rogueLike
                             //you destroy the tree and get some wood
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.Black;
-                            mapArray[attackedFloorY, attackedFloorX] = ".";
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
+                            generateWood();
+                            //generate woods
+                        }
+
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "▼")
+                        {
+                            actionString = "we are removing this tree! (" + attackedFloorX + "/" + attackedFloorY + ")";
+                            //you destroy the tree and get some wood
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            mapArray[attackedFloorY, attackedFloorX] = "⁃";
                             generateWood();
                             //generate woods
                         }
@@ -3214,6 +3361,13 @@ namespace rogueLike
                             //you cannot destroy rocks
                             Console.ForegroundColor = ConsoleColor.DarkGray;
                             Console.BackgroundColor = ConsoleColor.Black;
+
+                        }
+                        else if (mapArray[attackedFloorY, attackedFloorX] == "∩")
+                        {
+                            actionString = "we are hitting bushes! (" + attackedFloorX + "/" + attackedFloorY + ")                ";
+                            //you cannot destroy rocks
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
 
                         }
                     }
@@ -4062,33 +4216,348 @@ namespace rogueLike
 
             // xPos can be maparray.getlength!!
 
-            int xPos = 60;
-            int yPos = 12;
+            int xPos = 120;
+            int yPos = 32;
 
             //display stats only when needed!
 
          
+           
 
-          /*  Console.SetCursorPosition(xPos, yPos);
-            Console.Write("STR      " + STR);
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("CON      " + CON);
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("DEX      " + DEX);
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write("INT      " + INT);
-            yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write(" ");
             yPos++;
           
 
-            */
+                //    << minimap >>  ****************************************************************************************************************
+
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.DarkGray;
+                yPos++;
+                Console.SetCursorPosition(xPos, yPos);
+
+                int oldYpos = yPos;
 
 
+                for (int y = 1; y < 9; y++)
+                {
+                    for (int x = 1; x < 9; x++)
+                    {
+                        if (x < 9)
+                        {
+
+                            if (x == xCoordinates && y == yCoordinates)
+                            {
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.BackgroundColor = ConsoleColor.Green;
+                                Console.Write(xCoordinates + "" + yCoordinates + " ");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.BackgroundColor = ConsoleColor.Black;
+
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Black;
+                                Console.BackgroundColor = ConsoleColor.DarkGray;
+                                Console.Write(x + "" + y + ",");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.BackgroundColor = ConsoleColor.Black;
+
+                            }
+                            if (x == 8)
+                            {
+                                yPos++;
+                                Console.SetCursorPosition(xPos, yPos);
+                                //y++;
+                            }
+                        }
+
+                    }
+
+
+                }
+
+                xPos = 150;
+                yPos = oldYpos;
+
+                Console.SetCursorPosition(xPos, yPos);
+                Console.Write("weapon [space] " + item1);
+                yPos++;
+                Console.SetCursorPosition(xPos, yPos);
+                if (equipmentInteger == 1) { Console.Write("bash [enter] " + item1); }
+                if (equipmentInteger == 0) { Console.Write("backstab [enter] " + item1); }
+                if (equipmentInteger == 2) { Console.Write("holy hammer [enter] " + item1); }
+                if (equipmentInteger == 3) { Console.Write("magic blast [enter] " + item1); }
+
+                yPos++;
+                Console.SetCursorPosition(xPos, yPos);
+                Console.Write("offhand [e] " + item2);
+                yPos++;
+
+                Console.SetCursorPosition(xPos, yPos);
+                Console.Write(" ");
+                yPos++;
+
+
+
+                Console.SetCursorPosition(xPos, yPos);
+                Console.Write("coins");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write(" ♦ ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(+coins);
+
+
+
+
+                Console.SetCursorPosition(xPos, yPos + 1);
+                Console.Write("Level " + lvl + ", exp " + exp + "/" + requiredExp+"        ");
+                yPos++;
+                Console.SetCursorPosition(xPos, yPos + 1);
+                Console.Write("life ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                //Console.Write(" ♥ ");
+                for (int i = 0; i < life; i++)
+                {
+                    if (i < health)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("♥ ");  // wieviel leben hast du?
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write(" ");  // wieviel leben hast du?
+                    }
+                }
+            Console.Write("                  ");  
+
+
+
+
+            //display inventory
+            yPos = 0;
+                xPos = 130;
+                Console.SetCursorPosition(xPos, yPos);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.BackgroundColor = ConsoleColor.DarkGray;
+                Console.Write("inventory");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.BackgroundColor = ConsoleColor.Black;
+            if (selectedItem > 20) selectedItem = 0;
+                yPos++;
+                if (inventory.Count >= 1 && inventory.Count <10)
+                {
+                    for (int i = 0; i < inventory.Count; i++)
+                    {
+                        yPos++;
+                        // we are looking at this from the inventory!
+                        if (selectedItem == i)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.SetCursorPosition(xPos, yPos);
+                            if (inventory.Count >= 1 && i < inventory.Count)
+                            Console.Write("" + inventory[i]);
+                            Console.ForegroundColor = ConsoleColor.White;
+
+                        //if we press r while over this item,
+                        //then equip it!
+
+                        if (eqList[i] != null)
+                        {
+                            if (equipNow == true && eqList[selectedItem].itemType == 0)
+                            {
+                                equipItem(eqList[i].itemIcon, 2, 2, eqList[i].itemDefiningType);
+                                item1 = eqList[i].itemIcon;
+                                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
+                                musicPlayer.Play();
+                                equipNow = false;
+
+                            }
+                        }
+                        //consume items!
+                        /*       else if (equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 0 || equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 5)
+                               {
+                                   actionString = ("you are eating " + eqList[selectedItem].name);
+                                   eqList.RemoveAt(selectedItem);
+                                   health +=5; mana += 2;
+                               }*/
+                        //other things dont work yet!
+                        else if (equipNow == true)
+                        {
+                            actionString= ("you can not equip " + eqList[selectedItem].name);
+                        }
+
+                        itemID++;
+                        }
+                        else
+                        {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.SetCursorPosition(xPos, yPos);
+                        if (inventory.Count >= 1 && i < inventory.Count)
+                            Console.Write("" + inventory[i]);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        itemID++;
+                        }
+                    }
+                }
+                yPos = 1;
+                xPos = 150;
+                if (inventory.Count > 10)
+                {
+                for (int i = 10; i < inventory.Count; i++)
+                {
+                    yPos++;
+                    // we are looking at this from the inventory!
+                    // we are looking at this from the inventory!
+                    if (selectedItem == i)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.SetCursorPosition(xPos, yPos);
+                        if (inventory.Count >= 1 && i < inventory.Count)
+                            Console.Write("" + inventory[i]);
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        //if we press r while over this item,
+                        //then equip it!
+                        if (eqList[i] != null)
+                        {
+                        if (equipNow == true && eqList[selectedItem].itemType == 0)
+                        {
+                            equipItem(eqList[i].itemIcon, 2, 2, eqList[i].itemDefiningType);
+                            item1 = eqList[i].itemIcon;
+                            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
+                            musicPlayer.Play();
+                            equipNow = false;
+
+                        }
+                        }
+                        //consume items!
+                      /*  else if (equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 0 || equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 5)
+                        {
+                            actionString = ("you are eating " + eqList[selectedItem].name);
+                            eqList.RemoveAt(selectedItem);
+                            health += 5; mana += 2;
+                        }*/
+                        //other things dont work yet!
+                        else if (equipNow == true)
+                        {
+                            actionString = ("you can not equip " + eqList[selectedItem].name);
+                        }
+
+                        itemID++;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.SetCursorPosition(xPos, yPos);
+                        if (inventory.Count >= 1 && i < inventory.Count)
+                            Console.Write("" + inventory[i]);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        itemID++;
+                    }
+                }
+
+            }
+            
+
+          
+           
+            
+
+           
+
+           
+
+            //**********************************************************************************************************************************
+            //Console.SetCursorPosition(xPos, yPos);
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
+
+            // other parts of interface
+            xPos = 0;
+            yPos = 42;
+
+            Console.SetCursorPosition(xPos, yPos);
+            Console.WriteLine("─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────");
+            yPos++;
+            Console.Write("                               "); // Alte Richtung löschen, mit Leerschlag überschreiben
+            Console.SetCursorPosition(xPos, yPos);
+            Console.Write(" level " + xCoordinates + "/" + yCoordinates + ", compass: " + direction);  // neue Richtungsangabe
+
+            //            Console.Write("                               ");
+
+            xPos = 40;
+            //yPos++;
+            Console.SetCursorPosition(xPos, yPos);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(" "+actionString + "");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            yPos++;
+            xPos = 0;
+
+            //for each life u got, for loop and write "█"
+            Console.SetCursorPosition(xPos, yPos + 1);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(" ♥ ");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.Write(health + "/" + maxHealth + " ");
+
+            for (int i = 0; i < 25; i++)
+            {
+                if (i < health)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("█");  // wieviel leben hast du?
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("▄");  // wieviel leben hast du?
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            }
+
+            //for each life u got, for loop and write "█"
+            Console.SetCursorPosition(xPos, yPos + 2);
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write(" ▲ ");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.Write(mana + "/" + maxMana + " ");
+
+            for (int i = 0; i < maxMana; i++)
+            {
+                if (i < mana)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write("▄");  // wieviel mana hast du?
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("▄");  // wieviel mana hast du?
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            }
+
+            /*     // display all actions via console.writeline
+                 Console.Write(" STR:" + STR);
+         //        yPos++;
+                 Console.Write(" CON:" + CON);
+         //        yPos++;
+                 Console.Write(" DEX:" + DEX);
+         //        yPos++;
+                 Console.Write(" INT:" + INT);
+                 //        yPos++;
+                 Console.Write(" DMG:" + dmg);
+
+                 Console.Write(" weapon damage:" + weaponDMG+"                   ");
+
+                 */
 
 
 
@@ -4174,351 +4643,6 @@ namespace rogueLike
                             yPos++;
                         }
                         */
-         //   Console.Write(actionString);
-           
-
-
-            //Console.SetCursorPosition(xPos, yPos);
-            //Console.Write(burnCounter);
-            //yPos++;
-
-           
-
-            yPos++;
-          
-
-                //    << minimap >>  ****************************************************************************************************************
-
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.BackgroundColor = ConsoleColor.DarkGray;
-                yPos++;
-                Console.SetCursorPosition(xPos, yPos);
-
-                int oldYpos = yPos;
-
-
-                for (int y = 1; y < 9; y++)
-                {
-                    for (int x = 1; x < 9; x++)
-                    {
-                        if (x < 9)
-                        {
-
-                            if (x == xCoordinates && y == yCoordinates)
-                            {
-                                Console.ForegroundColor = ConsoleColor.White;
-                                Console.BackgroundColor = ConsoleColor.Green;
-                                Console.Write(xCoordinates + "" + yCoordinates + " ");
-                                Console.ForegroundColor = ConsoleColor.White;
-                                Console.BackgroundColor = ConsoleColor.Black;
-
-                            }
-                            else
-                            {
-                                Console.ForegroundColor = ConsoleColor.Black;
-                                Console.BackgroundColor = ConsoleColor.DarkGray;
-                                Console.Write(x + "" + y + ",");
-                                Console.ForegroundColor = ConsoleColor.White;
-                                Console.BackgroundColor = ConsoleColor.Black;
-
-                            }
-                            if (x == 8)
-                            {
-                                yPos++;
-                                Console.SetCursorPosition(xPos, yPos);
-                                //y++;
-                            }
-                        }
-
-                    }
-
-
-                }
-
-                xPos = 88;
-                yPos = oldYpos;
-
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("weapon [space] " + item1);
-                yPos++;
-                Console.SetCursorPosition(xPos, yPos);
-                if (equipmentInteger == 1) { Console.Write("bash [enter] " + item1); }
-                if (equipmentInteger == 0) { Console.Write("backstab [enter] " + item1); }
-                if (equipmentInteger == 2) { Console.Write("holy hammer [enter] " + item1); }
-                if (equipmentInteger == 3) { Console.Write("magic blast [enter] " + item1); }
-
-                yPos++;
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("offhand [e] " + item2);
-                yPos++;
-
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write(" ");
-                yPos++;
-
-
-
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("coins");
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.Write(" ♦ ");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(+coins);
-
-
-
-
-                Console.SetCursorPosition(xPos, yPos + 1);
-                Console.Write("Level " + lvl + ", exp " + exp + "/" + requiredExp+"        ");
-                yPos++;
-                Console.SetCursorPosition(xPos, yPos + 1);
-                Console.Write("life ");
-                Console.ForegroundColor = ConsoleColor.Green;
-                //Console.Write(" ♥ ");
-                for (int i = 0; i < life; i++)
-                {
-                    if (i < health)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("♥ ");  // wieviel leben hast du?
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else
-                    {
-                        Console.Write(" ");  // wieviel leben hast du?
-                    }
-                }
-
-
-            
-
-                //display inventory
-                yPos = 0;
-                xPos = 60;
-                Console.SetCursorPosition(xPos, yPos);
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.BackgroundColor = ConsoleColor.DarkGray;
-                Console.Write("inventory");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.BackgroundColor = ConsoleColor.Black;
-
-                yPos++;
-                if (inventory.Count >= 1)
-                {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        yPos++;
-                        // we are looking at this from the inventory!
-                        if (selectedItem == i)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.SetCursorPosition(xPos, yPos);
-                            if (inventory.Count >= 1 && i < inventory.Count)
-                            Console.Write("" + inventory[i]);
-                            Console.ForegroundColor = ConsoleColor.White;
-
-                        //if we press r while over this item,
-                        //then equip it!
-
-                        if (eqList[i] != null)
-                        {
-                            if (equipNow == true && eqList[selectedItem].itemType == 0)
-                            {
-                                equipItem(eqList[i].itemIcon, 2, 2, eqList[i].itemDefiningType);
-                                item1 = eqList[i].itemIcon;
-                                musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
-                                musicPlayer.Play();
-                                equipNow = false;
-
-                            }
-                        }
-                        //consume items!
-                        /*       else if (equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 0 || equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 5)
-                               {
-                                   actionString = ("you are eating " + eqList[selectedItem].name);
-                                   eqList.RemoveAt(selectedItem);
-                                   health +=5; mana += 2;
-                               }*/
-                        //other things dont work yet!
-                        else if (equipNow == true)
-                        {
-                            actionString= ("you can not equip " + eqList[selectedItem].name);
-                        }
-
-                        itemID++;
-                        }
-                        else
-                        {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.SetCursorPosition(xPos, yPos);
-                        if (inventory.Count >= 1 && i < inventory.Count)
-                            Console.Write("" + inventory[i]);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        itemID++;
-                        }
-                    }
-                }
-                yPos = 1;
-                xPos = 85;
-                if (inventory.Count > 10)
-                {
-                for (int i = 10; i < inventory.Count; i++)
-                {
-                    yPos++;
-                    // we are looking at this from the inventory!
-                    // we are looking at this from the inventory!
-                    if (selectedItem == i)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.SetCursorPosition(xPos, yPos);
-                        if (inventory.Count >= 1 && i < inventory.Count)
-                            Console.Write("" + inventory[i]);
-                        Console.ForegroundColor = ConsoleColor.White;
-
-                        //if we press r while over this item,
-                        //then equip it!
-                        if (eqList[i] != null)
-                        {
-                        if (equipNow == true && eqList[selectedItem].itemType == 0)
-                        {
-                            equipItem(eqList[i].itemIcon, 2, 2, eqList[i].itemDefiningType);
-                            item1 = eqList[i].itemIcon;
-                            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/01_character_creation.wav";
-                            musicPlayer.Play();
-                            equipNow = false;
-
-                        }
-                        }
-                        //consume items!
-                      /*  else if (equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 0 || equipNow == true && eqList[selectedItem].itemType == 3 && eqList[selectedItem].itemSubType == 5)
-                        {
-                            actionString = ("you are eating " + eqList[selectedItem].name);
-                            eqList.RemoveAt(selectedItem);
-                            health += 5; mana += 2;
-                        }*/
-                        //other things dont work yet!
-                        else if (equipNow == true)
-                        {
-                            actionString = ("you can not equip " + eqList[selectedItem].name);
-                        }
-
-                        itemID++;
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.SetCursorPosition(xPos, yPos);
-                        if (inventory.Count >= 1 && i < inventory.Count)
-                            Console.Write("" + inventory[i]);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        itemID++;
-                    }
-                }
-
-            }
-            
-
-          
-           
-            
-
-           
-
-           
-
-            //**********************************************************************************************************************************
-            //Console.SetCursorPosition(xPos, yPos);
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Black;
-
-            // other parts of interface
-            xPos = 0;
-            yPos = mapArray.GetLength(0) +1;
-
-            Console.SetCursorPosition(xPos, yPos);
-            Console.WriteLine("──────────────────────────────────────────────────────────────────────────────────────────────────────────────");
-            yPos++;
-            Console.Write("                               "); // Alte Richtung löschen, mit Leerschlag überschreiben
-            Console.SetCursorPosition(xPos, yPos);
-            Console.Write(" level " + xCoordinates + "/" + yCoordinates + ", compass: " + direction);  // neue Richtungsangabe
-
-            //            Console.Write("                               ");
-
-            xPos = 40;
-            //yPos++;
-            Console.SetCursorPosition(xPos, yPos);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write(" "+actionString + "");
-            Console.ForegroundColor = ConsoleColor.White;
-
-            yPos++;
-            xPos = 0;
-
-            //for each life u got, for loop and write "█"
-            Console.SetCursorPosition(xPos, yPos + 1);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(" ♥ ");
-            Console.ForegroundColor = ConsoleColor.White;
-
-            Console.Write(health + "/" + maxHealth + " ");
-
-            for (int i = 0; i < 25; i++)
-            {
-                if (i < health)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("█");  // wieviel leben hast du?
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.Write("▄");  // wieviel leben hast du?
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-            }
-
-            //for each life u got, for loop and write "█"
-            Console.SetCursorPosition(xPos, yPos + 2);
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.Write(" ▲ ");
-            Console.ForegroundColor = ConsoleColor.White;
-
-            Console.Write(mana + "/" + maxMana + " ");
-
-            for (int i = 0; i < maxMana; i++)
-            {
-                if (i < mana)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write("▄");  // wieviel mana hast du?
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.Write("▄");  // wieviel mana hast du?
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-            }
-
-            // display all actions via console.writeline
-            Console.Write(" STR:" + STR);
-    //        yPos++;
-            Console.Write(" CON:" + CON);
-    //        yPos++;
-            Console.Write(" DEX:" + DEX);
-    //        yPos++;
-            Console.Write(" INT:" + INT);
-            //        yPos++;
-            Console.Write(" DMG:" + dmg);
-
-            Console.Write(" weapon damage:" + weaponDMG+"                   ");
-
-
-
-
 
 
         }
@@ -4609,7 +4733,7 @@ namespace rogueLike
 
         public bool travelEast()        //enchanted forests
         {
-            if (xPos == 52 && indoors == false && xCoordinates <8)
+            if (xPos == 108 && indoors == false && xCoordinates <8)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
@@ -4648,7 +4772,7 @@ namespace rogueLike
 
         public bool travelNorth()        //silver mountains
         {
-            if (yPos == 18 && indoors == false && yCoordinates < 8)
+            if (yPos == 38 && indoors == false && yCoordinates < 8)
             {
                 musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Properties/menu_click.wav";
                 musicPlayer.Play();
@@ -4750,8 +4874,8 @@ namespace rogueLike
 
                 int xpos;
                 int ypos;
-                xpos = random.Next(4, 53);
-                ypos = random.Next(7, 18);
+                xpos = random.Next(4, 108);
+                ypos = random.Next(7, 38);
 
                 if (mapArray[ypos, xpos] == "█")
                 {
@@ -4908,7 +5032,7 @@ namespace rogueLike
                 mapArray[y, x + 1] = enemy;
                 Console.Write(enemy);
                 mapArray[y, x] = enemy;
-                Thread.Sleep(200);
+        //        Thread.Sleep(200);
                 x += x;
                 return;
             }
@@ -4928,7 +5052,7 @@ namespace rogueLike
                 mapArray[y + 1, x] = enemy;
                 Console.Write(enemy);
                 mapArray[y, x] = enemy;
-                Thread.Sleep(200);
+                //        Thread.Sleep(200);
                 y += 1;
                 return;
             }
@@ -4948,7 +5072,7 @@ namespace rogueLike
                 mapArray[y, x + 1] = enemy;
                 Console.Write(enemy);
                 mapArray[y, x] = enemy;
-                Thread.Sleep(200);
+                //        Thread.Sleep(200);
                 x -= x;
                 return;
             }
@@ -4968,7 +5092,7 @@ namespace rogueLike
                 mapArray[y - 1, x] = enemy;
                 Console.Write(enemy);
                 mapArray[y, x] = enemy;
-                Thread.Sleep(200);
+                //        Thread.Sleep(200);
 
                 y -= y;
                 return;
@@ -4981,7 +5105,7 @@ namespace rogueLike
                 Console.Write(enemy);
                 mapArray[y, x] = enemy;
                 Console.ForegroundColor = ConsoleColor.White;
-                Thread.Sleep(200);
+                //        Thread.Sleep(200);
             }
 
 
@@ -5045,7 +5169,10 @@ namespace rogueLike
                 //battle method
                 if (enemyContact == true)
 
-                    Console.SetCursorPosition(xPos, yPos);
+                    Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+
+                Console.SetCursorPosition(xPos, yPos);
                 Console.Write(currentEnemy.attackString);  // angriffbildchen? 
 
                 currentEnemy.ready = false;

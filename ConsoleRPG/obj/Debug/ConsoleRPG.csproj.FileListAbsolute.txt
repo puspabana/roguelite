@@ -85,8 +85,6 @@ C:\Users\Philipp\Desktop\projekte qantm\Apps\roguelike\roguelike\ConsoleRPG\Cons
 C:\Users\Philipp\Desktop\projekte qantm\Apps\roguelike\roguelike\ConsoleRPG\ConsoleRPG\obj\Debug\ConsoleRPG.pdb
 C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\obj\Debug\ConsoleRPG.csprojAssemblyReference.cache
 C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\obj\Debug\ConsoleRPG.csproj.CoreCompileInputs.cache
-C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\obj\Debug\ConsoleRPG.exe
-C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\obj\Debug\ConsoleRPG.pdb
 C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\00_beginn_game.wav
 C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\01_character_creation.wav
 C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\02_gameover.wav
@@ -109,9 +107,6 @@ C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\sou
 C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\soundtrack_forest.wav
 C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\soundtrack_intro.wav
 C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\soundtrack_shrine.wav
-C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\ConsoleRPG.exe.config
-C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\ConsoleRPG.exe
-C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\ConsoleRPG.pdb
 C:\Users\Philipp\Desktop\projekte qantm\roguelite-master\ConsoleRPG\bin\Debug\Properties\00_beginn_game.wav
 C:\Users\Philipp\Desktop\projekte qantm\roguelite-master\ConsoleRPG\bin\Debug\Properties\01_character_creation.wav
 C:\Users\Philipp\Desktop\projekte qantm\roguelite-master\ConsoleRPG\bin\Debug\Properties\02_gameover.wav
@@ -231,3 +226,52 @@ D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\item_explosion.wav
 D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\secret.wav
 D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\block.wav
 D:\_my_Games\Console\gitRogue\ConsoleRPG\bin\Debug\Properties\item_shovel.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite-master\ConsoleRPG\bin\Debug\Properties\block.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite-master\ConsoleRPG\bin\Debug\Properties\credits.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite-master\ConsoleRPG\bin\Debug\Properties\item_explosion.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite-master\ConsoleRPG\bin\Debug\Properties\item_shovel.wav
+C:\Users\Philipp\Desktop\projekte qantm\roguelite-master\ConsoleRPG\bin\Debug\Properties\secret.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\00_beginn_game.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\01_character_creation.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\02_gameover.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\att_dagger.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\att_mace.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\att_staff.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\att_sword.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\block.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\credits.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\item_explosion.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\item_magnet.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\item_shovel.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\menu_click.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\menu_error.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\item_firekit.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\item_hookshot.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\att_plow.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\secret.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\skill_missile_exp.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\skill_missile_homing.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\item_shield.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\item_bow.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\item_discus.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\soundtrack_dungeon.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\soundtrack_forest.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\soundtrack_intro.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\Properties\soundtrack_shrine.wav
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\rogueLike.exe.config
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\rogueLike.exe
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\bin\Debug\rogueLike.pdb
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\obj\Debug\ConsoleRPG.csprojAssemblyReference.cache
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\obj\Debug\ConsoleRPG.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\obj\Debug\rogueLike.exe
+C:\Users\User\Desktop\sae_projects\roguelike procedural\rogue engine\ConsoleRPG\obj\Debug\rogueLike.pdb
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\block.wav
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\credits.wav
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\item_explosion.wav
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\item_shovel.wav
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\Properties\secret.wav
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\rogueLike.exe.config
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\rogueLike.exe
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\bin\Debug\rogueLike.pdb
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\obj\Debug\rogueLike.exe
+C:\Users\User\Desktop\sae_projects\rogueLike\ConsoleRPG\obj\Debug\rogueLike.pdb
